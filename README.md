@@ -2,15 +2,17 @@
 
 Repository target: `Vertex-Systems-Network/vsn-klyvesta`
 
-Klyvesta is an AI-native investing platform designed around the pyPSX Broker API. It supports three customer modes:
+Klyvesta is an **AI Investment Operating System** designed around the pyPSX Broker API. It supports three customer modes:
 
 1. **Manual** — the customer chooses and confirms each trade.
 2. **AI Assisted** — AI researches, constructs recommendations, explains risk, and the customer confirms.
 3. **Guarded Auto** — AI manages a portfolio only inside a customer-approved mandate and only after the required legal/regulatory structure is approved.
 
+The product direction includes beginner-first investing, tiered AI-agent packages, a complete investment-event timeline, Email/WhatsApp/SMS notifications, advanced portfolio intelligence, and a full-featured manual + AI-assisted + Guarded Auto experience.
+
 ## Non-negotiable product principle
 
-Klyvesta must never claim or imply that losses are impossible. Markets can decline and investments can lose value. The platform objective is to reduce avoidable risk, control drawdown, diversify appropriately, and optimize risk-adjusted outcomes — not guarantee profit or capital preservation.
+Klyvesta must never claim or imply that losses are impossible, that investing is risk-free, or that profit is guaranteed. Markets can decline and investments can lose value. The platform objective is to reduce avoidable risk, control drawdown, diversify appropriately, adapt exposure, and optimize risk-adjusted outcomes — not guarantee profit or capital preservation.
 
 ## Current project status
 
@@ -29,11 +31,14 @@ All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_EN
 
 Repository evidence, tests, documentation, and Git history are the source of truth; chat memory is not.
 
-See:
-- `AGENTS.md`
-- `.ai/MASTER_ENGINEERING_PROMPT.md`
+## Core planning documents
+
 - `AI-PLAN.md`
+- `docs/PRODUCT_VISION_V2.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
+- `docs/AI_AGENT_PACKAGES.md`
+- `docs/INVESTMENT_EVENT_NOTIFICATIONS.md`
+- `docs/COMPETITIVE_POSITIONING.md`
 - `docs/ARCHITECTURE.md`
 - `docs/DATA_FLOW.md`
 - `docs/AI_AGENTS.md`
@@ -42,6 +47,12 @@ See:
 - `docs/DESIGN_SYSTEM.md`
 - `docs/QA_PERFORMANCE.md`
 - `docs/ROADMAP.md`
+
+## Canonical AI engineering state
+
+- `AGENTS.md`
+- `.ai/MASTER_ENGINEERING_PROMPT.md`
 - `.ai/state.json`
 - `.ai/guardrails.md`
 - `.ai/acceptance-gates.yaml`
+- latest file under `.ai/checkpoints/`
