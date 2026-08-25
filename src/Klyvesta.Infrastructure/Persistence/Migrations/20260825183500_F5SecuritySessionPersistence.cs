@@ -39,6 +39,9 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                         "ak_security_device_identity",
                         x => new { x.id, x.principal_id, x.principal_type });
                     table.CheckConstraint(
+                        "ck_security_device_identifiers",
+                        "id <> '00000000-0000-0000-0000-000000000000'::uuid AND principal_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                    table.CheckConstraint(
                         "ck_security_device_integrity_state",
                         "integrity_state IN ('unknown', 'meets_baseline', 'degraded', 'failed')");
                     table.CheckConstraint(
@@ -47,6 +50,9 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     table.CheckConstraint(
                         "ck_security_device_principal_type",
                         "principal_type IN ('customer', 'staff', 'service')");
+                    table.CheckConstraint(
+                        "ck_security_device_reason_content",
+                        "(restriction_reason IS NULL OR btrim(restriction_reason) <> '') AND (revocation_reason IS NULL OR btrim(revocation_reason) <> '')");
                     table.CheckConstraint(
                         "ck_security_device_restriction_chronology",
                         "restricted_at IS NULL OR restricted_at >= registered_at");
@@ -104,6 +110,9 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                         "ck_security_session_auth_strength",
                         "authentication_strength IN ('password', 'strong_mfa', 'phishing_resistant')");
                     table.CheckConstraint(
+                        "ck_security_session_identifiers",
+                        "id <> '00000000-0000-0000-0000-000000000000'::uuid AND principal_id <> '00000000-0000-0000-0000-000000000000'::uuid AND device_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                    table.CheckConstraint(
                         "ck_security_session_idle_timeout",
                         "idle_timeout_seconds > 0");
                     table.CheckConstraint(
@@ -112,6 +121,9 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     table.CheckConstraint(
                         "ck_security_session_principal_type",
                         "principal_type IN ('customer', 'staff', 'service')");
+                    table.CheckConstraint(
+                        "ck_security_session_reason_content",
+                        "(restriction_reason IS NULL OR btrim(restriction_reason) <> '') AND (revocation_reason IS NULL OR btrim(revocation_reason) <> '')");
                     table.CheckConstraint(
                         "ck_security_session_restriction_chronology",
                         "restricted_at IS NULL OR restricted_at >= created_at");
@@ -124,6 +136,9 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     table.CheckConstraint(
                         "ck_security_session_revocation_pair",
                         "(revoked_at IS NULL AND revocation_reason IS NULL) OR (revoked_at IS NOT NULL AND revocation_reason IS NOT NULL)");
+                    table.CheckConstraint(
+                        "ck_security_session_revocation_reason",
+                        "revocation_reason IS NULL OR revocation_reason IN ('user_sign_out', 'sign_out_all', 'device_revoked', 'recovery_completed', 'staff_privilege_changed', 'security_incident', 'credential_compromise', 'account_suspended')");
                     table.CheckConstraint(
                         "ck_security_session_state_evidence",
                         "(revoked_at IS NULL AND restricted = FALSE AND restricted_at IS NULL) OR (revoked_at IS NULL AND restricted = TRUE AND restricted_at IS NOT NULL) OR (revoked_at IS NOT NULL AND restricted = FALSE)");
