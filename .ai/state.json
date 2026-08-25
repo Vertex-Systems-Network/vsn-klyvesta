@@ -81,7 +81,12 @@
     "f5_security_persistence_checkpoint": ".ai/checkpoints/2026-08-25-f5-session-device-persistence.md",
     "f5_security_persistence_status": "TECHNICALLY_ACCEPTED_ON_PR_NOT_MERGE_AUTHORIZED",
     "f5_security_persistence_evidence_head": "20e695f270bce367cc2e57f94577df6f56bd11df",
-    "f5_security_persistence_pr": 17
+    "f5_security_persistence_pr": 17,
+    "f6_withdrawal_security_checkpoint": ".ai/checkpoints/2026-08-26-f6-withdrawal-security.md",
+    "f6_withdrawal_security_status": "TECHNICALLY_ACCEPTED_ON_PR_NOT_MERGE_AUTHORIZED",
+    "f6_withdrawal_security_candidate_evidence_head": "868e69291220608dcd25226ab193a7bfbe12ab94",
+    "f6_withdrawal_security_pr": 19,
+    "f6_withdrawal_security_issue": 18
   },
   "p0_operating_model": {
     "status": "PARTIALLY_COMPLETE_WAITING_FOR_PARTNER_EVIDENCE",
@@ -169,7 +174,7 @@
     5,
     8
   ],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-main-foundation-p0-integration.md",
+  "latest_checkpoint": ".ai/checkpoints/2026-08-26-f6-withdrawal-security.md",
   "next_action": "Continue P0-T1: obtain pyPSX Broker API technical/commercial onboarding response and map partner evidence against contracts/broker/BROKER_ADAPTER_V1.md, P0 RACI, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Security and resilience work may continue on feature branches/PRs, but Issue #1 blocks new substantive implementation from merging to main until protected-main controls are actually enabled or a new explicit owner risk decision is recorded.",
   "last_updated": "2026-08-26"
 }
