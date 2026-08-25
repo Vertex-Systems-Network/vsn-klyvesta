@@ -190,5 +190,6 @@ END
 $$;
 
 \ir f5_security_session_constraints.sql
+\ir f5_security_session_hardening_constraints.sql
 
 ROLLBACK;
