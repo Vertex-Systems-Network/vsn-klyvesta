@@ -109,7 +109,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.Property(item => item.NextAttemptAt).HasColumnName("next_attempt_at").HasColumnType("timestamp with time zone");
             entity.Property(item => item.LastErrorCode).HasColumnName("last_error_code").HasMaxLength(128);
 
-            entity.HasIndex(item => new { item.PublishedAt, item.NextAttemptAt, item.OccurredAt })
+            entity.HasIndex(item => new { item.NextAttemptAt, item.OccurredAt })
                 .HasFilter("published_at IS NULL")
                 .HasDatabaseName("ix_outbox_pending");
         });
