@@ -191,5 +191,6 @@ $$;
 
 \ir f5_security_session_constraints.sql
 \ir f5_security_session_hardening_constraints.sql
+\ir f6_withdrawal_security_constraints.sql
 
 ROLLBACK;
