@@ -1,0 +1,713 @@
+version: 1
+project: klyvesta
+canonical_task: P0-T1
+purpose: >-
+  Machine-readable evidence checklist for evaluating direct pyPSX Broker API
+  technical, legal, regulatory, operational and commercial onboarding evidence.
+  Public marketing claims never satisfy fields that require partner-contract evidence.
+
+status_values:
+  - VERIFIED
+  - UNVERIFIED
+  - UNSUPPORTED
+  - NOT_APPLICABLE
+  - CONTRADICTORY
+
+source_classes:
+  - DIRECT_PARTNER_CONTRACT
+  - DIRECT_PARTNER_TECHNICAL_DOC
+  - DIRECT_PARTNER_EMAIL
+  - REGULATOR_PRIMARY_SOURCE
+  - EXCHANGE_PRIMARY_SOURCE
+  - PUBLIC_VENDOR_MARKETING
+  - INTERNAL_TEST_EVIDENCE
+
+rules:
+  production_verification_requires_direct_evidence: true
+  public_marketing_can_satisfy_production_contract_fields: false
+  contradictory_evidence_fails_closed: true
+  unknown_external_financial_side_effect_maps_to: UNKNOWN
+  blind_retry_after_ambiguous_side_effect_allowed: false
+  llm_may_hold_broker_execution_credentials: false
+  live_adapter_implementation_before_contract_verification_allowed: false
+
+metadata:
+  partner: pyPSX
+  product: Broker API
+  last_public_recheck: 2026-08-26
+  public_rollout_state: CONTRADICTORY
+  public_rollout_note: >-
+    Fresher indexed official material represented Broker API as live/onboarding
+    partners, while directly opened official snapshots still represented early
+    access / sandbox-coming-soon / live-execution-in-development states.
+  direct_partner_response_received:
+    status: UNVERIFIED
+    evidence_source: null
+    verified_at: null
+    note: >-
+      Last known user-confirmed state is no reply received as of 2026-08-25.
+      Do not infer inbox state after that date without direct evidence.
+
+sections:
+  rollout_and_onboarding:
+    rollout_state:
+      status: CONTRADICTORY
+      required_evidence: Current written partner statement naming production-live, limited-live, or early-access status.
+      evidence_source: null
+      verified_at: null
+    sandbox_available_now:
+      status: UNVERIFIED
+      required_evidence: Sandbox URL/access process and successful credential issuance or written confirmation.
+      evidence_source: null
+      verified_at: null
+    onboarding_process:
+      status: UNVERIFIED
+      required_evidence: Partner onboarding steps, prerequisites, owners and expected certification gates.
+      evidence_source: null
+      verified_at: null
+    production_certification_process:
+      status: UNVERIFIED
+      required_evidence: Written production certification checklist and sign-off authority.
+      evidence_source: null
+      verified_at: null
+
+  regulated_entities_and_roles:
+    underlying_broker_legal_entity:
+      status: UNVERIFIED
+      required_evidence: Exact legal entity name backed by current SECP broker evidence.
+      evidence_source: null
+      verified_at: null
+    secp_broker_licence:
+      status: UNVERIFIED
+      required_evidence: Current licence number/status from partner plus regulator primary source.
+      evidence_source: null
+      verified_at: null
+    psx_trec_identity:
+      status: UNVERIFIED
+      required_evidence: TREC identity/status from partner plus PSX evidence where applicable.
+      evidence_source: null
+      verified_at: null
+    securities_manager_path:
+      status: UNVERIFIED
+      required_evidence: Current licence/partner contract if discretionary portfolio management is offered.
+      evidence_source: null
+      verified_at: null
+    securities_adviser_path:
+      status: UNVERIFIED
+      required_evidence: Written responsible licensed/permitted path for personalized investment advice.
+      evidence_source: null
+      verified_at: null
+    research_analyst_path:
+      status: UNVERIFIED
+      required_evidence: Written responsible registered/permitted path for regulated research outputs where applicable.
+      evidence_source: null
+      verified_at: null
+
+  customer_legal_account_model:
+    customer_is_client_of:
+      status: UNVERIFIED
+      required_evidence: Contract naming the legal entity/entities with which the investor contracts.
+      evidence_source: null
+      verified_at: null
+    customer_agreement_owner:
+      status: UNVERIFIED
+      required_evidence: Customer terms/account agreement and contracting-party responsibility.
+      evidence_source: null
+      verified_at: null
+    kyc_aml_responsible_entity:
+      status: UNVERIFIED
+      required_evidence: Written KYC/AML RACI and approval/accountability ownership.
+      evidence_source: null
+      verified_at: null
+    uin_responsibility:
+      status: UNVERIFIED
+      required_evidence: UIN creation/ownership/status flow.
+      evidence_source: null
+      verified_at: null
+    cdc_account_structure:
+      status: UNVERIFIED
+      required_evidence: Exact CDC sub-account/investor-account/other approved structure.
+      evidence_source: null
+      verified_at: null
+    nccpl_responsibility:
+      status: UNVERIFIED
+      required_evidence: NCCPL responsibility and reference identifiers.
+      evidence_source: null
+      verified_at: null
+    legal_custodian:
+      status: UNVERIFIED
+      required_evidence: Named legal custodian and custody agreement/flow.
+      evidence_source: null
+      verified_at: null
+    customer_cash_holder:
+      status: UNVERIFIED
+      required_evidence: Named regulated holder/account structure before and after settlement.
+      evidence_source: null
+      verified_at: null
+    klyvesta_corporate_account_receives_customer_investment_cash:
+      status: UNVERIFIED
+      required_evidence: Written flow expected to confirm ordinary architecture does not pool customer investment funds in Klyvesta corporate accounts.
+      evidence_source: null
+      verified_at: null
+    customer_portability_on_klyvesta_exit:
+      status: UNVERIFIED
+      required_evidence: Written continuity/transfer/termination procedure.
+      evidence_source: null
+      verified_at: null
+
+  environments_and_transport:
+    sandbox_base_url:
+      status: UNVERIFIED
+      required_evidence: Current partner technical documentation.
+      evidence_source: null
+      verified_at: null
+    production_base_url:
+      status: UNVERIFIED
+      required_evidence: Current partner technical documentation.
+      evidence_source: null
+      verified_at: null
+    api_versioning:
+      status: UNVERIFIED
+      required_evidence: Version/deprecation compatibility policy.
+      evidence_source: null
+      verified_at: null
+    transport_protocol:
+      status: UNVERIFIED
+      required_evidence: Protocol/TLS requirements and payload format.
+      evidence_source: null
+      verified_at: null
+    network_restrictions:
+      status: UNVERIFIED
+      required_evidence: IP allow-list, mTLS, private networking or equivalent requirements.
+      evidence_source: null
+      verified_at: null
+
+  authentication_and_credentials:
+    authentication_method:
+      status: UNVERIFIED
+      required_evidence: Direct technical docs plus sandbox verification.
+      evidence_source: null
+      verified_at: null
+    credential_scopes:
+      status: UNVERIFIED
+      required_evidence: Scope/role model and least-privilege documentation.
+      evidence_source: null
+      verified_at: null
+    credential_lifetime:
+      status: UNVERIFIED
+      required_evidence: Token/key lifetime and renewal semantics.
+      evidence_source: null
+      verified_at: null
+    credential_rotation:
+      status: UNVERIFIED
+      required_evidence: Rotation/revocation procedure.
+      evidence_source: null
+      verified_at: null
+    environment_isolation:
+      status: UNVERIFIED
+      required_evidence: Separate sandbox/production credentials and boundaries.
+      evidence_source: null
+      verified_at: null
+    secrets_storage_constraints:
+      status: UNVERIFIED
+      required_evidence: Partner requirements for storage/use plus internal security review.
+      evidence_source: null
+      verified_at: null
+
+  account_and_kyc_api:
+    account_open_schema:
+      status: UNVERIFIED
+      required_evidence: OpenAPI/Postman/schema and sandbox test.
+      evidence_source: null
+      verified_at: null
+    account_status_enumeration:
+      status: UNVERIFIED
+      required_evidence: Complete enum and transition semantics.
+      evidence_source: null
+      verified_at: null
+    kyc_status_enumeration:
+      status: UNVERIFIED
+      required_evidence: Complete KYC states and rejection/review reasons.
+      evidence_source: null
+      verified_at: null
+    document_upload_flow:
+      status: UNVERIFIED
+      required_evidence: Upload/scan/storage/encryption/retention contract.
+      evidence_source: null
+      verified_at: null
+    pii_retention_and_deletion:
+      status: UNVERIFIED
+      required_evidence: Contractual retention/deletion/controller-processor allocation.
+      evidence_source: null
+      verified_at: null
+
+  orders:
+    supported_order_types:
+      status: UNVERIFIED
+      required_evidence: Current Broker API order contract, not Trading API assumptions.
+      evidence_source: null
+      verified_at: null
+    time_in_force:
+      status: UNVERIFIED
+      required_evidence: Supported values and market-session behavior.
+      evidence_source: null
+      verified_at: null
+    order_status_enumeration:
+      status: UNVERIFIED
+      required_evidence: Complete order-state model and terminal/nonterminal meanings.
+      evidence_source: null
+      verified_at: null
+    client_order_reference:
+      status: UNVERIFIED
+      required_evidence: Uniqueness and lookup contract.
+      evidence_source: null
+      verified_at: null
+    submit_idempotency:
+      status: UNVERIFIED
+      required_evidence: Explicit same-key/same-body and retry semantics plus adversarial test.
+      evidence_source: null
+      verified_at: null
+    timeout_semantics:
+      status: UNVERIFIED
+      required_evidence: Defined result when request outcome is unknown.
+      evidence_source: null
+      verified_at: null
+    retry_semantics:
+      status: UNVERIFIED
+      required_evidence: Written retry safety contract; blind retry must not be inferred.
+      evidence_source: null
+      verified_at: null
+    order_lookup_after_ambiguous_submit:
+      status: UNVERIFIED
+      required_evidence: Query/reconciliation endpoint supporting UNKNOWN resolution.
+      evidence_source: null
+      verified_at: null
+    cancel_semantics:
+      status: UNVERIFIED
+      required_evidence: Cancel lifecycle/race semantics and idempotency.
+      evidence_source: null
+      verified_at: null
+    modify_replace_semantics:
+      status: UNVERIFIED
+      required_evidence: Replace/amend contract and identifiers.
+      evidence_source: null
+      verified_at: null
+    market_session_validation:
+      status: UNVERIFIED
+      required_evidence: Session/calendar rejection behavior and timestamps.
+      evidence_source: null
+      verified_at: null
+    rejection_error_codes:
+      status: UNVERIFIED
+      required_evidence: Complete machine-readable error/rejection catalogue.
+      evidence_source: null
+      verified_at: null
+
+  executions:
+    stable_execution_id:
+      status: UNVERIFIED
+      required_evidence: Globally/stably unique fill/execution identifier.
+      evidence_source: null
+      verified_at: null
+    partial_fill_semantics:
+      status: UNVERIFIED
+      required_evidence: Fill aggregation/order remaining quantity behavior.
+      evidence_source: null
+      verified_at: null
+    correction_bust_semantics:
+      status: UNVERIFIED
+      required_evidence: Correction/bust/reversal contract.
+      evidence_source: null
+      verified_at: null
+    timestamps_timezone:
+      status: UNVERIFIED
+      required_evidence: Timestamp semantics and timezone/precision.
+      evidence_source: null
+      verified_at: null
+    fees_and_taxes:
+      status: UNVERIFIED
+      required_evidence: Field definitions and authoritative source.
+      evidence_source: null
+      verified_at: null
+    settlement_fields:
+      status: UNVERIFIED
+      required_evidence: Settlement status/date/reference semantics.
+      evidence_source: null
+      verified_at: null
+
+  events_and_webhooks:
+    event_channel_available:
+      status: UNVERIFIED
+      required_evidence: Webhook/stream documentation.
+      evidence_source: null
+      verified_at: null
+    event_signature_verification:
+      status: UNVERIFIED
+      required_evidence: Signing/authentication algorithm and key rotation.
+      evidence_source: null
+      verified_at: null
+    event_id:
+      status: UNVERIFIED
+      required_evidence: Stable event identifier for inbox deduplication.
+      evidence_source: null
+      verified_at: null
+    replay_protection:
+      status: UNVERIFIED
+      required_evidence: Timestamp/nonce/window contract.
+      evidence_source: null
+      verified_at: null
+    ordering_guarantee:
+      status: UNVERIFIED
+      required_evidence: Per-account/per-order/global ordering semantics or explicit absence.
+      evidence_source: null
+      verified_at: null
+    retry_policy:
+      status: UNVERIFIED
+      required_evidence: Delivery retry/backoff/dead-letter behavior.
+      evidence_source: null
+      verified_at: null
+    schema_versioning:
+      status: UNVERIFIED
+      required_evidence: Event schema compatibility/version contract.
+      evidence_source: null
+      verified_at: null
+
+  balances_positions_reconciliation:
+    cash_field_semantics:
+      status: UNVERIFIED
+      required_evidence: Available/reserved/unsettled/buying-power definitions.
+      evidence_source: null
+      verified_at: null
+    position_field_semantics:
+      status: UNVERIFIED
+      required_evidence: Settled/unsettled quantity and cost-basis meanings.
+      evidence_source: null
+      verified_at: null
+    authoritative_snapshot_endpoint:
+      status: UNVERIFIED
+      required_evidence: Reconciliation endpoint/snapshot contract.
+      evidence_source: null
+      verified_at: null
+    source_timestamp:
+      status: UNVERIFIED
+      required_evidence: Freshness timestamps/sequence values.
+      evidence_source: null
+      verified_at: null
+    reconciliation_frequency_requirements:
+      status: UNVERIFIED
+      required_evidence: Partner/SLA/certification requirements.
+      evidence_source: null
+      verified_at: null
+
+  funding:
+    supported_deposit_rails:
+      status: UNVERIFIED
+      required_evidence: Bank/RAAST/other permitted rails and account ownership.
+      evidence_source: null
+      verified_at: null
+    deposit_api:
+      status: UNVERIFIED
+      required_evidence: Schema and sandbox verification.
+      evidence_source: null
+      verified_at: null
+    deposit_reference_idempotency:
+      status: UNVERIFIED
+      required_evidence: Stable reference/deduplication contract.
+      evidence_source: null
+      verified_at: null
+    deposit_reconciliation:
+      status: UNVERIFIED
+      required_evidence: Reconciliation workflow and authoritative identifiers.
+      evidence_source: null
+      verified_at: null
+    reversal_failed_deposit_semantics:
+      status: UNVERIFIED
+      required_evidence: Failure/reversal/correction flow.
+      evidence_source: null
+      verified_at: null
+
+  withdrawals:
+    withdrawal_api:
+      status: UNVERIFIED
+      required_evidence: Direct Broker API contract and sandbox verification.
+      evidence_source: null
+      verified_at: null
+    beneficiary_model:
+      status: UNVERIFIED
+      required_evidence: Ownership/verification/cooling-off rules.
+      evidence_source: null
+      verified_at: null
+    step_up_requirements:
+      status: UNVERIFIED
+      required_evidence: Partner security requirements; Klyvesta may impose stricter controls.
+      evidence_source: null
+      verified_at: null
+    approval_requirements:
+      status: UNVERIFIED
+      required_evidence: Maker-checker/provider approval responsibilities.
+      evidence_source: null
+      verified_at: null
+    withdrawal_idempotency:
+      status: UNVERIFIED
+      required_evidence: Stable request key/reference semantics.
+      evidence_source: null
+      verified_at: null
+    ambiguous_submission_resolution:
+      status: UNVERIFIED
+      required_evidence: Query/reconciliation flow for UNKNOWN outcome.
+      evidence_source: null
+      verified_at: null
+    cutoff_and_settlement_timing:
+      status: UNVERIFIED
+      required_evidence: Operational timing/cutoff contract.
+      evidence_source: null
+      verified_at: null
+    reversal_dispute_semantics:
+      status: UNVERIFIED
+      required_evidence: Failure/reversal/dispute procedure.
+      evidence_source: null
+      verified_at: null
+
+  market_data:
+    included_with_broker_api:
+      status: UNVERIFIED
+      required_evidence: Direct contract.
+      evidence_source: null
+      verified_at: null
+    source:
+      status: UNVERIFIED
+      required_evidence: Named source/system of record.
+      evidence_source: null
+      verified_at: null
+    real_time_or_delayed:
+      status: UNVERIFIED
+      required_evidence: Contractual latency/classification.
+      evidence_source: null
+      verified_at: null
+    redistribution_rights:
+      status: UNVERIFIED
+      required_evidence: Written rights for display/use by Klyvesta customers and AI services.
+      evidence_source: null
+      verified_at: null
+    streaming_protocol:
+      status: UNVERIFIED
+      required_evidence: WebSocket/stream protocol and reconnect semantics.
+      evidence_source: null
+      verified_at: null
+    sequence_freshness_metadata:
+      status: UNVERIFIED
+      required_evidence: Sequence/timestamp freshness semantics.
+      evidence_source: null
+      verified_at: null
+    historical_data_rights:
+      status: UNVERIFIED
+      required_evidence: Retention/backtest/derived-data usage rights.
+      evidence_source: null
+      verified_at: null
+    corporate_action_adjustments:
+      status: UNVERIFIED
+      required_evidence: Adjustment/source methodology.
+      evidence_source: null
+      verified_at: null
+
+  reporting_and_records:
+    trade_confirmations:
+      status: UNVERIFIED
+      required_evidence: Delivery format/timing/source.
+      evidence_source: null
+      verified_at: null
+    statements:
+      status: UNVERIFIED
+      required_evidence: API/file delivery and customer access model.
+      evidence_source: null
+      verified_at: null
+    tax_records:
+      status: UNVERIFIED
+      required_evidence: Responsible party and document format/timing.
+      evidence_source: null
+      verified_at: null
+    retention_requirements:
+      status: UNVERIFIED
+      required_evidence: Regulatory/contractual retention schedule and ownership.
+      evidence_source: null
+      verified_at: null
+    complaint_dispute_records:
+      status: UNVERIFIED
+      required_evidence: Broker/PSX/SECP escalation responsibility and records.
+      evidence_source: null
+      verified_at: null
+
+  reliability_security_operations:
+    rate_limits:
+      status: UNVERIFIED
+      required_evidence: Per-key/account/endpoint limits and headers.
+      evidence_source: null
+      verified_at: null
+    uptime_sla:
+      status: UNVERIFIED
+      required_evidence: Written SLA.
+      evidence_source: null
+      verified_at: null
+    maintenance_windows:
+      status: UNVERIFIED
+      required_evidence: Notification/process contract.
+      evidence_source: null
+      verified_at: null
+    incident_escalation:
+      status: UNVERIFIED
+      required_evidence: Severity/contact/response-time process.
+      evidence_source: null
+      verified_at: null
+    rto_rpo:
+      status: UNVERIFIED
+      required_evidence: Where contractually available/applicable.
+      evidence_source: null
+      verified_at: null
+    penetration_security_requirements:
+      status: UNVERIFIED
+      required_evidence: Certification, penetration test, IBTS/security obligations and evidence expectations.
+      evidence_source: null
+      verified_at: null
+    credential_compromise_procedure:
+      status: UNVERIFIED
+      required_evidence: Emergency revoke/rotate/support process.
+      evidence_source: null
+      verified_at: null
+
+  commercial_and_data_rights:
+    setup_fee:
+      status: UNVERIFIED
+      required_evidence: Commercial schedule.
+      evidence_source: null
+      verified_at: null
+    recurring_fee:
+      status: UNVERIFIED
+      required_evidence: Commercial schedule.
+      evidence_source: null
+      verified_at: null
+    per_user_or_trade_fee:
+      status: UNVERIFIED
+      required_evidence: Commercial schedule.
+      evidence_source: null
+      verified_at: null
+    revenue_share:
+      status: UNVERIFIED
+      required_evidence: Commercial schedule if applicable.
+      evidence_source: null
+      verified_at: null
+    minimum_commitment:
+      status: UNVERIFIED
+      required_evidence: Commercial schedule if applicable.
+      evidence_source: null
+      verified_at: null
+    white_label_rights:
+      status: UNVERIFIED
+      required_evidence: Written branding/product terms.
+      evidence_source: null
+      verified_at: null
+    client_relationship_ownership:
+      status: UNVERIFIED
+      required_evidence: Written allocation.
+      evidence_source: null
+      verified_at: null
+    customer_data_ownership_and_use:
+      status: UNVERIFIED
+      required_evidence: Controller/processor/use/analytics/AI clauses.
+      evidence_source: null
+      verified_at: null
+    termination_portability:
+      status: UNVERIFIED
+      required_evidence: Termination, data export, customer/account/asset portability process.
+      evidence_source: null
+      verified_at: null
+
+  product_mode_regulatory_support:
+    manual_trading:
+      status: UNVERIFIED
+      required_evidence: Broker/customer agreement, certification and order-origin/approval responsibility.
+      evidence_source: null
+      verified_at: null
+    ai_assisted_recommendations:
+      status: UNVERIFIED
+      required_evidence: Written legal/partner classification, responsible licensed party and disclosures.
+      evidence_source: null
+      verified_at: null
+    public_or_personalized_research:
+      status: UNVERIFIED
+      required_evidence: Written Research Analyst/other permitted path for actual outputs.
+      evidence_source: null
+      verified_at: null
+    model_portfolios:
+      status: UNVERIFIED
+      required_evidence: Written responsibility/licensing/approval/implementation model.
+      evidence_source: null
+      verified_at: null
+    guarded_auto_discretionary_management:
+      status: UNVERIFIED
+      required_evidence: Securities Manager or otherwise accepted discretionary-management path plus mandate/custody/suitability conditions.
+      evidence_source: null
+      verified_at: null
+    minimum_customer_investment:
+      status: UNVERIFIED
+      required_evidence: Current rule/partner/counsel basis for actual offered structure.
+      evidence_source: null
+      verified_at: null
+
+p0_gate_mapping:
+  pypsx_broker_api_contract_obtained:
+    state: NOT_MET
+    requires:
+      - rollout_and_onboarding.rollout_state
+      - environments_and_transport.production_base_url
+      - authentication_and_credentials.authentication_method
+      - orders.order_status_enumeration
+      - executions.stable_execution_id
+  underlying_regulated_roles_identified:
+    state: NOT_MET
+    requires:
+      - regulated_entities_and_roles.underlying_broker_legal_entity
+      - regulated_entities_and_roles.secp_broker_licence
+      - regulated_entities_and_roles.psx_trec_identity
+  custody_settlement_flow_documented:
+    state: PARTIAL_ONLY
+    requires:
+      - customer_legal_account_model.cdc_account_structure
+      - customer_legal_account_model.nccpl_responsibility
+      - customer_legal_account_model.legal_custodian
+      - customer_legal_account_model.customer_cash_holder
+  funding_flow_documented:
+    state: NOT_MET
+    requires:
+      - funding.supported_deposit_rails
+      - funding.deposit_reconciliation
+      - customer_legal_account_model.customer_cash_holder
+  market_data_rights_documented:
+    state: NOT_MET
+    requires:
+      - market_data.source
+      - market_data.real_time_or_delayed
+      - market_data.redistribution_rights
+  ai_assisted_legal_classification_documented:
+    state: NOT_MET
+    requires:
+      - product_mode_regulatory_support.ai_assisted_recommendations
+  discretionary_auto_legal_classification_documented:
+    state: PARTIAL_ONLY
+    requires:
+      - regulated_entities_and_roles.securities_manager_path
+      - product_mode_regulatory_support.guarded_auto_discretionary_management
+      - product_mode_regulatory_support.minimum_customer_investment
+  required_licence_or_licensed_partner_path_decided:
+    state: NOT_MET
+    requires:
+      - regulated_entities_and_roles.underlying_broker_legal_entity
+      - regulated_entities_and_roles.securities_manager_path
+      - regulated_entities_and_roles.securities_adviser_path
+      - regulated_entities_and_roles.research_analyst_path
+
+acceptance_policy:
+  p0_can_be_accepted_if_any_required_field_is_contradictory: false
+  p0_can_be_accepted_if_any_required_field_is_unverified: false
+  live_pypsx_adapter_can_start_from_public_marketing_only: false
+  production_real_money_can_start_before_p0_acceptance: false
+  guarded_auto_can_start_before_discretionary_permission_acceptance: false
