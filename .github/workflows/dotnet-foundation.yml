@@ -3,6 +3,7 @@ name: dotnet-foundation
 on:
   push:
     branches:
+      - main
       - "foundation/**"
     paths:
       - ".github/workflows/*.yml"
