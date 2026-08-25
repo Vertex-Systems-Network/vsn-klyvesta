@@ -32,6 +32,9 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
                 table.HasCheckConstraint(
                     "ck_idempotency_record_expiry",
                     "expires_at > created_at");
+                table.HasCheckConstraint(
+                    "ck_idempotency_record_completion_chronology",
+                    "completed_at IS NULL OR completed_at >= created_at");
             });
 
             entity.HasKey(item => item.Id).HasName("pk_idempotency_record");
@@ -64,6 +67,9 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
                 table.HasCheckConstraint(
                     "ck_inbox_message_state",
                     "state IN ('received', 'processing', 'processed', 'failed')");
+                table.HasCheckConstraint(
+                    "ck_inbox_message_processing_chronology",
+                    "processed_at IS NULL OR processed_at >= received_at");
             });
 
             entity.HasKey(item => item.Id).HasName("pk_inbox_message");
