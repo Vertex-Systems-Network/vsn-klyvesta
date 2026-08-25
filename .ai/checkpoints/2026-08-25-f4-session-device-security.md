@@ -17,6 +17,9 @@ Branch: `security/f4-session-device-state`
 - known, reason-coded session revocation requirement;
 - device trust, restriction, revocation and integrity-risk state;
 - restricted/revoked device states can only be entered through reason-coded transitions;
+- repeated restriction preserves the original restriction reason instead of overwriting audit history;
+- device revocation records a separate revocation reason while preserving prior restriction reason;
+- session revocation preserves prior restriction reason for audit while revoked state supersedes restriction;
 - no generic trust-elevation or restriction-clear primitive in this slice;
 - session/device ownership binding;
 - fail-closed unknown-session and device mismatch handling;

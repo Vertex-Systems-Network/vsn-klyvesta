@@ -77,6 +77,8 @@ public sealed class SecurityDevice
 
     public string? RestrictionReason { get; private set; }
 
+    public string? RevocationReason { get; private set; }
+
     public bool Restrict(string reason)
     {
         if (string.IsNullOrWhiteSpace(reason))
@@ -84,7 +86,7 @@ public sealed class SecurityDevice
             throw new ArgumentException("Restriction reason is required.", nameof(reason));
         }
 
-        if (TrustState is DeviceTrustState.Revoked)
+        if (TrustState is DeviceTrustState.Revoked or DeviceTrustState.Restricted)
         {
             return false;
         }
@@ -108,7 +110,7 @@ public sealed class SecurityDevice
 
         TrustState = DeviceTrustState.Revoked;
         RevokedAt = now;
-        RestrictionReason = reason;
+        RevocationReason = reason;
         return true;
     }
 
@@ -267,7 +269,7 @@ public sealed class AuthoritativeSecuritySession
             throw new ArgumentException("Restriction reason is required.", nameof(reason));
         }
 
-        if (RevokedAt is not null)
+        if (RevokedAt is not null || Restricted)
         {
             return false;
         }
@@ -292,7 +294,6 @@ public sealed class AuthoritativeSecuritySession
         RevokedAt = now;
         RevocationReason = reason;
         Restricted = false;
-        RestrictionReason = null;
         return true;
     }
 }
