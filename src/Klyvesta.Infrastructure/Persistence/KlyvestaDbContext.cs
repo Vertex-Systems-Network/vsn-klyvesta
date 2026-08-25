@@ -134,6 +134,10 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.ToTable("security_device", "identity", table =>
             {
                 table.HasCheckConstraint(
+                    "ck_security_device_identifiers",
+                    "id <> '00000000-0000-0000-0000-000000000000'::uuid AND " +
+                    "principal_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                table.HasCheckConstraint(
                     "ck_security_device_principal_type",
                     "principal_type IN ('customer', 'staff', 'service')");
                 table.HasCheckConstraint(
@@ -153,6 +157,10 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
                     "ck_security_device_revocation_pair",
                     "(revoked_at IS NULL AND revocation_reason IS NULL) OR " +
                     "(revoked_at IS NOT NULL AND revocation_reason IS NOT NULL)");
+                table.HasCheckConstraint(
+                    "ck_security_device_reason_content",
+                    "(restriction_reason IS NULL OR btrim(restriction_reason) <> '') AND " +
+                    "(revocation_reason IS NULL OR btrim(revocation_reason) <> '')");
                 table.HasCheckConstraint(
                     "ck_security_device_state_evidence",
                     "(trust_state IN ('untrusted', 'trusted') AND restricted_at IS NULL AND revoked_at IS NULL) OR " +
@@ -199,6 +207,11 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.ToTable("security_session", "identity", table =>
             {
                 table.HasCheckConstraint(
+                    "ck_security_session_identifiers",
+                    "id <> '00000000-0000-0000-0000-000000000000'::uuid AND " +
+                    "principal_id <> '00000000-0000-0000-0000-000000000000'::uuid AND " +
+                    "device_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                table.HasCheckConstraint(
                     "ck_security_session_principal_type",
                     "principal_type IN ('customer', 'staff', 'service')");
                 table.HasCheckConstraint(
@@ -224,6 +237,15 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
                     "ck_security_session_revocation_pair",
                     "(revoked_at IS NULL AND revocation_reason IS NULL) OR " +
                     "(revoked_at IS NOT NULL AND revocation_reason IS NOT NULL)");
+                table.HasCheckConstraint(
+                    "ck_security_session_reason_content",
+                    "(restriction_reason IS NULL OR btrim(restriction_reason) <> '') AND " +
+                    "(revocation_reason IS NULL OR btrim(revocation_reason) <> '')");
+                table.HasCheckConstraint(
+                    "ck_security_session_revocation_reason",
+                    "revocation_reason IS NULL OR revocation_reason IN (" +
+                    "'user_sign_out', 'sign_out_all', 'device_revoked', 'recovery_completed', " +
+                    "'staff_privilege_changed', 'security_incident', 'credential_compromise', 'account_suspended')");
                 table.HasCheckConstraint(
                     "ck_security_session_state_evidence",
                     "(revoked_at IS NULL AND restricted = FALSE AND restricted_at IS NULL) OR " +
