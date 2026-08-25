@@ -44,6 +44,7 @@ public enum SecurityAction
     ManageAutoMandate,
     PauseAutoMandate,
     RequestWithdrawal,
+    ApproveWithdrawal,
     ChangeBeneficiary,
     RevokeSessions,
     FreezeSecurityState,
@@ -85,6 +86,8 @@ public enum SecurityDenialReason
     StepUpRequired,
     BeneficiaryUnverified,
     BeneficiaryCoolingOff,
+    BeneficiaryUnavailable,
+    TransactionAuthorizationInvalid,
     FeatureNotEntitled,
     FeatureNotLegallyAvailable,
     InvalidStateTransition,
@@ -230,6 +233,8 @@ public static class AuthorizationEvaluator
             SecurityAction.RequestWithdrawal or
             SecurityAction.ChangeBeneficiary,
 
+        SecurityRole.ComplianceOfficer => action is SecurityAction.ApproveWithdrawal,
+
         SecurityRole.SecurityAnalyst => action is
             SecurityAction.RevokeSessions or
             SecurityAction.FreezeSecurityState,
@@ -259,6 +264,7 @@ public static class AuthorizationEvaluator
         SecurityAction.ManageAutoMandate or
         SecurityAction.PauseAutoMandate or
         SecurityAction.RequestWithdrawal or
+        SecurityAction.ApproveWithdrawal or
         SecurityAction.ChangeBeneficiary or
         SecurityAction.ProposeFinancialCorrection or
         SecurityAction.ApproveFinancialCorrection or
@@ -267,6 +273,7 @@ public static class AuthorizationEvaluator
 
     private static bool IsHighRiskAction(SecurityAction action) => action is
         SecurityAction.RequestWithdrawal or
+        SecurityAction.ApproveWithdrawal or
         SecurityAction.ChangeBeneficiary or
         SecurityAction.ManageAutoMandate or
         SecurityAction.RevokeSessions or

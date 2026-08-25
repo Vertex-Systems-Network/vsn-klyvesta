@@ -95,6 +95,7 @@ public sealed class ProtectedApproval
 
     private static SecurityRole GetExpectedApproverRole(SecurityAction action) => action switch
     {
+        SecurityAction.ApproveWithdrawal => SecurityRole.ComplianceOfficer,
         SecurityAction.ApproveFinancialCorrection => SecurityRole.ReconciliationApprover,
         SecurityAction.ApproveRiskPolicyChange => SecurityRole.RiskApprover,
         _ => throw new ArgumentOutOfRangeException(
