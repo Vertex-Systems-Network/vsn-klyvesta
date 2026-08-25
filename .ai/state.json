@@ -7,6 +7,21 @@
     "version": 1,
     "status": "ACTIVE"
   },
+  "product_direction": {
+    "canonical_vision": "docs/PRODUCT_VISION_V2.md",
+    "positioning": "AI Investment Operating System",
+    "customer_modes": [
+      "manual",
+      "ai_assisted",
+      "guarded_auto"
+    ],
+    "ai_package_plan": "docs/AI_AGENT_PACKAGES.md",
+    "investment_timeline_plan": "docs/INVESTMENT_EVENT_NOTIFICATIONS.md",
+    "competitive_benchmark": "docs/COMPETITIVE_POSITIONING.md",
+    "guaranteed_profit_allowed": false,
+    "zero_loss_claim_allowed": false,
+    "risk_free_claim_allowed": false
+  },
   "active_task": {
     "id": "P0-T1",
     "title": "Confirm regulatory and pyPSX Broker API operating model",
@@ -23,7 +38,7 @@
       "reason": "Requires regulatory treatment and adviser/partner acceptance"
     }
   ],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-engineering-governance.md",
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-product-assumptions-v2.md",
   "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response and document regulated roles, API capabilities, sandbox access, funding, custody, market data, order, position, statement and webhook contracts.",
   "last_updated": "2026-08-25"
 }
