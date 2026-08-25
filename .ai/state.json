@@ -109,7 +109,7 @@
     "regulated_partner_due_diligence"
   ],
   "open_security_remediation_issues": [1, 2, 3, 4, 5],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-p0-pypsx-operating-model.md",
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-p0-no-reply-continuation.md",
   "next_action": "Owner/admin resolves repository governance Issues #1/#2; engineering then merges/continues generic foundation and paper/shadow work. In parallel evaluate regulated fallback partner roles. When pyPSX replies, map partner evidence to P0 RACI/capability matrix and BrokerAdapter before live integration.",
   "last_updated": "2026-08-25"
 }
