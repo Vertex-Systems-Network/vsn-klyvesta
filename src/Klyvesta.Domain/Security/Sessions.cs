@@ -18,14 +18,15 @@ public enum DeviceIntegrityState
 
 public enum SessionRevocationReason
 {
-    UserSignOut,
-    SignOutAll,
-    DeviceRevoked,
-    RecoveryCompleted,
-    StaffPrivilegeChanged,
-    SecurityIncident,
-    CredentialCompromise,
-    AccountSuspended,
+    Unknown = 0,
+    UserSignOut = 1,
+    SignOutAll = 2,
+    DeviceRevoked = 3,
+    RecoveryCompleted = 4,
+    StaffPrivilegeChanged = 5,
+    SecurityIncident = 6,
+    CredentialCompromise = 7,
+    AccountSuspended = 8,
 }
 
 public sealed class SecurityDevice
@@ -45,6 +46,14 @@ public sealed class SecurityDevice
         if (principalId == Guid.Empty)
         {
             throw new ArgumentException("Principal id must be non-empty.", nameof(principalId));
+        }
+
+        if (trustState is DeviceTrustState.Restricted or DeviceTrustState.Revoked)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(trustState),
+                trustState,
+                "Restricted and revoked devices must enter those states through reason-coded transitions.");
         }
 
         DeviceId = deviceId;
@@ -82,18 +91,6 @@ public sealed class SecurityDevice
 
         TrustState = DeviceTrustState.Restricted;
         RestrictionReason = reason;
-        return true;
-    }
-
-    public bool Trust()
-    {
-        if (TrustState is DeviceTrustState.Revoked)
-        {
-            return false;
-        }
-
-        TrustState = DeviceTrustState.Trusted;
-        RestrictionReason = null;
         return true;
     }
 
@@ -164,6 +161,14 @@ public sealed class AuthoritativeSecuritySession
             throw new ArgumentOutOfRangeException(nameof(authenticatedAt), "Authentication time cannot be after session creation.");
         }
 
+        if (authenticationStrength is AuthenticationStrength.Unknown)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(authenticationStrength),
+                authenticationStrength,
+                "Authoritative session authentication strength must be known.");
+        }
+
         SessionId = sessionId;
         PrincipalId = principalId;
         PrincipalType = principalType;
@@ -211,6 +216,11 @@ public sealed class AuthoritativeSecuritySession
         if (device.DeviceId != DeviceId ||
             device.PrincipalId != PrincipalId ||
             device.PrincipalType != PrincipalType)
+        {
+            return SecuritySessionState.Revoked;
+        }
+
+        if (now < CreatedAt || now < AuthenticatedAt)
         {
             return SecuritySessionState.Revoked;
         }
@@ -267,20 +277,13 @@ public sealed class AuthoritativeSecuritySession
         return true;
     }
 
-    public bool ClearRestriction()
-    {
-        if (RevokedAt is not null)
-        {
-            return false;
-        }
-
-        Restricted = false;
-        RestrictionReason = null;
-        return true;
-    }
-
     public bool Revoke(DateTimeOffset now, SessionRevocationReason reason)
     {
+        if (reason is SessionRevocationReason.Unknown)
+        {
+            throw new ArgumentOutOfRangeException(nameof(reason), reason, "Session revocation reason must be known.");
+        }
+
         if (RevokedAt is not null)
         {
             return false;
@@ -380,6 +383,8 @@ public sealed class SecuritySessionRegistry
 
     public int ApplyRecoveryCompletion(Guid principalId, DateTimeOffset now)
     {
+        RestrictDevicesForPrincipal(principalId, "recovery_completed");
+
         return RevokeMatching(
             static (session, id) => session.PrincipalId == id,
             principalId,
@@ -417,6 +422,17 @@ public sealed class SecuritySessionRegistry
 
     public AuthoritativeSecuritySession? FindSession(Guid sessionId) =>
         _sessions.GetValueOrDefault(sessionId);
+
+    private void RestrictDevicesForPrincipal(Guid principalId, string reason)
+    {
+        foreach (var device in _devices.Values)
+        {
+            if (device.PrincipalId == principalId && device.TrustState is not DeviceTrustState.Revoked)
+            {
+                device.Restrict(reason);
+            }
+        }
+    }
 
     private int RevokeMatching<T>(
         Func<AuthoritativeSecuritySession, T, bool> predicate,

@@ -11,13 +11,19 @@ Branch: `security/f4-session-device-state`
 
 - provider-neutral authoritative security-session state;
 - idle and absolute expiry evaluation;
+- fail-closed state before session creation time;
+- known authentication-strength requirement for authoritative sessions;
 - idempotent session revocation with preserved first reason/time;
+- known, reason-coded session revocation requirement;
 - device trust, restriction, revocation and integrity-risk state;
+- restricted/revoked device states can only be entered through reason-coded transitions;
+- no generic trust-elevation or restriction-clear primitive in this slice;
 - session/device ownership binding;
 - fail-closed unknown-session and device mismatch handling;
 - sign-out-all by principal;
 - targeted revoke-by-device;
-- recovery-completion session invalidation;
+- recovery completion revokes existing sessions and restricts the principal's non-revoked devices;
+- a post-recovery replacement session on those devices remains restricted;
 - staff privilege-change session invalidation;
 - device integrity recorded as risk signal only, with no automatic trust elevation;
 - focused security regression tests.
