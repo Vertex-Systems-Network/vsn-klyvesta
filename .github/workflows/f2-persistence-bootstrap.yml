@@ -63,3 +63,11 @@ jobs:
       - name: Print generated migration files for review
         run: |
           find src/Klyvesta.Infrastructure/Persistence/Migrations -maxdepth 1 -type f -print -exec sed -n '1,320p' {} \;
+
+      - name: Upload generated migration for source-control review
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: f2-generated-migration
+          path: src/Klyvesta.Infrastructure/Persistence/Migrations
+          if-no-files-found: error
+          retention-days: 1
