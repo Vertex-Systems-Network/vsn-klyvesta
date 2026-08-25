@@ -135,6 +135,7 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset?>("RevokedAt").HasColumnType("timestamp with time zone").HasColumnName("revoked_at");
                     b.Property<string>("RevocationReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("revocation_reason");
                     b.HasKey("Id").HasName("pk_security_session");
+                    b.HasAlternateKey("Id", "PrincipalId").HasName("ak_security_session_principal");
                     b.HasIndex("AbsoluteExpiresAt").HasDatabaseName("ix_security_session_absolute_expires_at");
                     b.HasIndex("DeviceId", "PrincipalId", "PrincipalType");
                     b.HasIndex("DeviceId", "RevokedAt").HasDatabaseName("ix_security_session_device_lifecycle");
@@ -159,6 +160,104 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.WithdrawalAuthorizationRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<DateTimeOffset>("AuthorizedAt").HasColumnType("timestamp with time zone").HasColumnName("authorized_at");
+                    b.Property<DateTimeOffset>("ExpiresAt").HasColumnType("timestamp with time zone").HasColumnName("expires_at");
+                    b.Property<Guid>("PrincipalId").HasColumnType("uuid").HasColumnName("principal_id");
+                    b.Property<Guid>("SessionId").HasColumnType("uuid").HasColumnName("session_id");
+                    b.Property<string>("TransactionDataHash").IsRequired().HasColumnType("character(64)").HasColumnName("transaction_data_hash");
+                    b.Property<Guid>("WithdrawalId").HasColumnType("uuid").HasColumnName("withdrawal_id");
+                    b.HasKey("Id").HasName("pk_withdrawal_authorization");
+                    b.HasAlternateKey("Id", "WithdrawalId").HasName("ak_withdrawal_authorization_withdrawal");
+                    b.HasIndex("SessionId", "PrincipalId").HasDatabaseName("ix_withdrawal_authorization_session_principal");
+                    b.HasIndex("WithdrawalId", "ExpiresAt").HasDatabaseName("ix_withdrawal_authorization_withdrawal_expiry");
+                    b.HasIndex("WithdrawalId", "PrincipalId", "TransactionDataHash").HasDatabaseName("ix_withdrawal_authorization_binding");
+                    b.ToTable("withdrawal_authorization", "funding", t =>
+                        {
+                            t.HasCheckConstraint("ck_withdrawal_authorization_expiry", "expires_at > authorized_at");
+                            t.HasCheckConstraint("ck_withdrawal_authorization_hash", "transaction_data_hash ~ '^[0-9A-F]{64}$'");
+                            t.HasCheckConstraint("ck_withdrawal_authorization_identifiers", "id <> '00000000-0000-0000-0000-000000000000'::uuid AND withdrawal_id <> '00000000-0000-0000-0000-000000000000'::uuid AND principal_id <> '00000000-0000-0000-0000-000000000000'::uuid AND session_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                        });
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.WithdrawalBeneficiaryVersionRecord", b =>
+                {
+                    b.Property<Guid>("VersionId").HasColumnType("uuid").HasColumnName("version_id");
+                    b.Property<DateTimeOffset?>("AvailableAfter").HasColumnType("timestamp with time zone").HasColumnName("available_after");
+                    b.Property<Guid>("BeneficiaryId").HasColumnType("uuid").HasColumnName("beneficiary_id");
+                    b.Property<string>("BlockReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("block_reason");
+                    b.Property<DateTimeOffset?>("BlockedAt").HasColumnType("timestamp with time zone").HasColumnName("blocked_at");
+                    b.Property<DateTimeOffset>("CreatedAt").HasColumnType("timestamp with time zone").HasColumnName("created_at");
+                    b.Property<Guid>("CustomerId").HasColumnType("uuid").HasColumnName("customer_id");
+                    b.Property<string>("DestinationHash").IsRequired().HasColumnType("character(64)").HasColumnName("destination_hash");
+                    b.Property<string>("RevocationReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("revocation_reason");
+                    b.Property<DateTimeOffset?>("RevokedAt").HasColumnType("timestamp with time zone").HasColumnName("revoked_at");
+                    b.Property<string>("State").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("state");
+                    b.Property<string>("VerificationEvidenceReference").HasMaxLength(256).HasColumnType("character varying(256)").HasColumnName("verification_evidence_reference");
+                    b.Property<DateTimeOffset?>("VerifiedAt").HasColumnType("timestamp with time zone").HasColumnName("verified_at");
+                    b.Property<int>("VersionNumber").HasColumnType("integer").HasColumnName("version_number");
+                    b.HasKey("VersionId").HasName("pk_withdrawal_beneficiary_version");
+                    b.HasAlternateKey("VersionId", "CustomerId", "DestinationHash").HasName("ak_withdrawal_beneficiary_binding");
+                    b.HasIndex("BeneficiaryId", "VersionNumber").IsUnique().HasDatabaseName("ux_withdrawal_beneficiary_version");
+                    b.HasIndex("CustomerId", "State").HasDatabaseName("ix_withdrawal_beneficiary_customer_state");
+                    b.ToTable("withdrawal_beneficiary_version", "funding", t =>
+                        {
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_block_pair", "(blocked_at IS NULL AND block_reason IS NULL) OR (blocked_at IS NOT NULL AND block_reason IS NOT NULL AND btrim(block_reason) <> '')");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_destination_hash", "destination_hash ~ '^[0-9A-F]{64}$'");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_identifiers", "version_id <> '00000000-0000-0000-0000-000000000000'::uuid AND beneficiary_id <> '00000000-0000-0000-0000-000000000000'::uuid AND customer_id <> '00000000-0000-0000-0000-000000000000'::uuid");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_revocation_pair", "(revoked_at IS NULL AND revocation_reason IS NULL) OR (revoked_at IS NOT NULL AND revocation_reason IS NOT NULL AND btrim(revocation_reason) <> '')");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_state", "state IN ('pending_verification', 'verified_cooling_off', 'active', 'blocked', 'revoked')");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_state_evidence", "(state = 'pending_verification' AND verification_evidence_reference IS NULL AND blocked_at IS NULL AND revoked_at IS NULL) OR (state IN ('verified_cooling_off', 'active') AND verification_evidence_reference IS NOT NULL AND blocked_at IS NULL AND revoked_at IS NULL) OR (state = 'blocked' AND blocked_at IS NOT NULL AND revoked_at IS NULL) OR (state = 'revoked' AND revoked_at IS NOT NULL)");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_transition_chronology", "(blocked_at IS NULL OR blocked_at >= created_at) AND (revoked_at IS NULL OR revoked_at >= created_at) AND (blocked_at IS NULL OR revoked_at IS NULL OR revoked_at >= blocked_at)");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_verification_chronology", "verified_at IS NULL OR (verified_at >= created_at AND available_after >= verified_at)");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_verification_evidence", "(verification_evidence_reference IS NULL AND verified_at IS NULL AND available_after IS NULL) OR (verification_evidence_reference IS NOT NULL AND btrim(verification_evidence_reference) <> '' AND verified_at IS NOT NULL AND available_after IS NOT NULL)");
+                            t.HasCheckConstraint("ck_withdrawal_beneficiary_version_number", "version_number > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.WithdrawalRequestRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<decimal>("Amount").HasColumnType("numeric(24,8)").HasColumnName("amount");
+                    b.Property<DateTimeOffset?>("ApprovedAt").HasColumnType("timestamp with time zone").HasColumnName("approved_at");
+                    b.Property<Guid?>("ApprovedByPrincipalId").HasColumnType("uuid").HasColumnName("approved_by_principal_id");
+                    b.Property<Guid?>("AuthorizationId").HasColumnType("uuid").HasColumnName("authorization_id");
+                    b.Property<Guid>("BeneficiaryVersionId").HasColumnType("uuid").HasColumnName("beneficiary_version_id");
+                    b.Property<DateTimeOffset>("CreatedAt").HasColumnType("timestamp with time zone").HasColumnName("created_at");
+                    b.Property<string>("Currency").IsRequired().HasColumnType("character(3)").HasColumnName("currency");
+                    b.Property<Guid>("CustomerId").HasColumnType("uuid").HasColumnName("customer_id");
+                    b.Property<string>("DestinationHash").IsRequired().HasColumnType("character(64)").HasColumnName("destination_hash");
+                    b.Property<string>("ExternalReference").HasMaxLength(256).HasColumnType("character varying(256)").HasColumnName("external_reference");
+                    b.Property<string>("OutcomeEvidenceReference").HasMaxLength(256).HasColumnType("character varying(256)").HasColumnName("outcome_evidence_reference");
+                    b.Property<string>("ReasonCode").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("reason_code");
+                    b.Property<Guid>("RequestedByPrincipalId").HasColumnType("uuid").HasColumnName("requested_by_principal_id");
+                    b.Property<string>("State").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("state");
+                    b.Property<string>("TransactionDataHash").IsRequired().HasColumnType("character(64)").HasColumnName("transaction_data_hash");
+                    b.Property<DateTimeOffset>("UpdatedAt").HasColumnType("timestamp with time zone").HasColumnName("updated_at");
+                    b.HasKey("Id").HasName("pk_withdrawal");
+                    b.HasAlternateKey("Id", "RequestedByPrincipalId", "TransactionDataHash").HasName("ak_withdrawal_request_authorization_binding");
+                    b.HasIndex("AuthorizationId", "Id").HasDatabaseName("ix_withdrawal_selected_authorization").HasFilter("authorization_id IS NOT NULL");
+                    b.HasIndex("BeneficiaryVersionId", "CustomerId", "DestinationHash").HasDatabaseName("ix_withdrawal_beneficiary_binding");
+                    b.HasIndex("CustomerId", "State", "CreatedAt").HasDatabaseName("ix_withdrawal_customer_state_created_at");
+                    b.ToTable("withdrawal", "funding", t =>
+                        {
+                            t.HasCheckConstraint("ck_withdrawal_amount", "amount > 0");
+                            t.HasCheckConstraint("ck_withdrawal_approval_pair", "(approved_by_principal_id IS NULL AND approved_at IS NULL) OR (approved_by_principal_id IS NOT NULL AND approved_at IS NOT NULL AND approved_at >= created_at AND approved_by_principal_id <> requested_by_principal_id)");
+                            t.HasCheckConstraint("ck_withdrawal_authorization_state", "(state IN ('requested', 'security_check', 'security_hold', 'policy_check', 'rejected', 'approval_pending', 'approved') AND authorization_id IS NULL) OR (state IN ('submission_pending', 'submitted', 'processing', 'completed', 'failed', 'unknown') AND authorization_id IS NOT NULL)");
+                            t.HasCheckConstraint("ck_withdrawal_chronology", "updated_at >= created_at");
+                            t.HasCheckConstraint("ck_withdrawal_currency", "currency ~ '^[A-Z]{3}$'");
+                            t.HasCheckConstraint("ck_withdrawal_external_reference", "(external_reference IS NULL OR btrim(external_reference) <> '') AND (state NOT IN ('submitted', 'processing') OR external_reference IS NOT NULL)");
+                            t.HasCheckConstraint("ck_withdrawal_hashes", "destination_hash ~ '^[0-9A-F]{64}$' AND transaction_data_hash ~ '^[0-9A-F]{64}$'");
+                            t.HasCheckConstraint("ck_withdrawal_identifiers", "id <> '00000000-0000-0000-0000-000000000000'::uuid AND customer_id <> '00000000-0000-0000-0000-000000000000'::uuid AND beneficiary_version_id <> '00000000-0000-0000-0000-000000000000'::uuid AND requested_by_principal_id <> '00000000-0000-0000-0000-000000000000'::uuid AND (approved_by_principal_id IS NULL OR approved_by_principal_id <> '00000000-0000-0000-0000-000000000000'::uuid) AND (authorization_id IS NULL OR authorization_id <> '00000000-0000-0000-0000-000000000000'::uuid)");
+                            t.HasCheckConstraint("ck_withdrawal_outcome_evidence", "(state IN ('completed', 'failed') AND outcome_evidence_reference IS NOT NULL AND btrim(outcome_evidence_reference) <> '') OR (state NOT IN ('completed', 'failed') AND outcome_evidence_reference IS NULL)");
+                            t.HasCheckConstraint("ck_withdrawal_reason_content", "reason_code IS NULL OR btrim(reason_code) <> ''");
+                            t.HasCheckConstraint("ck_withdrawal_reason_required", "state NOT IN ('security_hold', 'rejected', 'failed', 'unknown') OR reason_code IS NOT NULL");
+                            t.HasCheckConstraint("ck_withdrawal_state", "state IN ('requested', 'security_check', 'security_hold', 'policy_check', 'rejected', 'approval_pending', 'approved', 'submission_pending', 'submitted', 'processing', 'completed', 'failed', 'unknown')");
+                        });
+                });
+
             modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.SecuritySessionRecord", b =>
                 {
                     b.HasOne("Klyvesta.Infrastructure.Persistence.Records.SecurityDeviceRecord", null)
@@ -168,6 +267,43 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_security_session_device_identity");
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.WithdrawalAuthorizationRecord", b =>
+                {
+                    b.HasOne("Klyvesta.Infrastructure.Persistence.Records.SecuritySessionRecord", null)
+                        .WithMany()
+                        .HasForeignKey("SessionId", "PrincipalId")
+                        .HasPrincipalKey("Id", "PrincipalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_withdrawal_authorization_session_principal");
+
+                    b.HasOne("Klyvesta.Infrastructure.Persistence.Records.WithdrawalRequestRecord", null)
+                        .WithMany()
+                        .HasForeignKey("WithdrawalId", "PrincipalId", "TransactionDataHash")
+                        .HasPrincipalKey("Id", "RequestedByPrincipalId", "TransactionDataHash")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_withdrawal_authorization_request_binding");
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.WithdrawalRequestRecord", b =>
+                {
+                    b.HasOne("Klyvesta.Infrastructure.Persistence.Records.WithdrawalAuthorizationRecord", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorizationId", "Id")
+                        .HasPrincipalKey("Id", "WithdrawalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_withdrawal_selected_authorization");
+
+                    b.HasOne("Klyvesta.Infrastructure.Persistence.Records.WithdrawalBeneficiaryVersionRecord", null)
+                        .WithMany()
+                        .HasForeignKey("BeneficiaryVersionId", "CustomerId", "DestinationHash")
+                        .HasPrincipalKey("VersionId", "CustomerId", "DestinationHash")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_withdrawal_beneficiary_binding");
                 });
 #pragma warning restore 612, 618
         }
