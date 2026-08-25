@@ -1,10 +1,12 @@
 # Repository Governance
 
-Status: Required merge/release governance baseline. This document does not resolve repository visibility/licensing; Issue #2 remains an owner/legal decision.
+Status: Required merge/release governance baseline.
+
+Repository distribution/licensing is governed by `docs/REPOSITORY_LICENSING_MODEL.md`.
 
 ## Protected branch
 
-`main` is the production history branch and must be protected before substantive implementation is merged.
+`main` is the production history branch and should be protected before substantive production implementation is merged.
 
 Normal changes must follow:
 
@@ -21,14 +23,18 @@ Direct day-to-day pushes to `main` are not an approved development workflow.
 
 ## Required pull-request checks
 
-Once repository rules are configured, require these stable check names:
+Required baseline check names:
 
 - `Build and architecture verify`
 - `Analyze C#`
 
-The workflows intentionally run on **every pull request head targeting `main`** so documentation-only commits cannot leave a required check permanently absent/pending.
+Persistence-bearing changes additionally require:
 
-Additional checks may become required as the platform grows, including database migration validation, unit/integration tests, API contract validation, secret/dependency review, client builds, and signed-artifact verification.
+- `PostgreSQL migration and constraints`
+
+The workflows must run on pull requests targeting `main`, and the foundation/security/persistence workflows must also validate the merged `main` commit where applicable.
+
+Additional checks become required as the platform grows, including unit/integration tests, API contract validation, secret/dependency review, client builds, signed-artifact verification and broker/reconciliation acceptance.
 
 ## Review policy
 
@@ -52,7 +58,7 @@ High-impact financial/security changes should use maker-checker review. Examples
 
 ## Required branch protections / ruleset
 
-Configure `main` to:
+Target `main` configuration:
 - require pull requests;
 - require required status checks;
 - require branch to be current before merge where operationally practical;
@@ -63,6 +69,22 @@ Configure `main` to:
 - retain auditability of administrative bypasses.
 
 Signed commits may be required later if the organization can operate them reliably; signed release artifacts/provenance remain mandatory regardless.
+
+## Temporary owner-approved governance exception — F0-RISK-001
+
+As of 2026-08-25, GitHub reports `main` as unprotected and the connected GitHub application does not expose a branch-protection/ruleset write operation.
+
+The owner has explicitly instructed the engineering session to resolve the current blockers and merge the accepted foundation work to `main`. That instruction authorizes a **one-time, narrowly scoped risk acceptance** for the current generic F1/F2 foundation and P0 due-diligence merge sequence.
+
+This exception:
+- does **not** claim that branch protection is technically enabled;
+- does not weaken or waive CI/security acceptance;
+- requires all relevant checks to be green on the integration heads and on the resulting `main` commits where workflows support it;
+- permits only the already-reviewed generic foundation, persistence primitives and P0 documentation currently in PRs #6, #9 and #7;
+- does not authorize proprietary strategy, live broker connectivity, customer PII, live personalized AI advice, Guarded Auto or real-money execution;
+- must not be treated as a permanent substitute for GitHub branch protection.
+
+Before substantive production/security-sensitive implementation is merged beyond this accepted foundation, an organization/repository admin should enable the target branch protections above. Until then, direct pushes remain prohibited by policy even though GitHub is not technically enforcing the rule.
 
 ## Emergency / break-glass changes
 
@@ -89,7 +111,7 @@ Never rewrite already shared `main` history merely for aesthetics.
 
 - Third-party GitHub Actions must be pinned to immutable commit SHAs.
 - Dependabot or controlled equivalent maintains GitHub Action references.
-- New runtime/build dependencies require maintenance, security, compatibility and license review.
+- New runtime/build dependencies require maintenance, security, compatibility and licence review under `docs/REPOSITORY_LICENSING_MODEL.md`.
 - Lockfiles/SBOM/provenance become release gates as package dependencies and distributable artifacts are introduced.
 - Workflow token permissions follow least privilege.
 - CI must not expose production secrets to untrusted pull requests.
@@ -111,14 +133,20 @@ Release evidence should eventually contain:
 
 ## Repository visibility and licence
 
-Current public/GPL-3.0 repository status is tracked by Issue #2. Do not add proprietary investment algorithms, broker secrets, production credentials, customer data, or confidential partner documentation while that decision is unresolved.
+The approved model is **split**:
 
-Visibility/licence changes require explicit owner/legal direction. They are not an automatic engineering refactor.
+- this repository remains public and GPL-3.0 for intentionally open/generic foundation, public contracts/examples and public due-diligence material;
+- proprietary/confidential production components require a separately approved private repository/security boundary;
+- existing GPL-3.0 history is not silently relicensed;
+- confidential partner material, customer data, secrets and proprietary investment logic must not be committed here.
 
-## Current F1 draft
+See `docs/REPOSITORY_LICENSING_MODEL.md` for the dependency and change-control policy.
 
-Draft PR #6 is intentionally not merge-authorized until:
-1. required checks are green on the current PR head;
-2. Issue #1 (`main` protection) is resolved or explicitly risk-accepted;
-3. Issue #2 (visibility/licensing) is resolved or explicit owner/legal direction permits the intended model;
-4. review confirms the PR remains within the approved generic foundation scope.
+## Current foundation merge authorization
+
+The generic F1/F2 foundation merge is authorized only when:
+1. required checks are green on the current integration head;
+2. F0-RISK-001 is recorded for the current unprotected-`main` limitation;
+3. the split public-GPL/proprietary-private licensing model remains in force;
+4. review confirms the merge remains within the approved generic foundation/P0 scope;
+5. no Phase 0 broker/regulatory gate is falsely marked accepted.
