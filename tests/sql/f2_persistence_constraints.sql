@@ -85,13 +85,36 @@ BEGIN
 END
 $$;
 
+DO $$
+BEGIN
+    BEGIN
+        INSERT INTO ops.idempotency_record (
+            id, scope, key, request_hash, state, operation_id, created_at, completed_at, expires_at
+        ) VALUES (
+            '018f0000-0000-7000-8000-000000000005',
+            'test-order',
+            'idem-time-inversion',
+            repeat('e', 64),
+            'completed',
+            NULL,
+            now(),
+            now() - interval '1 minute',
+            now() + interval '1 hour'
+        );
+        RAISE EXCEPTION 'Expected idempotency completion time inversion to fail';
+    EXCEPTION
+        WHEN check_violation THEN NULL;
+    END;
+END
+$$;
+
 INSERT INTO ops.inbox_message (
     id, provider, message_id, payload_hash, payload_json, state, received_at, processed_at
 ) VALUES (
     '018f0000-0000-7000-8000-000000000011',
     'paper-broker',
     'event-1',
-    repeat('e', 64),
+    repeat('f', 64),
     '{"event":"fill"}'::jsonb,
     'received',
     now(),
@@ -107,7 +130,7 @@ BEGIN
             '018f0000-0000-7000-8000-000000000012',
             'paper-broker',
             'event-1',
-            repeat('f', 64),
+            repeat('a', 64),
             '{"event":"duplicate"}'::jsonb,
             'received',
             now(),
@@ -116,6 +139,28 @@ BEGIN
         RAISE EXCEPTION 'Expected duplicate provider/message_id to fail';
     EXCEPTION
         WHEN unique_violation THEN NULL;
+    END;
+END
+$$;
+
+DO $$
+BEGIN
+    BEGIN
+        INSERT INTO ops.inbox_message (
+            id, provider, message_id, payload_hash, payload_json, state, received_at, processed_at
+        ) VALUES (
+            '018f0000-0000-7000-8000-000000000013',
+            'paper-broker',
+            'event-time-inversion',
+            repeat('b', 64),
+            '{"event":"invalid-time"}'::jsonb,
+            'processed',
+            now(),
+            now() - interval '1 minute'
+        );
+        RAISE EXCEPTION 'Expected inbox processing time inversion to fail';
+    EXCEPTION
+        WHEN check_violation THEN NULL;
     END;
 END
 $$;
