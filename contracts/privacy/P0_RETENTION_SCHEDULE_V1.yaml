@@ -1,0 +1,303 @@
+version: 1
+project: klyvesta
+canonical_issue: ABD-69
+status: DRAFT_NON_LIVE
+purpose: >-
+  Machine-readable retention, legal-hold, closure and deletion policy baseline.
+  This file does not authorize production PII processing and must be reconciled
+  with current law, partner contracts and the accountable regulated person before launch.
+
+source_baseline:
+  secp_aml_cft_cpf_regulations:
+    title: SECP AML/CFT/CPF Regulations 2020 as amended up to July 3, 2026
+    record_keeping_anchor: Regulation 26
+    current_engineering_baseline:
+      cdd_identification_minimum_years_after_relationship_end: 5
+      transaction_reconstruction_required: true
+      longer_retention_for_litigation_or_competent_authority: true
+    final_legal_review_required: true
+  repository:
+    - docs/P0_PRIVACY_DATA_GOVERNANCE_BASELINE.md
+    - docs/P0_DIGITAL_ONBOARDING_AML_OPERATING_BASELINE.md
+    - docs/DOMAIN_DATABASE_MODEL_V1.md
+    - docs/P0_INVESTOR_PROTECTION_COMPLAINTS_BASELINE.md
+
+states:
+  - DELETE_NOW
+  - ANONYMIZE_NOW
+  - RETAIN_UNTIL_DATE
+  - LEGAL_HOLD
+  - REGULATORY_RETENTION
+  - SECURITY_HOLD
+  - PARTNER_RETENTION_REQUIRED
+  - REVIEW_REQUIRED
+
+precedence:
+  highest_to_lowest:
+    - LEGAL_HOLD
+    - REGULATORY_RETENTION
+    - SECURITY_HOLD
+    - PARTNER_RETENTION_REQUIRED
+    - RETAIN_UNTIL_DATE
+    - ANONYMIZE_NOW
+    - DELETE_NOW
+  rule: >-
+    A lower-precedence privacy or account-closure request must never destroy data
+    that a higher-precedence legal, regulatory, security or partner obligation requires.
+
+reason_codes:
+  - AML_CDD_RECORD_RETENTION
+  - SECURITIES_TRANSACTION_AUDIT
+  - LITIGATION_HOLD
+  - COMPETENT_AUTHORITY_REQUEST
+  - COMPLAINT_OR_DISPUTE
+  - SECURITY_INVESTIGATION
+  - FRAUD_INVESTIGATION
+  - CONTRACTUAL_PARTNER_RETENTION
+  - TAX_OR_REPORTING
+  - ACCOUNT_CLOSURE
+  - PRIVACY_REQUEST
+  - OPERATIONAL_MINIMIZATION
+  - MODEL_GOVERNANCE_EVIDENCE
+  - UNKNOWN_LEGAL_OR_PARTNER_REQUIREMENT
+
+policies:
+  identity_core:
+    class: B
+    examples:
+      - customer identity subject references
+      - contact verification state
+      - account lifecycle identifiers
+    default_decision: RETAIN_UNTIL_DATE
+    minimum_years_after_relationship_end: 5
+    source_reason: AML_CDD_RECORD_RETENTION
+    raw_identity_documents_allowed: false
+    review_before_deletion: true
+
+  kyc_identity_evidence:
+    class: B
+    examples:
+      - KYC case evidence references
+      - identity document verification records
+      - provider verification results
+      - analysis and reviewer evidence
+    default_decision: REGULATORY_RETENTION
+    minimum_years_after_relationship_end: 5
+    source_reason: AML_CDD_RECORD_RETENTION
+    raw_document_retention: MINIMUM_REQUIRED_ONLY
+    biometric_template_retention: PROHIBITED_UNLESS_EXPLICITLY_REQUIRED_AND_APPROVED
+    provider_specific_schedule: UNKNOWN_CONTRACT_REQUIRED
+
+  aml_screening_and_disposition:
+    class: B
+    examples:
+      - PEP screening evidence
+      - sanctions and TFS evidence
+      - risk classifications
+      - alerts and dispositions
+      - source-of-funds/source-of-wealth evidence refs
+    default_decision: REGULATORY_RETENTION
+    minimum_years_after_relationship_end: 5
+    source_reason: AML_CDD_RECORD_RETENTION
+    accountable_regulated_person_schedule: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+
+  broker_account_records:
+    class: C
+    examples:
+      - broker account references
+      - UIN/CDC/NCCPL references where permitted
+      - external account status history
+    default_decision: REGULATORY_RETENTION
+    minimum_years_after_relationship_end: 5
+    source_reason: SECURITIES_TRANSACTION_AUDIT
+    partner_schedule: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+
+  financial_transactions:
+    class: C
+    examples:
+      - deposits
+      - withdrawals
+      - order intents
+      - broker orders
+      - executions
+      - ledger journals and lines
+      - reconciliation evidence
+    default_decision: REGULATORY_RETENTION
+    minimum_years_after_transaction_completion: 5
+    source_reason: SECURITIES_TRANSACTION_AUDIT
+    immutable_financial_history: true
+    delete_or_mutate_posted_financial_truth: false
+    correction_method: COMPENSATING_OR_REVERSAL_RECORD
+
+  funding_and_beneficiary_evidence:
+    class: B_C
+    examples:
+      - verified funding account references
+      - beneficiary versions
+      - bank or IBAN verification evidence refs
+    default_decision: REGULATORY_RETENTION
+    minimum_years_after_relationship_end: 5
+    source_reason: AML_CDD_RECORD_RETENTION
+    raw_bank_data: TOKENIZE_OR_REDACT_WHERE_POSSIBLE
+    provider_schedule: UNKNOWN_CONTRACT_REQUIRED
+
+  suitability_risk_and_mandates:
+    class: C
+    examples:
+      - suitability profile versions
+      - risk profile versions
+      - customer mandates and approvals
+      - mandate revocation and supersession evidence
+    default_decision: RETAIN_UNTIL_DATE
+    minimum_years_after_relationship_end: 5
+    source_reason: SECURITIES_TRANSACTION_AUDIT
+    final_sectoral_schedule_review_required: true
+
+  ai_decision_evidence:
+    class: C
+    examples:
+      - model version
+      - prompt or template version
+      - structured input evidence IDs
+      - output hashes
+      - policy results
+      - recommendation and proposal evidence
+    default_decision: RETAIN_UNTIL_DATE
+    minimum_years: UNKNOWN_POLICY_REVIEW_REQUIRED
+    source_reason: MODEL_GOVERNANCE_EVIDENCE
+    direct_identifiers: MINIMIZE_OR_TOKENIZE
+    external_model_training_reuse: PROHIBITED_BY_DEFAULT
+
+  complaint_and_dispute_records:
+    class: B_C
+    examples:
+      - complaint case history
+      - dispute evidence references
+      - external escalation references
+      - remediation approvals
+    default_decision: RETAIN_UNTIL_DATE
+    minimum_years_after_case_close: UNKNOWN_LEGAL_REVIEW_REQUIRED
+    legal_hold_capable: true
+    source_reason: COMPLAINT_OR_DISPUTE
+
+  security_and_privileged_access_audit:
+    class: B_C_D
+    examples:
+      - authentication and device security events
+      - privileged reads and exports
+      - break-glass access
+      - incident evidence
+    default_decision: RETAIN_UNTIL_DATE
+    minimum_years: UNKNOWN_SECURITY_POLICY_REVIEW_REQUIRED
+    legal_hold_capable: true
+    source_reason: SECURITY_INVESTIGATION
+    raw_secrets_or_tokens: PROHIBITED
+
+  operational_telemetry:
+    class: D
+    examples:
+      - request IDs
+      - latency metrics
+      - redacted error codes
+      - service health
+    default_decision: DELETE_NOW
+    retention_days_default: 30
+    maximum_days_without_explicit_exception: 90
+    source_reason: OPERATIONAL_MINIMIZATION
+    direct_identity_linkage: AVOID
+    exceptions_require_policy_reason: true
+
+  notification_delivery_metadata:
+    class: C_D
+    examples:
+      - template version
+      - delivery attempt
+      - provider reference
+      - failure code
+    default_decision: RETAIN_UNTIL_DATE
+    retention_days_default: 180
+    source_reason: OPERATIONAL_MINIMIZATION
+    sensitive_payload_copy: PROHIBITED
+    financial_truth_dependency: false
+
+  public_reference_data:
+    class: E
+    default_decision: DELETE_NOW
+    source_reason: OPERATIONAL_MINIMIZATION
+    note: >-
+      Retention remains subject to licensing and redistribution rights even where
+      the data is not personal.
+
+privacy_request_decision_flow:
+  steps:
+    - verify_requester_identity_with_step_up
+    - enumerate_subject_records_by_data_class
+    - evaluate_legal_regulatory_partner_security_holds
+    - choose_highest_precedence_state_per_record
+    - delete_or_anonymize_only_records_with_no_override
+    - record_reason_policy_version_and_actor
+    - provide_customer_safe_outcome_summary
+  account_closure_rule: >-
+    Account closure removes product access and starts lifecycle retention clocks;
+    it does not delete mandatory AML, securities, complaint, security or audit records.
+
+legal_hold:
+  required_fields:
+    - hold_id
+    - authority_or_case_reference
+    - reason_code
+    - scope
+    - created_at
+    - created_by
+    - reviewed_at
+    - released_at
+    - release_authority
+  effect: >-
+    Suspends ordinary deletion/anonymization for in-scope records until formally released.
+  silent_release_allowed: false
+
+backup_and_restore:
+  production_backup_schedule: UNKNOWN_IMPLEMENTATION_REQUIRED
+  rules:
+    - backup retention must be documented separately from primary-store retention
+    - deleted data may persist only for the documented backup lifecycle
+    - restored backups must reapply active deletion and legal-hold state before normal service
+    - legal-hold records must not be lost through backup rotation
+    - backup exports containing Class A or B data require encryption and access audit
+
+policy_audit:
+  every_decision_records:
+    - record_or_subject_reference
+    - data_class
+    - selected_state
+    - reason_code
+    - policy_version
+    - evaluated_at
+    - evaluated_by_actor
+    - retain_until_date_if_applicable
+    - hold_reference_if_applicable
+  policy_version: P0_RETENTION_SCHEDULE_V1
+
+unresolved_before_production:
+  - exact accountable regulated person and partner retention RACI
+  - partner and provider contractual retention/deletion schedules
+  - sector-specific securities, tax and complaint retention periods not already fixed by current AML baseline
+  - AI governance evidence retention duration
+  - security telemetry and incident evidence retention duration
+  - processor and subprocessor backup deletion behavior
+  - current Pakistan privacy-law status immediately pre-launch
+  - final counsel approval of this schedule
+
+acceptance:
+  complete:
+    - per-data-class policy exists
+    - precedence and legal-hold behavior defined
+    - account closure preserves mandatory records
+    - reason codes and audit fields defined
+    - backup restore rules defined
+    - unknown partner/legal fields fail closed
+  pending:
+    - direct partner evidence reconciliation
+    - final legal and privacy review
+    - implementation and automated policy tests
+    - repository governance acceptance and canonical merge
