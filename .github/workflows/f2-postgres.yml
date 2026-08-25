@@ -78,8 +78,9 @@ jobs:
       - name: Verify PostgreSQL server version
         run: |
           version="$(psql -Atqc 'SHOW server_version;')"
-          echo "PostgreSQL server: ${version}"
-          test "${version}" = "18.6"
+          version_num="$(psql -Atqc 'SHOW server_version_num;')"
+          echo "PostgreSQL server: ${version} (${version_num})"
+          test "${version_num}" = "180006"
 
       - name: Verify migration model has no drift
         run: |
