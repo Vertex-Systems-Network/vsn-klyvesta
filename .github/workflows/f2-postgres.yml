@@ -25,12 +25,12 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: "1"
   DOTNET_NOLOGO: "1"
   NUGET_XMLDOC_MODE: skip
-  KLYVESTA_DB_CONNECTION: "Host=127.0.0.1;Port=5432;Database=klyvesta_f2;Username=postgres;Password=klyvesta_ci;Include Error Detail=false"
+  KLYVESTA_DB_CONNECTION: "Host=127.0.0.1;Port=5432;Database=klyvesta_f2;Username=postgres;Password=ci-${{ github.run_id }}-${{ github.run_attempt }};Include Error Detail=false"
   PGHOST: 127.0.0.1
   PGPORT: "5432"
   PGDATABASE: klyvesta_f2
   PGUSER: postgres
-  PGPASSWORD: klyvesta_ci
+  PGPASSWORD: "ci-${{ github.run_id }}-${{ github.run_attempt }}"
 
 jobs:
   verify-persistence:
@@ -44,7 +44,7 @@ jobs:
         env:
           POSTGRES_DB: klyvesta_f2
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: klyvesta_ci
+          POSTGRES_PASSWORD: "ci-${{ github.run_id }}-${{ github.run_attempt }}"
         ports:
           - 5432:5432
         options: >-
