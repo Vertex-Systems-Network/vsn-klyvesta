@@ -6,7 +6,7 @@ Draft PR: #7
 
 ## Status
 
-**PARTIALLY COMPLETE — P0 public/regulatory evidence, responsibility/mode gates, regulatory-function classification and a no-reply continuation path are formalized, but pyPSX partner/API terms and the final regulated operating model remain unverified.**
+**PARTIALLY COMPLETE — P0 public/regulatory evidence, responsibility/mode gates, regulatory-function classification, a no-reply continuation path, and paper/shadow acceptance requirements are formalized; pyPSX partner/API terms and the final regulated operating model remain unverified.**
 
 Canonical active task remains:
 `P0-T1 — Confirm regulatory and pyPSX Broker API operating model`.
@@ -32,7 +32,10 @@ The owner confirmed in the current session that **pyPSX has not replied yet**.
 - Created `docs/P0_REGULATORY_FUNCTION_CLASSIFICATION.md` separating Education (E), Research (R), Personalized Advice (A) and Discretionary Management (D).
 - Created `docs/P0_LAUNCH_PATH_WITHOUT_PYPSX.md` so paper/shadow/foundation work can continue without guessing live broker behavior.
 - Created `.ai/regulatory-feature-gates.json` as the machine-readable runtime/engineering gating baseline.
+- Created `docs/PAPER_SHADOW_ACCEPTANCE_SPEC_V1.md` with deterministic financial invariants, paper-broker failure scenarios, ledger/reconciliation requirements, AI shadow evals, performance/load/security acceptance evidence and explicit non-goals.
+- Created `contracts/broker/PAPER_BROKER_SCENARIOS_V1.yaml` with 20 machine-readable PaperBroker failure/edge scenarios and zero-tolerance outcomes.
 - Updated `.ai/state.json` to record the user-confirmed no-reply state and allowed/blocked parallel work.
+- Added owner/admin action notes to Issues #1/#2 for branch protection and immediate repository-privacy/licensing containment.
 - Opened draft PR #7 from the isolated P0 branch; no merge performed.
 
 ## Research performed
@@ -89,6 +92,22 @@ Hard waiting boundary:
 - no real-money trading;
 - no live personalized AI advice;
 - no live Guarded Auto.
+
+## Paper/shadow readiness baseline
+
+Before a live broker adapter is considered, the paper system must prove at minimum:
+- balanced append-only ledger with compensating reversals;
+- exactly-once financial effects for duplicate commands/executions;
+- no fill -> no executed position change;
+- no valid mandate -> no auto order;
+- unauthorized resource -> no broker call;
+- ambiguous timeout -> `UNKNOWN` + reconciliation, not blind retry;
+- partial fill/cancel race correctness;
+- stale critical data -> no auto execution;
+- reconciliation mismatch -> exception/hold, not silent correction;
+- AI cannot bypass mandate/risk/compliance/execution boundaries.
+
+20 required PaperBroker scenarios are now machine-readable in `contracts/broker/PAPER_BROKER_SCENARIOS_V1.yaml`.
 
 ## P0 gate status
 
