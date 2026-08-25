@@ -105,9 +105,11 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     b.HasIndex("PrincipalId", "TrustState").HasDatabaseName("ix_security_device_principal_state");
                     b.ToTable("security_device", "identity", t =>
                         {
+                            t.HasCheckConstraint("ck_security_device_identifiers", "id <> '00000000-0000-0000-0000-000000000000'::uuid AND principal_id <> '00000000-0000-0000-0000-000000000000'::uuid");
                             t.HasCheckConstraint("ck_security_device_integrity_state", "integrity_state IN ('unknown', 'meets_baseline', 'degraded', 'failed')");
                             t.HasCheckConstraint("ck_security_device_last_seen_chronology", "last_seen_at >= registered_at");
                             t.HasCheckConstraint("ck_security_device_principal_type", "principal_type IN ('customer', 'staff', 'service')");
+                            t.HasCheckConstraint("ck_security_device_reason_content", "(restriction_reason IS NULL OR btrim(restriction_reason) <> '') AND (revocation_reason IS NULL OR btrim(revocation_reason) <> '')");
                             t.HasCheckConstraint("ck_security_device_restriction_chronology", "restricted_at IS NULL OR restricted_at >= registered_at");
                             t.HasCheckConstraint("ck_security_device_restriction_pair", "(restricted_at IS NULL AND restriction_reason IS NULL) OR (restricted_at IS NOT NULL AND restriction_reason IS NOT NULL)");
                             t.HasCheckConstraint("ck_security_device_revocation_chronology", "revoked_at IS NULL OR revoked_at >= registered_at");
@@ -145,13 +147,16 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("ck_security_session_absolute_expiry", "absolute_expires_at > created_at");
                             t.HasCheckConstraint("ck_security_session_auth_chronology", "authenticated_at <= created_at");
                             t.HasCheckConstraint("ck_security_session_auth_strength", "authentication_strength IN ('password', 'strong_mfa', 'phishing_resistant')");
+                            t.HasCheckConstraint("ck_security_session_identifiers", "id <> '00000000-0000-0000-0000-000000000000'::uuid AND principal_id <> '00000000-0000-0000-0000-000000000000'::uuid AND device_id <> '00000000-0000-0000-0000-000000000000'::uuid");
                             t.HasCheckConstraint("ck_security_session_idle_timeout", "idle_timeout_seconds > 0");
                             t.HasCheckConstraint("ck_security_session_last_seen_chronology", "last_seen_at >= created_at AND last_seen_at < absolute_expires_at");
                             t.HasCheckConstraint("ck_security_session_principal_type", "principal_type IN ('customer', 'staff', 'service')");
+                            t.HasCheckConstraint("ck_security_session_reason_content", "(restriction_reason IS NULL OR btrim(restriction_reason) <> '') AND (revocation_reason IS NULL OR btrim(revocation_reason) <> '')");
                             t.HasCheckConstraint("ck_security_session_restriction_chronology", "restricted_at IS NULL OR restricted_at >= created_at");
                             t.HasCheckConstraint("ck_security_session_restriction_pair", "(restricted_at IS NULL AND restriction_reason IS NULL) OR (restricted_at IS NOT NULL AND restriction_reason IS NOT NULL)");
                             t.HasCheckConstraint("ck_security_session_revocation_chronology", "revoked_at IS NULL OR revoked_at >= created_at");
                             t.HasCheckConstraint("ck_security_session_revocation_pair", "(revoked_at IS NULL AND revocation_reason IS NULL) OR (revoked_at IS NOT NULL AND revocation_reason IS NOT NULL)");
+                            t.HasCheckConstraint("ck_security_session_revocation_reason", "revocation_reason IS NULL OR revocation_reason IN ('user_sign_out', 'sign_out_all', 'device_revoked', 'recovery_completed', 'staff_privilege_changed', 'security_incident', 'credential_compromise', 'account_suspended')");
                             t.HasCheckConstraint("ck_security_session_state_evidence", "(revoked_at IS NULL AND restricted = FALSE AND restricted_at IS NULL) OR (revoked_at IS NULL AND restricted = TRUE AND restricted_at IS NOT NULL) OR (revoked_at IS NOT NULL AND restricted = FALSE)");
                             t.HasCheckConstraint("ck_security_session_transition_chronology", "restricted_at IS NULL OR revoked_at IS NULL OR revoked_at >= restricted_at");
                         });
