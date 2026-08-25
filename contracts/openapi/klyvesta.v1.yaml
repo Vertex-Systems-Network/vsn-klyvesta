@@ -1,0 +1,485 @@
+openapi: 3.1.0
+info:
+  title: Klyvesta Customer API
+  version: 0.1.0
+  description: >-
+    Planning contract for Klyvesta-owned customer APIs. Financial operations remain
+    subject to regulatory, broker, security and acceptance gates. Decimal financial
+    values are encoded as strings.
+servers:
+  - url: https://api.example.invalid/api/v1
+    description: Placeholder; production origin not assigned.
+tags:
+  - name: Identity
+  - name: Portfolio
+  - name: Orders
+  - name: Withdrawals
+  - name: Mandates
+  - name: Recommendations
+security:
+  - customerAuth: []
+paths:
+  /me:
+    get:
+      tags: [Identity]
+      operationId: getMe
+      responses:
+        '200':
+          description: Current customer identity summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+        '401':
+          $ref: '#/components/responses/AuthRequired'
+  /security/sessions:
+    get:
+      tags: [Identity]
+      operationId: listSecuritySessions
+      responses:
+        '200':
+          description: Active/recent customer sessions.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecuritySession'
+  /security/sessions/{sessionId}:
+    delete:
+      tags: [Identity]
+      operationId: revokeSecuritySession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '204':
+          description: Session revoked.
+        '404':
+          $ref: '#/components/responses/NotFoundOrForbidden'
+  /portfolios:
+    get:
+      tags: [Portfolio]
+      operationId: listPortfolios
+      responses:
+        '200':
+          description: Customer-owned portfolios.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PortfolioSummary'
+  /portfolios/{portfolioId}:
+    get:
+      tags: [Portfolio]
+      operationId: getPortfolio
+      parameters:
+        - $ref: '#/components/parameters/PortfolioId'
+      responses:
+        '200':
+          description: Authoritative portfolio summary projection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioSummary'
+        '404':
+          $ref: '#/components/responses/NotFoundOrForbidden'
+  /orders/intents:
+    post:
+      tags: [Orders]
+      operationId: createManualOrderIntent
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderIntentRequest'
+      responses:
+        '202':
+          description: Order intent accepted for deterministic validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderIntent'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '401':
+          $ref: '#/components/responses/AuthRequired'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /orders/{orderId}:
+    get:
+      tags: [Orders]
+      operationId: getOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Current normalized order state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFoundOrForbidden'
+  /orders/{orderId}/cancel:
+    post:
+      tags: [Orders]
+      operationId: cancelOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Cancel request accepted if current order state permits.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /withdrawals:
+    post:
+      tags: [Withdrawals]
+      operationId: requestWithdrawal
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWithdrawalRequest'
+      responses:
+        '202':
+          description: Withdrawal request accepted into security/policy workflow.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Withdrawal'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /withdrawals/{withdrawalId}:
+    get:
+      tags: [Withdrawals]
+      operationId: getWithdrawal
+      parameters:
+        - $ref: '#/components/parameters/WithdrawalId'
+      responses:
+        '200':
+          description: Current withdrawal state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Withdrawal'
+        '404':
+          $ref: '#/components/responses/NotFoundOrForbidden'
+  /portfolios/{portfolioId}/mandates/current:
+    get:
+      tags: [Mandates]
+      operationId: getCurrentMandate
+      parameters:
+        - $ref: '#/components/parameters/PortfolioId'
+      responses:
+        '200':
+          description: Current mandate version if one exists.
+          headers:
+            ETag:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mandate'
+        '404':
+          $ref: '#/components/responses/NotFoundOrForbidden'
+  /portfolios/{portfolioId}/mandates:
+    post:
+      tags: [Mandates]
+      operationId: createMandateDraft
+      parameters:
+        - $ref: '#/components/parameters/PortfolioId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMandateDraftRequest'
+      responses:
+        '201':
+          description: Draft mandate created. This does not activate Guarded Auto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mandate'
+  /recommendations/{recommendationId}/approve:
+    post:
+      tags: [Recommendations]
+      operationId: approveRecommendation
+      parameters:
+        - $ref: '#/components/parameters/RecommendationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [version]
+              additionalProperties: false
+              properties:
+                version:
+                  type: integer
+                  minimum: 1
+      responses:
+        '202':
+          description: Approval recorded; resulting financial intent still requires deterministic validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationApproval'
+        '409':
+          $ref: '#/components/responses/Conflict'
+components:
+  securitySchemes:
+    customerAuth:
+      type: openIdConnect
+      openIdConnectUrl: https://id.example.invalid/.well-known/openid-configuration
+      description: Placeholder identity authority; final IdP not selected.
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 128
+    PortfolioId:
+      name: portfolioId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/UuidV7' }
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/UuidV7' }
+    WithdrawalId:
+      name: withdrawalId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/UuidV7' }
+    RecommendationId:
+      name: recommendationId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/UuidV7' }
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema: { $ref: '#/components/schemas/UuidV7' }
+  schemas:
+    UuidV7:
+      type: string
+      format: uuid
+      description: Opaque UUID; authorization must not depend on unpredictability.
+    DecimalString:
+      type: string
+      pattern: '^-?[0-9]+(?:\.[0-9]+)?$'
+      examples: ['125000.50']
+    Timestamp:
+      type: string
+      format: date-time
+    Me:
+      type: object
+      required: [userId, customerStatus]
+      additionalProperties: false
+      properties:
+        userId: { $ref: '#/components/schemas/UuidV7' }
+        customerStatus:
+          type: string
+          enum: [PENDING, ONBOARDING, ACTIVE, RESTRICTED, SUSPENDED, CLOSED]
+    SecuritySession:
+      type: object
+      required: [id, current, createdAt, expiresAt, riskState]
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/UuidV7' }
+        current: { type: boolean }
+        deviceName: { type: [string, 'null'], maxLength: 120 }
+        platform: { type: [string, 'null'], maxLength: 32 }
+        riskState: { type: string }
+        createdAt: { $ref: '#/components/schemas/Timestamp' }
+        expiresAt: { $ref: '#/components/schemas/Timestamp' }
+    PortfolioSummary:
+      type: object
+      required: [id, baseCurrency, status, cashAvailable, marketValue, asOf]
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/UuidV7' }
+        baseCurrency: { type: string, minLength: 3, maxLength: 3 }
+        status: { type: string }
+        cashAvailable: { $ref: '#/components/schemas/DecimalString' }
+        marketValue: { $ref: '#/components/schemas/DecimalString' }
+        asOf: { $ref: '#/components/schemas/Timestamp' }
+    CreateOrderIntentRequest:
+      type: object
+      required: [portfolioId, instrumentId, side, orderType, quantity, timeInForce]
+      additionalProperties: false
+      properties:
+        portfolioId: { $ref: '#/components/schemas/UuidV7' }
+        instrumentId: { $ref: '#/components/schemas/UuidV7' }
+        side: { type: string, enum: [BUY, SELL] }
+        orderType: { type: string, enum: [MARKET, LIMIT] }
+        quantity: { $ref: '#/components/schemas/DecimalString' }
+        limitPrice:
+          oneOf:
+            - { $ref: '#/components/schemas/DecimalString' }
+            - { type: 'null' }
+        timeInForce: { type: string, enum: [DAY] }
+        clientContext:
+          type: object
+          additionalProperties: false
+          properties:
+            source: { type: string, enum: [MANUAL] }
+    OrderIntent:
+      type: object
+      required: [orderIntentId, state, createdAt]
+      additionalProperties: false
+      properties:
+        orderIntentId: { $ref: '#/components/schemas/UuidV7' }
+        state:
+          type: string
+          enum: [CREATED, VALIDATING, REJECTED, APPROVED, EXECUTION_PENDING, EXECUTION_CREATED, CANCELLED, EXPIRED]
+        createdAt: { $ref: '#/components/schemas/Timestamp' }
+        reasonCode: { type: [string, 'null'] }
+    Order:
+      type: object
+      required: [id, state, updatedAt]
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/UuidV7' }
+        state:
+          type: string
+          enum: [PENDING_SUBMIT, SUBMITTING, SUBMITTED, OPEN, PARTIALLY_FILLED, FILLED, CANCEL_PENDING, CANCELLED, REJECTED, UNKNOWN]
+        filledQuantity: { $ref: '#/components/schemas/DecimalString' }
+        updatedAt: { $ref: '#/components/schemas/Timestamp' }
+    CreateWithdrawalRequest:
+      type: object
+      required: [portfolioId, beneficiaryId, amount, currency]
+      additionalProperties: false
+      properties:
+        portfolioId: { $ref: '#/components/schemas/UuidV7' }
+        beneficiaryId: { $ref: '#/components/schemas/UuidV7' }
+        amount: { $ref: '#/components/schemas/DecimalString' }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+    Withdrawal:
+      type: object
+      required: [id, state, amount, currency, createdAt]
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/UuidV7' }
+        state:
+          type: string
+          enum: [REQUESTED, SECURITY_CHECK, SECURITY_HOLD, POLICY_CHECK, REJECTED, APPROVAL_PENDING, APPROVED, SUBMISSION_PENDING, SUBMITTED, PROCESSING, COMPLETED, FAILED, UNKNOWN]
+        amount: { $ref: '#/components/schemas/DecimalString' }
+        currency: { type: string }
+        createdAt: { $ref: '#/components/schemas/Timestamp' }
+        reasonCode: { type: [string, 'null'] }
+    CreateMandateDraftRequest:
+      type: object
+      required: [riskProfileVersion, investmentHorizonMonths, constraints]
+      additionalProperties: false
+      properties:
+        riskProfileVersion: { type: integer, minimum: 1 }
+        investmentHorizonMonths: { type: integer, minimum: 1, maximum: 1200 }
+        constraints:
+          type: object
+          additionalProperties: false
+          properties:
+            maxSingleInstrumentWeight: { $ref: '#/components/schemas/DecimalString' }
+            minCashWeight: { $ref: '#/components/schemas/DecimalString' }
+    Mandate:
+      type: object
+      required: [id, version, state, createdAt]
+      additionalProperties: false
+      properties:
+        id: { $ref: '#/components/schemas/UuidV7' }
+        version: { type: integer, minimum: 1 }
+        state:
+          type: string
+          enum: [DRAFT, PENDING_CONFIRMATION, ACTIVE, PAUSED_BY_USER, PAUSED_BY_POLICY, PAUSED_BY_SECURITY, SUPERSEDED, REVOKED, EXPIRED]
+        createdAt: { $ref: '#/components/schemas/Timestamp' }
+    RecommendationApproval:
+      type: object
+      required: [recommendationId, version, state, recordedAt]
+      additionalProperties: false
+      properties:
+        recommendationId: { $ref: '#/components/schemas/UuidV7' }
+        version: { type: integer }
+        state: { type: string, enum: [APPROVED] }
+        recordedAt: { $ref: '#/components/schemas/Timestamp' }
+    Problem:
+      type: object
+      required: [title, status, code, requestId]
+      additionalProperties: true
+      properties:
+        type: { type: string, format: uri-reference }
+        title: { type: string }
+        status: { type: integer }
+        code: { type: string }
+        requestId: { type: string }
+        detail: { type: [string, 'null'] }
+        retryable: { type: boolean, default: false }
+  responses:
+    AuthRequired:
+      description: Authentication required.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Forbidden:
+      description: Action forbidden by authorization/security/policy.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFoundOrForbidden:
+      description: Resource not found or not available to this principal.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    InvalidRequest:
+      description: Invalid request.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Conflict:
+      description: Idempotency or state/version conflict.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    RateLimited:
+      description: Rate limit exceeded.
+      headers:
+        Retry-After:
+          schema: { type: string }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
