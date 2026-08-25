@@ -3,7 +3,8 @@ name: f2-postgres
 on:
   push:
     branches:
-      - "foundation/f2-postgres-persistence"
+      - main
+      - "foundation/**"
     paths:
       - ".github/workflows/*.yml"
       - ".ai/state.json"
@@ -14,6 +15,7 @@ on:
       - "tests/sql/**"
   pull_request:
     branches:
+      - main
       - "foundation/f1-dotnet-skeleton"
 
 permissions:
