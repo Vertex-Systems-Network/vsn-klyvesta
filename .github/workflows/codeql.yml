@@ -6,7 +6,9 @@ on:
       - main
       - "foundation/**"
     paths:
-      - ".github/workflows/codeql.yml"
+      - ".github/workflows/*.yml"
+      - ".ai/state.json"
+      - ".ai/checkpoints/**"
       - "global.json"
       - "Directory.Build.props"
       - "Directory.Packages.props"
