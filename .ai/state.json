@@ -2,6 +2,11 @@
   "project": "Klyvesta",
   "repository_target": "Vertex-Systems-Network/vsn-klyvesta",
   "status": "PLANNING",
+  "engineering_governance": {
+    "master_prompt": ".ai/MASTER_ENGINEERING_PROMPT.md",
+    "version": 1,
+    "status": "ACTIVE"
+  },
   "active_task": {
     "id": "P0-T1",
     "title": "Confirm regulatory and pyPSX Broker API operating model",
@@ -18,6 +23,7 @@
       "reason": "Requires regulatory treatment and adviser/partner acceptance"
     }
   ],
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-engineering-governance.md",
   "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response and document regulated roles, API capabilities, sandbox access, funding, custody, market data, order, position, statement and webhook contracts.",
   "last_updated": "2026-08-25"
 }
