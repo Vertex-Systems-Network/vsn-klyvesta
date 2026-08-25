@@ -5,8 +5,7 @@ on:
     branches:
       - "foundation/**"
     paths:
-      - ".github/workflows/dotnet-foundation.yml"
-      - ".github/workflows/f2-postgres.yml"
+      - ".github/workflows/*.yml"
       - "global.json"
       - "Directory.Build.props"
       - "Directory.Packages.props"
