@@ -10,7 +10,8 @@
     "licensing_model": "docs/REPOSITORY_LICENSING_MODEL.md",
     "repository_model": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY",
     "main_foundation_merge_sha": "f326e38bddb4e021954a966793f2bb86d2ab9922",
-    "main_branch_protection_status": "RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_ENABLED"
+    "main_branch_protection_status": "OPEN_BLOCKER_ISSUE_1_UNPROTECTED_MAIN",
+    "main_merge_blocked_by_issue": 1
   },
   "accepted_risks": [
     {
@@ -19,6 +20,7 @@
       "scope": "one-time merge sequence for PR #9 into F1, F1/F2 foundation into main through PR #6, and P0 due-diligence/state through PR #7",
       "owner_direction_date": "2026-08-25",
       "expires_before": "substantive production/security-sensitive implementation beyond the accepted generic foundation",
+      "status": "EXPIRED_FOR_SUBSTANTIVE_PRODUCTION_OR_SECURITY_SENSITIVE_IMPLEMENTATION",
       "required_follow_up": "Repository/org admin enables protected-main rules and required checks."
     }
   ],
@@ -75,7 +77,11 @@
     "p1_security_acceptance": "contracts/security/P1_SECURITY_ACCEPTANCE_V1.yaml",
     "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
     "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md",
-    "f2_persistence_checkpoint": ".ai/checkpoints/2026-08-25-f2-postgres-persistence.md"
+    "f2_persistence_checkpoint": ".ai/checkpoints/2026-08-25-f2-postgres-persistence.md",
+    "f5_security_persistence_checkpoint": ".ai/checkpoints/2026-08-25-f5-session-device-persistence.md",
+    "f5_security_persistence_status": "TECHNICALLY_ACCEPTED_ON_PR_NOT_MERGE_AUTHORIZED",
+    "f5_security_persistence_evidence_head": "20e695f270bce367cc2e57f94577df6f56bd11df",
+    "f5_security_persistence_pr": 17
   },
   "p0_operating_model": {
     "status": "PARTIALLY_COMPLETE_WAITING_FOR_PARTNER_EVIDENCE",
@@ -150,13 +156,12 @@
   ],
   "resolved_repository_governance_issues": [
     {
-      "issue": 1,
-      "resolution": "OWNER_RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_IMPLEMENTED"
-    },
-    {
       "issue": 2,
       "resolution": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY_MODEL_APPROVED"
     }
+  ],
+  "open_repository_governance_issues": [
+    1
   ],
   "open_security_remediation_issues": [
     3,
@@ -165,6 +170,6 @@
     8
   ],
   "latest_checkpoint": ".ai/checkpoints/2026-08-25-main-foundation-p0-integration.md",
-  "next_action": "Continue P0-T1: obtain pyPSX Broker API technical/commercial onboarding response and map partner evidence against contracts/broker/BROKER_ADAPTER_V1.md, P0 RACI, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Separately, an org/repo admin must enable protected-main controls before substantive production/security-sensitive implementation beyond the accepted generic foundation.",
-  "last_updated": "2026-08-25"
+  "next_action": "Continue P0-T1: obtain pyPSX Broker API technical/commercial onboarding response and map partner evidence against contracts/broker/BROKER_ADAPTER_V1.md, P0 RACI, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Security and resilience work may continue on feature branches/PRs, but Issue #1 blocks new substantive implementation from merging to main until protected-main controls are actually enabled or a new explicit owner risk decision is recorded.",
+  "last_updated": "2026-08-26"
 }
