@@ -16,10 +16,7 @@ public sealed class KlyvestaDbContextFactory : IDesignTimeDbContextFactory<Klyve
         }
 
         var options = new DbContextOptionsBuilder<KlyvestaDbContext>()
-            .UseNpgsql(connectionString, npgsql =>
-            {
-                npgsql.EnableRetryOnFailure(maxRetryCount: 2);
-            })
+            .UseNpgsql(connectionString)
             .Options;
 
         return new KlyvestaDbContext(options);
