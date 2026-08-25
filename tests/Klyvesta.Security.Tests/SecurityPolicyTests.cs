@@ -9,7 +9,7 @@ public sealed class SecurityPolicyTests
     private static readonly DateTimeOffset Now = new(2026, 8, 25, 17, 45, 0, TimeSpan.Zero);
 
     [TestMethod]
-    public void Investor_CanAuthorizeOwnWithdrawalRequest()
+    public void InvestorCanAuthorizeOwnWithdrawalRequest()
     {
         var customerId = Guid.NewGuid();
         var principal = Customer(SecurityRole.Investor, customerId);
@@ -23,7 +23,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Investor_CannotAuthorizeAnotherCustomersFinancialResource()
+    public void InvestorCannotAuthorizeAnotherCustomersFinancialResource()
     {
         var principal = Customer(SecurityRole.Investor, Guid.NewGuid());
 
@@ -36,7 +36,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Entitlement_DoesNotElevateSupportRoleIntoWithdrawalAuthority()
+    public void EntitlementDoesNotElevateSupportRoleIntoWithdrawalAuthority()
     {
         var principal = Staff(SecurityRole.SupportL1, "withdrawal.request");
 
@@ -52,7 +52,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void AiPrincipal_CannotSubmitBrokerOrder()
+    public void AiPrincipalCannotSubmitBrokerOrder()
     {
         var principal = Service(SecurityRole.RebalanceAgent);
 
@@ -65,7 +65,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void ExecutionValidator_CanReachNarrowBrokerSubmissionAuthorization()
+    public void ExecutionValidatorCanReachNarrowBrokerSubmissionAuthorization()
     {
         var principal = Service(SecurityRole.ExecutionValidator);
 
@@ -77,7 +77,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void FinancialAction_FailsClosedWhenAccountRestricted()
+    public void FinancialActionFailsClosedWhenAccountRestricted()
     {
         var customerId = Guid.NewGuid();
         var principal = Customer(SecurityRole.Investor, customerId);
@@ -92,7 +92,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void FinancialAction_FailsClosedOnComplianceHold()
+    public void FinancialActionFailsClosedOnComplianceHold()
     {
         var customerId = Guid.NewGuid();
         var principal = Customer(SecurityRole.Investor, customerId);
@@ -107,7 +107,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void LegalFeatureGate_IsEvaluatedServerSide()
+    public void LegalFeatureGateIsEvaluatedServerSide()
     {
         var customerId = Guid.NewGuid();
         var principal = Customer(SecurityRole.Investor, customerId);
@@ -122,7 +122,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void AllowedRoleWithoutRequiredEntitlement_IsDenied()
+    public void AllowedRoleWithoutRequiredEntitlementIsDenied()
     {
         var customerId = Guid.NewGuid();
         var principal = Customer(SecurityRole.Investor, customerId);
@@ -138,7 +138,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_HappyPathRequiresVerifiedBeneficiaryAndBoundStepUp()
+    public void WithdrawalHappyPathRequiresVerifiedBeneficiaryAndBoundStepUp()
     {
         var context = ValidWithdrawalContext();
 
@@ -148,7 +148,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_RejectsBeneficiaryOwnedByAnotherCustomer()
+    public void WithdrawalRejectsBeneficiaryOwnedByAnotherCustomer()
     {
         var context = ValidWithdrawalContext() with
         {
@@ -165,7 +165,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_RejectsUnverifiedBeneficiary()
+    public void WithdrawalRejectsUnverifiedBeneficiary()
     {
         var context = ValidWithdrawalContext();
         context = context with
@@ -182,7 +182,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_EnforcesBeneficiaryCoolingOff()
+    public void WithdrawalEnforcesBeneficiaryCoolingOff()
     {
         var context = ValidWithdrawalContext();
         context = context with
@@ -199,7 +199,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_RecoveryRestrictedStateBlocksHighRiskAction()
+    public void WithdrawalRecoveryRestrictedStateBlocksHighRiskAction()
     {
         var context = ValidWithdrawalContext();
         var recovery = BuildRecoveredRestrictedState();
@@ -211,7 +211,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_NewOrRecoveredDeviceRestrictionBlocksHighRiskAction()
+    public void WithdrawalNewOrRecoveredDeviceRestrictionBlocksHighRiskAction()
     {
         var context = ValidWithdrawalContext() with
         {
@@ -224,7 +224,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_ExpiredStepUpIsDenied()
+    public void WithdrawalExpiredStepUpIsDenied()
     {
         var context = ValidWithdrawalContext();
         var expired = StepUpGrant.Create(
@@ -242,7 +242,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Withdrawal_StepUpForDifferentActionIsDenied()
+    public void WithdrawalStepUpForDifferentActionIsDenied()
     {
         var context = ValidWithdrawalContext();
         var wrongAction = StepUpGrant.Create(
@@ -260,7 +260,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Recovery_CannotClearUntilTimeAndRiskReviewAreSatisfied()
+    public void RecoveryCannotClearUntilTimeAndRiskReviewAreSatisfied()
     {
         var recovery = BuildRecoveredRestrictedState();
 
@@ -275,7 +275,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void Recovery_InvalidTransitionFailsClosed()
+    public void RecoveryInvalidTransitionFailsClosed()
     {
         var recovery = new RecoverySecurityState();
 
@@ -303,7 +303,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void ProtectedProposal_RejectsWrongApproverRole()
+    public void ProtectedProposalRejectsWrongApproverRole()
     {
         var maker = Staff(SecurityRole.ReconciliationOperator);
         var wrongApprover = Staff(SecurityRole.PlatformAdmin);
@@ -320,7 +320,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void ProtectedProposal_AllowsDistinctRequiredApprover()
+    public void ProtectedProposalAllowsDistinctRequiredApprover()
     {
         var maker = Staff(SecurityRole.ReconciliationOperator);
         var approver = Staff(SecurityRole.ReconciliationApprover);
@@ -339,7 +339,7 @@ public sealed class SecurityPolicyTests
     }
 
     [TestMethod]
-    public void ProtectedProposal_ExpiresClosed()
+    public void ProtectedProposalExpiresClosed()
     {
         var maker = Staff(SecurityRole.ReconciliationOperator);
         var approver = Staff(SecurityRole.ReconciliationApprover);
@@ -365,8 +365,8 @@ public sealed class SecurityPolicyTests
     private static SecurityPrincipal Service(SecurityRole role, params string[] entitlements) =>
         new(Guid.NewGuid(), PrincipalType.Service, role, null, Entitlements(entitlements));
 
-    private static IReadOnlySet<string> Entitlements(IEnumerable<string> values) =>
-        new HashSet<string>(values, StringComparer.Ordinal);
+    private static HashSet<string> Entitlements(IEnumerable<string> values) =>
+        new(values, StringComparer.Ordinal);
 
     private static AuthorizationRequest HealthyRequest(
         SecurityAction action,
