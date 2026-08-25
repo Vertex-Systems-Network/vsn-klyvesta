@@ -57,6 +57,7 @@ jobs:
             --project src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj \
             --context KlyvestaDbContext \
             --output-dir Persistence/Migrations \
+            --configuration Release \
             --no-build
 
       - name: Print generated migration files for review
