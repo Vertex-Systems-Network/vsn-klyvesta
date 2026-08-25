@@ -22,6 +22,24 @@
     "zero_loss_claim_allowed": false,
     "risk_free_claim_allowed": false
   },
+  "security_architecture": {
+    "audit": "docs/SECURITY_ARCHITECTURE_AUDIT_V1.md",
+    "authorization_model": "docs/AUTHORIZATION_PRIVILEGE_MODEL.md",
+    "threat_model": "docs/THREAT_MODEL.md",
+    "security_requirements": "docs/SECURITY.md",
+    "audit_status": "ARCHITECTURE_AUDIT_COMPLETE_IMPLEMENTATION_NOT_VERIFIED"
+  },
+  "implementation_stack": {
+    "web": "TypeScript + supported patched Next.js/Node LTS",
+    "android": "Kotlin + Jetpack Compose",
+    "ios": "Swift + SwiftUI",
+    "windows": "C# + .NET 10 LTS + WinUI 3 + signed MSIX",
+    "financial_core": "C# + .NET 10 LTS / ASP.NET Core",
+    "ai_quant": "Python 3.13 initially",
+    "database": "PostgreSQL",
+    "canonical_stack_doc": "docs/PLATFORM_STACK_V2.md",
+    "adr": "docs/adr/ADR-002-PLATFORM-STACK-AND-NATIVE-CLIENTS.md"
+  },
   "active_task": {
     "id": "P0-T1",
     "title": "Confirm regulatory and pyPSX Broker API operating model",
@@ -36,9 +54,14 @@
     {
       "feature": "personalized_ai_advice_production",
       "reason": "Requires regulatory treatment and adviser/partner acceptance"
+    },
+    {
+      "feature": "production_real_money_launch",
+      "reason": "Critical/high security audit remediation and runtime acceptance evidence do not yet exist"
     }
   ],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-product-assumptions-v2.md",
-  "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response and document regulated roles, API capabilities, sandbox access, funding, custody, market data, order, position, statement and webhook contracts.",
+  "open_security_remediation_issues": [1, 2, 3, 4, 5],
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-security-architecture-audit-v1.md",
+  "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response, then perform a Broker API contract/security review and update BrokerAdapter/data-flow/threat-model/acceptance evidence before real-money integration.",
   "last_updated": "2026-08-25"
 }
