@@ -5,8 +5,23 @@
   "engineering_governance": {
     "master_prompt": ".ai/MASTER_ENGINEERING_PROMPT.md",
     "version": 1,
-    "status": "ACTIVE"
+    "status": "ACTIVE",
+    "repository_governance": "docs/REPOSITORY_GOVERNANCE.md",
+    "licensing_model": "docs/REPOSITORY_LICENSING_MODEL.md",
+    "repository_model": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY",
+    "main_foundation_merge_sha": "f326e38bddb4e021954a966793f2bb86d2ab9922",
+    "main_branch_protection_status": "RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_ENABLED"
   },
+  "accepted_risks": [
+    {
+      "id": "F0-RISK-001",
+      "risk": "main branch protection/ruleset is not technically enabled",
+      "scope": "one-time merge sequence for PR #9 into F1, F1/F2 foundation into main through PR #6, and P0 due-diligence/state through PR #7",
+      "owner_direction_date": "2026-08-25",
+      "expires_before": "substantive production/security-sensitive implementation beyond the accepted generic foundation",
+      "required_follow_up": "Repository/org admin enables protected-main rules and required checks."
+    }
+  ],
   "product_direction": {
     "canonical_vision": "docs/PRODUCT_VISION_V2.md",
     "positioning": "AI Investment Operating System",
@@ -29,6 +44,7 @@
     "threat_model": "docs/THREAT_MODEL.md",
     "security_requirements": "docs/SECURITY.md",
     "auth_session_architecture": "docs/AUTH_SESSION_ARCHITECTURE_V1.md",
+    "p1_security_acceptance": "contracts/security/P1_SECURITY_ACCEPTANCE_V1.yaml",
     "audit_status": "ARCHITECTURE_AUDIT_COMPLETE_IMPLEMENTATION_NOT_VERIFIED"
   },
   "implementation_stack": {
@@ -44,7 +60,7 @@
   },
   "foundation_specification": {
     "version": 1,
-    "status": "READY_FOR_FUTURE_IMPLEMENTATION_TASK_NOT_ACTIVE",
+    "status": "GENERIC_FOUNDATION_MERGED_TO_MAIN_REAL_MONEY_NOT_AUTHORIZED",
     "database_domain_model": "docs/DOMAIN_DATABASE_MODEL_V1.md",
     "auth_session_architecture": "docs/AUTH_SESSION_ARCHITECTURE_V1.md",
     "authorization_matrix": "docs/AUTHORIZATION_MATRIX_V1.md",
@@ -53,8 +69,41 @@
     "openapi_contract": "contracts/openapi/klyvesta.v1.yaml",
     "broker_adapter_contract": "contracts/broker/BROKER_ADAPTER_V1.md",
     "implementation_plan": "docs/FOUNDATION_IMPLEMENTATION_PLAN_V1.md",
+    "paper_shadow_acceptance": "docs/PAPER_SHADOW_ACCEPTANCE_SPEC_V1.md",
+    "paper_broker_scenarios": "contracts/broker/PAPER_BROKER_SCENARIOS_V1.yaml",
+    "p1_implementation_backlog": "docs/P1_PAPER_SHADOW_IMPLEMENTATION_BACKLOG.md",
+    "p1_security_acceptance": "contracts/security/P1_SECURITY_ACCEPTANCE_V1.yaml",
     "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
-    "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md"
+    "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md",
+    "f2_persistence_checkpoint": ".ai/checkpoints/2026-08-25-f2-postgres-persistence.md"
+  },
+  "p0_operating_model": {
+    "status": "PARTIALLY_COMPLETE_WAITING_FOR_PARTNER_EVIDENCE",
+    "due_diligence": "docs/P0_PYPSX_OPERATING_MODEL_DUE_DILIGENCE.md",
+    "responsibility_raci": "docs/P0_PARTNER_RESPONSIBILITY_RACI.md",
+    "product_mode_eligibility": "docs/P0_PRODUCT_MODE_ELIGIBILITY.md",
+    "regulatory_function_classification": "docs/P0_REGULATORY_FUNCTION_CLASSIFICATION.md",
+    "digital_onboarding_aml_baseline": "docs/P0_DIGITAL_ONBOARDING_AML_OPERATING_BASELINE.md",
+    "investor_protection_complaints_baseline": "docs/P0_INVESTOR_PROTECTION_COMPLAINTS_BASELINE.md",
+    "privacy_data_governance_baseline": "docs/P0_PRIVACY_DATA_GOVERNANCE_BASELINE.md",
+    "launch_path_without_pypsx": "docs/P0_LAUNCH_PATH_WITHOUT_PYPSX.md",
+    "fallback_partner_strategy": "docs/P0_FALLBACK_PARTNER_STRATEGY.md",
+    "machine_feature_gates": ".ai/regulatory-feature-gates.json",
+    "pypsx_reply_status": "USER_CONFIRMED_NOT_RECEIVED_AS_OF_2026_08_25",
+    "live_broker_contract_verified": false,
+    "securities_manager_public_framework_minimum_client_investment_pkr": 5000000,
+    "small_ticket_guarded_auto_assumed_legal": false,
+    "ai_research_assumed_unregulated": false,
+    "personal_data_protection_act_2026_assumed_enacted": false,
+    "privacy_law_status_requires_prelaunch_recheck": true,
+    "fallback_partner_roles": [
+      "broker_execution",
+      "research",
+      "personalized_advice",
+      "discretionary_management",
+      "custody",
+      "market_data"
+    ]
   },
   "active_task": {
     "id": "P0-T1",
@@ -65,19 +114,57 @@
   "blocked_features": [
     {
       "feature": "guarded_auto_live_trading",
-      "reason": "Requires regulatory/licensing/partner acceptance and production broker capability evidence"
+      "reason": "Requires regulatory/licensing/partner acceptance, eligible-customer confirmation, mandate/custodian structure and production broker capability evidence"
     },
     {
       "feature": "personalized_ai_advice_production",
-      "reason": "Requires regulatory treatment and adviser/partner acceptance"
+      "reason": "Requires regulatory classification and accepted Securities Adviser or otherwise permitted partner path"
+    },
+    {
+      "feature": "regulated_ai_research_production",
+      "reason": "Current Research Analyst Regulations and responsible registered/permitted path must be mapped for the actual output type"
     },
     {
       "feature": "production_real_money_launch",
-      "reason": "Critical/high security audit remediation and runtime acceptance evidence do not yet exist"
+      "reason": "P0/P1/P2 acceptance and critical/high security runtime evidence do not yet exist"
+    },
+    {
+      "feature": "live_pypsx_adapter",
+      "reason": "pyPSX technical/commercial contract, authentication semantics, sandbox and failure contracts have not been received/verified"
+    },
+    {
+      "feature": "live_customer_onboarding_and_pii",
+      "reason": "Issue #8 requires regulated-person KYC/AML allocation, current obligation mapping, retention/privacy approval and provider/security evidence"
     }
   ],
-  "open_security_remediation_issues": [1, 2, 3, 4, 5],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-f2-postgres-persistence.md",
-  "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response, map the partner contract against contracts/broker/BROKER_ADAPTER_V1.md, and update BrokerAdapter/data-flow/threat-model/acceptance evidence before real-money integration.",
+  "parallel_work_allowed": [
+    "paper_broker_after_F0",
+    "paper_portfolio_after_data_rights_check",
+    "ai_shadow_after_F0_with_non_production_controls",
+    "security_and_resilience",
+    "client_shells_with_non_live_states",
+    "regulated_partner_due_diligence",
+    "digital_onboarding_and_aml_design",
+    "investor_protection_and_complaints_design",
+    "privacy_and_data_governance_design"
+  ],
+  "resolved_repository_governance_issues": [
+    {
+      "issue": 1,
+      "resolution": "OWNER_RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_IMPLEMENTED"
+    },
+    {
+      "issue": 2,
+      "resolution": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY_MODEL_APPROVED"
+    }
+  ],
+  "open_security_remediation_issues": [
+    3,
+    4,
+    5,
+    8
+  ],
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-main-foundation-p0-integration.md",
+  "next_action": "Continue P0-T1: obtain pyPSX Broker API technical/commercial onboarding response and map partner evidence against contracts/broker/BROKER_ADAPTER_V1.md, P0 RACI, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Separately, an org/repo admin must enable protected-main controls before substantive production/security-sensitive implementation beyond the accepted generic foundation.",
   "last_updated": "2026-08-25"
 }

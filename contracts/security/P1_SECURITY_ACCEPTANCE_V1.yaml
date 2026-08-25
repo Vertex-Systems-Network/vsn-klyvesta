@@ -1,0 +1,210 @@
+version: 1
+project: klyvesta
+scope: p1-paper-shadow
+status: specification_only
+
+zero_tolerance:
+  - id: SEC-ZT-001
+    condition: unauthorized_financial_command
+    expected: 0
+  - id: SEC-ZT-002
+    condition: cross_customer_resource_access
+    expected: 0
+  - id: SEC-ZT-003
+    condition: ai_direct_broker_execution
+    expected: 0
+  - id: SEC-ZT-004
+    condition: duplicate_financial_effect_from_replay
+    expected: 0
+  - id: SEC-ZT-005
+    condition: secret_or_restricted_pii_in_logs
+    expected: 0
+  - id: SEC-ZT-006
+    condition: ledger_imbalance
+    expected: 0
+
+checks:
+  - id: SEC-001
+    class: authentication
+    title: unauthenticated financial command denied
+    expected: DENY
+
+  - id: SEC-002
+    class: authorization
+    title: customer cannot access another customer's portfolio
+    expected: DENY
+
+  - id: SEC-003
+    class: authorization
+    title: customer cannot access another customer's order
+    expected: DENY
+
+  - id: SEC-004
+    class: authorization
+    title: package entitlement never grants staff or financial-authority role
+    expected: DENY
+
+  - id: SEC-005
+    class: staff_privilege
+    title: support agent cannot post ledger entries
+    expected: DENY
+
+  - id: SEC-006
+    class: staff_privilege
+    title: support agent cannot approve withdrawal or beneficiary
+    expected: DENY
+
+  - id: SEC-007
+    class: maker_checker
+    title: high-risk manual remediation cannot self-approve
+    expected: DENY
+
+  - id: SEC-008
+    class: account_recovery
+    title: recovered account cannot immediately perform restricted high-risk action
+    expected: HOLD_OR_STEP_UP
+
+  - id: SEC-009
+    class: idempotency
+    title: identical idempotency key and identical command returns prior result
+    expected: NO_NEW_EFFECT
+
+  - id: SEC-010
+    class: idempotency
+    title: identical idempotency key with different payload rejected
+    expected: CONFLICT
+
+  - id: SEC-011
+    class: replay
+    title: duplicate broker event does not duplicate fill or ledger posting
+    expected: NO_NEW_EFFECT
+
+  - id: SEC-012
+    class: input_validation
+    title: malformed financial decimal rejected before domain side effect
+    expected: REJECT
+
+  - id: SEC-013
+    class: input_validation
+    title: oversized or invalid external webhook body rejected
+    expected: REJECT
+
+  - id: SEC-014
+    class: external_dependency
+    title: ambiguous broker timeout never blind retries side-effecting command
+    expected: UNKNOWN_AND_RECONCILE
+
+  - id: SEC-015
+    class: market_data
+    title: stale critical market data blocks paper execution
+    expected: DENY
+
+  - id: SEC-016
+    class: ai_boundary
+    title: AI runtime has no broker credential or execution tool
+    expected: PASS
+
+  - id: SEC-017
+    class: ai_boundary
+    title: prompt-injected research content cannot bypass deterministic policy
+    expected: DENY
+
+  - id: SEC-018
+    class: ai_boundary
+    title: fabricated balance from model is ignored in favor of authoritative source
+    expected: PASS
+
+  - id: SEC-019
+    class: ai_boundary
+    title: AI proposal without valid mandate cannot create Auto order
+    expected: DENY
+
+  - id: SEC-020
+    class: risk
+    title: risk governor denial cannot be overridden by AI or client
+    expected: DENY
+
+  - id: SEC-021
+    class: compliance
+    title: compliance hold blocks new financial command
+    expected: DENY
+
+  - id: SEC-022
+    class: rate_limit
+    title: login and recovery abuse limited independently from read APIs
+    expected: THROTTLED
+
+  - id: SEC-023
+    class: rate_limit
+    title: order-intent abuse limited without corrupting idempotency semantics
+    expected: THROTTLED_SAFE
+
+  - id: SEC-024
+    class: secrets
+    title: repository scan contains no committed production credential material
+    expected: PASS
+
+  - id: SEC-025
+    class: logging
+    title: logs redact tokens CNIC bank details and broker secrets
+    expected: PASS
+
+  - id: SEC-026
+    class: dependency_security
+    title: dependency vulnerability audit has no unaccepted high_or_critical findings
+    expected: PASS
+
+  - id: SEC-027
+    class: static_analysis
+    title: CodeQL or approved SAST has no unresolved release-blocking finding
+    expected: PASS
+
+  - id: SEC-028
+    class: supply_chain
+    title: third-party CI actions are immutable-pinned or governed equivalent
+    expected: PASS
+
+  - id: SEC-029
+    class: data_integrity
+    title: forced database failure cannot leave half-posted journal
+    expected: ROLLBACK
+
+  - id: SEC-030
+    class: data_integrity
+    title: outbox and financial transaction commit atomically
+    expected: PASS
+
+  - id: SEC-031
+    class: reconciliation
+    title: critical mismatch freezes affected execution path until reviewed
+    expected: HOLD
+
+  - id: SEC-032
+    class: backup_recovery
+    title: restore test preserves ledger invariants and audit lineage
+    expected: PASS
+
+  - id: SEC-033
+    class: privacy
+    title: customer data export requires verified authenticated requester
+    expected: PASS
+
+  - id: SEC-034
+    class: privacy
+    title: account deletion cannot erase mandatory retained financial evidence
+    expected: POLICY_CONTROLLED
+
+  - id: SEC-035
+    class: incident_response
+    title: security incident can activate global trading kill switch in paper environment
+    expected: PASS
+
+  - id: SEC-036
+    class: complaints
+    title: complaint staff cannot silently rewrite order fill ledger or mandate history
+    expected: DENY
+
+release_gate:
+  require_all_zero_tolerance: true
+  require_all_checks_pass_or_formally_accepted_exception: true
+  live_money_authorized_by_this_catalogue: false

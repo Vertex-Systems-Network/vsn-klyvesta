@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "project": "Klyvesta",
+  "as_of": "2026-08-25",
+  "principle": "Commercial entitlement does not create regulatory or execution authority.",
+  "classes": {
+    "education": {
+      "code": "E",
+      "production_default": "REVIEW_REQUIRED",
+      "authority": "non-advisory/non-research scope must be confirmed for implementation"
+    },
+    "research": {
+      "code": "R",
+      "production_default": "OFF",
+      "authority": "current Research Analyst Regulations / responsible registered or otherwise permitted path must be documented"
+    },
+    "personalized_advice": {
+      "code": "A",
+      "production_default": "OFF",
+      "authority": "accepted Securities Adviser or otherwise permitted regulated partner path required"
+    },
+    "discretionary_management": {
+      "code": "D",
+      "production_default": "OFF",
+      "authority": "accepted Securities Manager/licensed partner path, eligibility and custodian/mandate requirements required"
+    }
+  },
+  "product_modes": {
+    "manual": {
+      "live_status": "WAITING_FOR_BROKER",
+      "requires": [
+        "P0_REGULATORY_BROKER",
+        "P1_PAPER_SHADOW",
+        "P2_MANUAL_REAL_MONEY"
+      ]
+    },
+    "ai_assisted": {
+      "live_status": "REGULATORY_REVIEW",
+      "requires": [
+        "P2_MANUAL_REAL_MONEY",
+        "P3_AI_ASSISTED"
+      ]
+    },
+    "guarded_auto": {
+      "live_status": "REGULATORY_REVIEW",
+      "requires": [
+        "P3_AI_ASSISTED",
+        "P4_GUARDED_AUTO"
+      ]
+    }
+  },
+  "engineering_lanes": {
+    "foundation": "ALLOWED_AFTER_REPOSITORY_GOVERNANCE",
+    "paper_broker": "ALLOWED_AFTER_REPOSITORY_GOVERNANCE",
+    "paper_portfolio": "ALLOWED_AFTER_REPOSITORY_GOVERNANCE_AND_DATA_RIGHTS_CHECK",
+    "ai_shadow": "ALLOWED_AFTER_REPOSITORY_GOVERNANCE_AND_NON_PRODUCTION_CONTROLS",
+    "live_pypsx_adapter": "BLOCKED_PENDING_PARTNER_CONTRACT_AND_SANDBOX",
+    "live_personalized_ai": "BLOCKED_PENDING_ADVISORY_PATH",
+    "live_discretionary_auto": "BLOCKED_PENDING_SECURITIES_MANAGER_PATH_AND_ACCEPTANCE"
+  },
+  "hard_denies": [
+    "guaranteed_profit_claim",
+    "zero_loss_claim",
+    "risk_free_claim",
+    "subscription_implies_trade_authority",
+    "ai_direct_broker_execution",
+    "live_broker_behavior_from_unverified_assumptions",
+    "customer_money_in_normal_platform_operating_account_without_approved_structure"
+  ]
+}

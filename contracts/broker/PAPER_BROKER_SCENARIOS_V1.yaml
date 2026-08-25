@@ -1,0 +1,140 @@
+version: 1
+contract: PaperBrokerScenarios
+live_broker_emulation_claimed: false
+
+zero_tolerance:
+  ledger_imbalance: 0
+  duplicate_execution_financial_effect: 0
+  duplicate_command_financial_effect: 0
+  unauthorized_broker_call: 0
+  auto_order_without_valid_mandate: 0
+  fabricated_fill: 0
+  ai_direct_execution: 0
+
+scenarios:
+  - id: PB-001
+    name: full_fill
+    expected:
+      final_state: FILLED
+      financial_effects: exactly_once
+      ledger_balanced: true
+
+  - id: PB-002
+    name: rejected_order
+    expected:
+      final_state: REJECTED
+      fills: 0
+      executed_position_change: false
+
+  - id: PB-003
+    name: partial_fill
+    expected:
+      interim_state: PARTIALLY_FILLED
+      apply_only_filled_quantity: true
+      remaining_reservation_exact: true
+
+  - id: PB-004
+    name: multiple_fills
+    expected:
+      deduplicate_execution_ids: true
+      aggregate_quantity_exact: true
+
+  - id: PB-005
+    name: duplicate_command
+    expected:
+      same_key_same_payload: RETURN_EXISTING
+      same_key_different_payload: CONFLICT
+      financial_effects: exactly_once
+
+  - id: PB-006
+    name: timeout_before_side_effect
+    expected:
+      retry_only_if_contract_safe: true
+      duplicate_effect: false
+
+  - id: PB-007
+    name: ambiguous_timeout_after_possible_side_effect
+    expected:
+      normalized_result: UNKNOWN
+      blind_retry: false
+      reconciliation_required: true
+      financial_effects: exactly_once
+
+  - id: PB-008
+    name: cancel_before_fill
+    expected:
+      final_state: CANCELLED
+      fills: 0
+      reservation_release_exact: true
+
+  - id: PB-009
+    name: fill_cancel_race
+    expected:
+      filled_quantity_authoritative: true
+      cancel_remaining_only: true
+      reconciliation_required: true
+
+  - id: PB-010
+    name: duplicate_broker_event
+    expected:
+      deduplicate: true
+      duplicate_financial_effect: false
+
+  - id: PB-011
+    name: out_of_order_events
+    expected:
+      authoritative_state_must_not_regress: true
+
+  - id: PB-012
+    name: stale_market_data
+    expected:
+      auto_execution: DENY_OR_HOLD
+      broker_call: false
+
+  - id: PB-013
+    name: market_closed
+    expected:
+      execute_as_open_market: false
+
+  - id: PB-014
+    name: broker_unavailable
+    expected:
+      fabricated_fill: false
+      observable_health_failure: true
+
+  - id: PB-015
+    name: reconciliation_mismatch
+    expected:
+      silent_correction: false
+      exception_created: true
+      affected_auto_scope_can_pause: true
+
+  - id: PB-016
+    name: ledger_persistence_failure
+    expected:
+      partially_posted_unbalanced_journal: false
+      recoverable_exception_state: true
+
+  - id: PB-017
+    name: unauthorized_customer_resource
+    expected:
+      broker_call: false
+      authorization_result: DENY
+
+  - id: PB-018
+    name: auto_without_mandate
+    expected:
+      broker_call: false
+      mandate_result: DENY
+
+  - id: PB-019
+    name: risk_breach
+    expected:
+      broker_call_when_denied: false
+      ai_override_allowed: false
+
+  - id: PB-020
+    name: compliance_hold
+    expected:
+      broker_call: false
+      support_override_allowed: false
