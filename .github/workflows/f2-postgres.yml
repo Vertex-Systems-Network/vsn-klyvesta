@@ -6,6 +6,8 @@ on:
       - "foundation/f2-postgres-persistence"
     paths:
       - ".github/workflows/*.yml"
+      - ".ai/state.json"
+      - ".ai/checkpoints/**"
       - ".config/dotnet-tools.json"
       - "Directory.Packages.props"
       - "src/Klyvesta.Infrastructure/**"
