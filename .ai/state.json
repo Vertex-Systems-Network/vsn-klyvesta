@@ -25,8 +25,10 @@
   "security_architecture": {
     "audit": "docs/SECURITY_ARCHITECTURE_AUDIT_V1.md",
     "authorization_model": "docs/AUTHORIZATION_PRIVILEGE_MODEL.md",
+    "authorization_matrix": "docs/AUTHORIZATION_MATRIX_V1.md",
     "threat_model": "docs/THREAT_MODEL.md",
     "security_requirements": "docs/SECURITY.md",
+    "auth_session_architecture": "docs/AUTH_SESSION_ARCHITECTURE_V1.md",
     "audit_status": "ARCHITECTURE_AUDIT_COMPLETE_IMPLEMENTATION_NOT_VERIFIED"
   },
   "implementation_stack": {
@@ -36,9 +38,23 @@
     "windows": "C# + .NET 10 LTS + WinUI 3 + signed MSIX",
     "financial_core": "C# + .NET 10 LTS / ASP.NET Core",
     "ai_quant": "Python 3.13 initially",
-    "database": "PostgreSQL",
+    "database": "PostgreSQL 18.x supported patched release",
     "canonical_stack_doc": "docs/PLATFORM_STACK_V2.md",
     "adr": "docs/adr/ADR-002-PLATFORM-STACK-AND-NATIVE-CLIENTS.md"
+  },
+  "foundation_specification": {
+    "version": 1,
+    "status": "READY_FOR_FUTURE_IMPLEMENTATION_TASK_NOT_ACTIVE",
+    "database_domain_model": "docs/DOMAIN_DATABASE_MODEL_V1.md",
+    "auth_session_architecture": "docs/AUTH_SESSION_ARCHITECTURE_V1.md",
+    "authorization_matrix": "docs/AUTHORIZATION_MATRIX_V1.md",
+    "state_machines": "docs/ORDER_LEDGER_STATE_MACHINES_V1.md",
+    "api_baseline": "docs/API_CONTRACT_BASELINE_V1.md",
+    "openapi_contract": "contracts/openapi/klyvesta.v1.yaml",
+    "broker_adapter_contract": "contracts/broker/BROKER_ADAPTER_V1.md",
+    "implementation_plan": "docs/FOUNDATION_IMPLEMENTATION_PLAN_V1.md",
+    "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
+    "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md"
   },
   "active_task": {
     "id": "P0-T1",
@@ -61,7 +77,7 @@
     }
   ],
   "open_security_remediation_issues": [1, 2, 3, 4, 5],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-security-architecture-audit-v1.md",
-  "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response, then perform a Broker API contract/security review and update BrokerAdapter/data-flow/threat-model/acceptance evidence before real-money integration.",
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-foundation-specification-v1.md",
+  "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response, map the partner contract against contracts/broker/BROKER_ADAPTER_V1.md, and update BrokerAdapter/data-flow/threat-model/acceptance evidence before real-money integration.",
   "last_updated": "2026-08-25"
 }
