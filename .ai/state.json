@@ -56,6 +56,20 @@
     "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
     "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md"
   },
+  "p0_operating_model": {
+    "status": "PARTIALLY_COMPLETE_WAITING_FOR_PARTNER_EVIDENCE",
+    "due_diligence": "docs/P0_PYPSX_OPERATING_MODEL_DUE_DILIGENCE.md",
+    "responsibility_raci": "docs/P0_PARTNER_RESPONSIBILITY_RACI.md",
+    "product_mode_eligibility": "docs/P0_PRODUCT_MODE_ELIGIBILITY.md",
+    "regulatory_function_classification": "docs/P0_REGULATORY_FUNCTION_CLASSIFICATION.md",
+    "launch_path_without_pypsx": "docs/P0_LAUNCH_PATH_WITHOUT_PYPSX.md",
+    "machine_feature_gates": ".ai/regulatory-feature-gates.json",
+    "pypsx_reply_status": "USER_CONFIRMED_NOT_RECEIVED_AS_OF_2026_08_25",
+    "live_broker_contract_verified": false,
+    "securities_manager_public_framework_minimum_client_investment_pkr": 5000000,
+    "small_ticket_guarded_auto_assumed_legal": false,
+    "ai_research_assumed_unregulated": false
+  },
   "active_task": {
     "id": "P0-T1",
     "title": "Confirm regulatory and pyPSX Broker API operating model",
@@ -65,19 +79,36 @@
   "blocked_features": [
     {
       "feature": "guarded_auto_live_trading",
-      "reason": "Requires regulatory/licensing/partner acceptance and production broker capability evidence"
+      "reason": "Requires regulatory/licensing/partner acceptance, eligible-customer confirmation, mandate/custodian structure and production broker capability evidence"
     },
     {
       "feature": "personalized_ai_advice_production",
-      "reason": "Requires regulatory treatment and adviser/partner acceptance"
+      "reason": "Requires regulatory classification and accepted Securities Adviser or otherwise permitted partner path"
+    },
+    {
+      "feature": "regulated_ai_research_production",
+      "reason": "Current Research Analyst Regulations and responsible registered/permitted path must be mapped for the actual output type"
     },
     {
       "feature": "production_real_money_launch",
-      "reason": "Critical/high security audit remediation and runtime acceptance evidence do not yet exist"
+      "reason": "P0/P1/P2 acceptance and critical/high security runtime evidence do not yet exist"
+    },
+    {
+      "feature": "live_pypsx_adapter",
+      "reason": "pyPSX technical/commercial contract, authentication semantics, sandbox and failure contracts have not been received/verified"
     }
   ],
+  "parallel_work_allowed": [
+    "repository_governance",
+    "generic_foundation_after_F0",
+    "paper_broker_after_F0",
+    "paper_portfolio_after_data_rights_check",
+    "ai_shadow_after_F0_with_non_production_controls",
+    "security_and_resilience",
+    "client_shells_with_non_live_states"
+  ],
   "open_security_remediation_issues": [1, 2, 3, 4, 5],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-foundation-specification-v1.md",
-  "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response, map the partner contract against contracts/broker/BROKER_ADAPTER_V1.md, and update BrokerAdapter/data-flow/threat-model/acceptance evidence before real-money integration.",
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-p0-pypsx-operating-model.md",
+  "next_action": "Resolve repository governance Issues #1/#2 so generic foundation work can safely merge; continue P0 regulatory evidence and paper/shadow preparation in parallel; when pyPSX replies, map partner evidence to the P0 RACI/capability matrix and BrokerAdapter contract before any live integration.",
   "last_updated": "2026-08-25"
 }
