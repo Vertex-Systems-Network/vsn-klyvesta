@@ -1,0 +1,66 @@
+name: security-baseline
+
+on:
+  push:
+    branches:
+      - "security/**"
+    paths:
+      - ".github/workflows/security-baseline.yml"
+      - ".ai/checkpoints/**"
+      - "Directory.Build.props"
+      - "Directory.Packages.props"
+      - "src/Klyvesta.Domain/**"
+      - "tests/Klyvesta.Security.Tests/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/security-baseline.yml"
+      - ".ai/checkpoints/**"
+      - "Directory.Build.props"
+      - "Directory.Packages.props"
+      - "src/Klyvesta.Domain/**"
+      - "tests/Klyvesta.Security.Tests/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-baseline-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  NUGET_XMLDOC_MODE: skip
+
+jobs:
+  security-policy-tests:
+    name: Security policy tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Restore security tests
+        run: dotnet restore tests/Klyvesta.Security.Tests/Klyvesta.Security.Tests.csproj
+
+      - name: Verify formatting
+        run: |
+          dotnet format src/Klyvesta.Domain/Klyvesta.Domain.csproj --verify-no-changes --no-restore
+          dotnet format tests/Klyvesta.Security.Tests/Klyvesta.Security.Tests.csproj --verify-no-changes --no-restore
+
+      - name: Build security tests
+        run: dotnet build tests/Klyvesta.Security.Tests/Klyvesta.Security.Tests.csproj --configuration Release --no-restore
+
+      - name: Run security tests
+        run: dotnet test tests/Klyvesta.Security.Tests/Klyvesta.Security.Tests.csproj --configuration Release --no-build --logger "console;verbosity=normal"
