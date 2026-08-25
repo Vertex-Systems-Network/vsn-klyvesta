@@ -15,6 +15,12 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
 
     internal DbSet<SecuritySessionRecord> SecuritySessions => Set<SecuritySessionRecord>();
 
+    internal DbSet<WithdrawalBeneficiaryVersionRecord> WithdrawalBeneficiaryVersions => Set<WithdrawalBeneficiaryVersionRecord>();
+
+    internal DbSet<WithdrawalRequestRecord> Withdrawals => Set<WithdrawalRequestRecord>();
+
+    internal DbSet<WithdrawalAuthorizationRecord> WithdrawalAuthorizations => Set<WithdrawalAuthorizationRecord>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
@@ -24,6 +30,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         ConfigureOutbox(modelBuilder);
         ConfigureSecurityDevice(modelBuilder);
         ConfigureSecuritySession(modelBuilder);
+        WithdrawalPersistenceConfiguration.Configure(modelBuilder);
     }
 
     private static void ConfigureIdempotency(ModelBuilder modelBuilder)
