@@ -189,4 +189,6 @@ BEGIN
 END
 $$;
 
+\ir f5_security_session_constraints.sql
+
 ROLLBACK;
