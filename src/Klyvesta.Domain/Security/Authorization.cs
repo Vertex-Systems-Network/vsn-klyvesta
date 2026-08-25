@@ -121,9 +121,17 @@ public static class AuthorizationEvaluator
 {
     public static SecurityDecision Evaluate(SecurityPrincipal principal, AuthorizationRequest request)
     {
+        ArgumentNullException.ThrowIfNull(principal);
+        ArgumentNullException.ThrowIfNull(request);
+
         if (!request.IsAuthenticated || request.SessionState is SecuritySessionState.Revoked or SecuritySessionState.Expired)
         {
             return SecurityDecision.Deny(SecurityDenialReason.AuthRequired);
+        }
+
+        if (!IsRoleCompatibleWithPrincipalType(principal.Type, principal.Role))
+        {
+            return SecurityDecision.Deny(SecurityDenialReason.RoleDenied);
         }
 
         if (request.SessionState is SecuritySessionState.Restricted && IsHighRiskAction(request.Action))
@@ -171,6 +179,37 @@ public static class AuthorizationEvaluator
 
         return SecurityDecision.Allow();
     }
+
+    private static bool IsRoleCompatibleWithPrincipalType(PrincipalType principalType, SecurityRole role) => principalType switch
+    {
+        PrincipalType.Customer => role is SecurityRole.Investor,
+        PrincipalType.Staff => role is
+            SecurityRole.SupportL1 or
+            SecurityRole.SupportL2 or
+            SecurityRole.KycAnalyst or
+            SecurityRole.AmlAnalyst or
+            SecurityRole.ComplianceOfficer or
+            SecurityRole.RiskAnalyst or
+            SecurityRole.RiskApprover or
+            SecurityRole.ReconciliationOperator or
+            SecurityRole.ReconciliationApprover or
+            SecurityRole.SecurityAnalyst or
+            SecurityRole.PlatformAdmin or
+            SecurityRole.Sre or
+            SecurityRole.Auditor,
+        PrincipalType.Service => role is
+            SecurityRole.AiCoach or
+            SecurityRole.ResearchAgent or
+            SecurityRole.PortfolioAgent or
+            SecurityRole.RebalanceAgent or
+            SecurityRole.RiskGovernor or
+            SecurityRole.ComplianceGate or
+            SecurityRole.ExecutionValidator or
+            SecurityRole.BrokerAdapter or
+            SecurityRole.NotificationService or
+            SecurityRole.ReconciliationWorker,
+        _ => false,
+    };
 
     private static bool IsRoleAllowed(SecurityRole role, SecurityAction action) => role switch
     {
