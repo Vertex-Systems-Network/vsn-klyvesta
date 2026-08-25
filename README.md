@@ -23,7 +23,15 @@ The first acceptance gate is regulatory + broker fit:
 - Regulatory treatment of discretionary/automatic portfolio management confirmed.
 - Required adviser/securities-manager licence or licensed partner arrangement confirmed.
 
+## Engineering governance
+
+All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read the machine-readable project state, guardrails, acceptance gates, and latest checkpoint before implementation.
+
+Repository evidence, tests, documentation, and Git history are the source of truth; chat memory is not.
+
 See:
+- `AGENTS.md`
+- `.ai/MASTER_ENGINEERING_PROMPT.md`
 - `AI-PLAN.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
 - `docs/ARCHITECTURE.md`
