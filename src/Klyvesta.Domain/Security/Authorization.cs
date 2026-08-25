@@ -124,7 +124,9 @@ public static class AuthorizationEvaluator
         ArgumentNullException.ThrowIfNull(principal);
         ArgumentNullException.ThrowIfNull(request);
 
-        if (!request.IsAuthenticated || request.SessionState is SecuritySessionState.Revoked or SecuritySessionState.Expired)
+        if (!request.IsAuthenticated ||
+            principal.PrincipalId == Guid.Empty ||
+            request.SessionState is SecuritySessionState.Revoked or SecuritySessionState.Expired)
         {
             return SecurityDecision.Deny(SecurityDenialReason.AuthRequired);
         }
@@ -146,7 +148,11 @@ public static class AuthorizationEvaluator
 
         if (principal.Type is PrincipalType.Customer && RequiresCustomerOwnership(request.Action))
         {
-            if (principal.CustomerId is null || request.ResourceCustomerId is null || principal.CustomerId != request.ResourceCustomerId)
+            if (principal.CustomerId is null ||
+                principal.CustomerId == Guid.Empty ||
+                request.ResourceCustomerId is null ||
+                request.ResourceCustomerId == Guid.Empty ||
+                principal.CustomerId != request.ResourceCustomerId)
             {
                 return SecurityDecision.Deny(SecurityDenialReason.ResourceNotFoundOrForbidden);
             }
@@ -172,7 +178,8 @@ public static class AuthorizationEvaluator
             return SecurityDecision.Deny(SecurityDenialReason.FeatureNotLegallyAvailable);
         }
 
-        if (request.RequiredEntitlement is not null && !principal.Entitlements.Contains(request.RequiredEntitlement))
+        if (request.RequiredEntitlement is not null &&
+            (principal.Entitlements is null || !principal.Entitlements.Contains(request.RequiredEntitlement)))
         {
             return SecurityDecision.Deny(SecurityDenialReason.FeatureNotEntitled);
         }

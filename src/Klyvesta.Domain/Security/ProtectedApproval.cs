@@ -26,6 +26,14 @@ public sealed class ProtectedApproval
             throw new ArgumentException("Proposer identifier must be non-empty.", nameof(proposedByPrincipalId));
         }
 
+        var expectedRole = GetExpectedApproverRole(action);
+        if (requiredApproverRole != expectedRole)
+        {
+            throw new ArgumentException(
+                $"Action {action} requires approver role {expectedRole}.",
+                nameof(requiredApproverRole));
+        }
+
         ProposalId = proposalId;
         Action = action;
         ProposedByPrincipalId = proposedByPrincipalId;
@@ -69,6 +77,11 @@ public sealed class ProtectedApproval
             return SecurityDecision.Deny(SecurityDenialReason.RoleDenied);
         }
 
+        if (approver.PrincipalId == Guid.Empty)
+        {
+            return SecurityDecision.Deny(SecurityDenialReason.AuthRequired);
+        }
+
         if (approver.PrincipalId == ProposedByPrincipalId)
         {
             return SecurityDecision.Deny(SecurityDenialReason.MakerCheckerViolation);
@@ -79,4 +92,14 @@ public sealed class ProtectedApproval
         ApprovedAt = now;
         return SecurityDecision.Allow();
     }
+
+    private static SecurityRole GetExpectedApproverRole(SecurityAction action) => action switch
+    {
+        SecurityAction.ApproveFinancialCorrection => SecurityRole.ReconciliationApprover,
+        SecurityAction.ApproveRiskPolicyChange => SecurityRole.RiskApprover,
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(action),
+            action,
+            "The action is not configured for protected maker-checker approval."),
+    };
 }
