@@ -25,6 +25,8 @@ The first acceptance gate is regulatory + broker fit:
 - Regulatory treatment of discretionary/automatic portfolio management confirmed.
 - Required adviser/securities-manager licence or licensed partner arrangement confirmed.
 
+The implementation foundation has now been specified, but it is **not an active implementation task** until canonical state/owner direction explicitly activates it within the acceptance gates.
+
 ## Engineering governance
 
 All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read the machine-readable project state, guardrails, acceptance gates, and latest checkpoint before implementation.
@@ -44,9 +46,30 @@ Repository evidence, tests, documentation, and Git history are the source of tru
 - `docs/AI_AGENTS.md`
 - `docs/RISK_COMPLIANCE.md`
 - `docs/SECURITY.md`
+- `docs/SECURITY_ARCHITECTURE_AUDIT_V1.md`
+- `docs/THREAT_MODEL.md`
+- `docs/PLATFORM_STACK_V2.md`
 - `docs/DESIGN_SYSTEM.md`
 - `docs/QA_PERFORMANCE.md`
 - `docs/ROADMAP.md`
+
+## Implementation foundation V1
+
+- `docs/DOMAIN_DATABASE_MODEL_V1.md`
+- `docs/AUTH_SESSION_ARCHITECTURE_V1.md`
+- `docs/AUTHORIZATION_PRIVILEGE_MODEL.md`
+- `docs/AUTHORIZATION_MATRIX_V1.md`
+- `docs/ORDER_LEDGER_STATE_MACHINES_V1.md`
+- `docs/API_CONTRACT_BASELINE_V1.md`
+- `contracts/openapi/klyvesta.v1.yaml`
+- `contracts/broker/BROKER_ADAPTER_V1.md`
+- `docs/FOUNDATION_IMPLEMENTATION_PLAN_V1.md`
+
+Accepted planning ADRs:
+- `docs/adr/ADR-001-AI-CANNOT-EXECUTE-DIRECTLY.md`
+- `docs/adr/ADR-002-PLATFORM-STACK-AND-NATIVE-CLIENTS.md`
+- `docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md`
+- `docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md`
 
 ## Canonical AI engineering state
 
@@ -55,4 +78,4 @@ Repository evidence, tests, documentation, and Git history are the source of tru
 - `.ai/state.json`
 - `.ai/guardrails.md`
 - `.ai/acceptance-gates.yaml`
-- latest file under `.ai/checkpoints/`
+- latest checkpoint path is recorded in `.ai/state.json`
