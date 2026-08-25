@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Klyvesta.Domain</RootNamespace>
+    <AssemblyName>Klyvesta.Domain</AssemblyName>
+  </PropertyGroup>
+</Project>

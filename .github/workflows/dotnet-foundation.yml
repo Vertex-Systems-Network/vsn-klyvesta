@@ -1,0 +1,77 @@
+name: dotnet-foundation
+
+on:
+  push:
+    branches:
+      - "foundation/**"
+    paths:
+      - ".github/workflows/dotnet-foundation.yml"
+      - "global.json"
+      - "Directory.Build.props"
+      - "Directory.Packages.props"
+      - "NuGet.config"
+      - "src/**"
+      - "tools/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/dotnet-foundation.yml"
+      - "global.json"
+      - "Directory.Build.props"
+      - "Directory.Packages.props"
+      - "NuGet.config"
+      - "src/**"
+      - "tools/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dotnet-foundation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  NUGET_XMLDOC_MODE: skip
+
+jobs:
+  build-and-verify:
+    name: Build and architecture verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Display SDK information
+        run: dotnet --info
+
+      - name: Restore API graph
+        run: dotnet restore src/Klyvesta.Api/Klyvesta.Api.csproj
+
+      - name: Restore architecture verifier
+        run: dotnet restore tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj
+
+      - name: Verify formatting
+        run: |
+          dotnet format src/Klyvesta.Api/Klyvesta.Api.csproj --verify-no-changes --no-restore
+          dotnet format tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --verify-no-changes --no-restore
+
+      - name: Build API graph
+        run: dotnet build src/Klyvesta.Api/Klyvesta.Api.csproj --configuration Release --no-restore
+
+      - name: Build architecture verifier
+        run: dotnet build tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-restore
+
+      - name: Verify architecture boundaries
+        run: dotnet run --project tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-build

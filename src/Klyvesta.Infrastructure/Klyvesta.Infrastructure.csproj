@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Klyvesta.Infrastructure</RootNamespace>
+    <AssemblyName>Klyvesta.Infrastructure</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Klyvesta.Domain/Klyvesta.Domain.csproj" />
+    <ProjectReference Include="../Klyvesta.Application/Klyvesta.Application.csproj" />
+  </ItemGroup>
+</Project>
