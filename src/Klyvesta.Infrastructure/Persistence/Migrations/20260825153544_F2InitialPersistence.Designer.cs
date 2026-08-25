@@ -41,6 +41,7 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     b.HasIndex("Scope", "Key").IsUnique().HasDatabaseName("ux_idempotency_record_scope_key");
                     b.ToTable("idempotency_record", "ops", t =>
                         {
+                            t.HasCheckConstraint("ck_idempotency_record_completion_chronology", "completed_at IS NULL OR completed_at >= created_at");
                             t.HasCheckConstraint("ck_idempotency_record_expiry", "expires_at > created_at");
                             t.HasCheckConstraint("ck_idempotency_record_state", "state IN ('in_progress', 'completed', 'failed')");
                         });
@@ -61,6 +62,7 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                     b.HasIndex("State", "ReceivedAt").HasDatabaseName("ix_inbox_message_state_received_at");
                     b.ToTable("inbox_message", "ops", t =>
                         {
+                            t.HasCheckConstraint("ck_inbox_message_processing_chronology", "processed_at IS NULL OR processed_at >= received_at");
                             t.HasCheckConstraint("ck_inbox_message_state", "state IN ('received', 'processing', 'processed', 'failed')");
                         });
                 });
