@@ -35,6 +35,7 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_idempotency_record", x => x.id);
+                    table.CheckConstraint("ck_idempotency_record_completion_chronology", "completed_at IS NULL OR completed_at >= created_at");
                     table.CheckConstraint("ck_idempotency_record_expiry", "expires_at > created_at");
                     table.CheckConstraint("ck_idempotency_record_state", "state IN ('in_progress', 'completed', 'failed')");
                 });
@@ -56,6 +57,7 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_inbox_message", x => x.id);
+                    table.CheckConstraint("ck_inbox_message_processing_chronology", "processed_at IS NULL OR processed_at >= received_at");
                     table.CheckConstraint("ck_inbox_message_state", "state IN ('received', 'processing', 'processed', 'failed')");
                 });
 
