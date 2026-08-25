@@ -5,7 +5,7 @@ on:
     branches:
       - "foundation/f2-postgres-persistence"
     paths:
-      - ".github/workflows/f2-postgres.yml"
+      - ".github/workflows/*.yml"
       - ".config/dotnet-tools.json"
       - "Directory.Packages.props"
       - "src/Klyvesta.Infrastructure/**"
