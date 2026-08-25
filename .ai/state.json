@@ -10,11 +10,7 @@
   "product_direction": {
     "canonical_vision": "docs/PRODUCT_VISION_V2.md",
     "positioning": "AI Investment Operating System",
-    "customer_modes": [
-      "manual",
-      "ai_assisted",
-      "guarded_auto"
-    ],
+    "customer_modes": ["manual", "ai_assisted", "guarded_auto"],
     "ai_package_plan": "docs/AI_AGENT_PACKAGES.md",
     "investment_timeline_plan": "docs/INVESTMENT_EVENT_NOTIFICATIONS.md",
     "competitive_benchmark": "docs/COMPETITIVE_POSITIONING.md",
@@ -53,6 +49,8 @@
     "openapi_contract": "contracts/openapi/klyvesta.v1.yaml",
     "broker_adapter_contract": "contracts/broker/BROKER_ADAPTER_V1.md",
     "implementation_plan": "docs/FOUNDATION_IMPLEMENTATION_PLAN_V1.md",
+    "paper_shadow_acceptance": "docs/PAPER_SHADOW_ACCEPTANCE_SPEC_V1.md",
+    "paper_broker_scenarios": "contracts/broker/PAPER_BROKER_SCENARIOS_V1.yaml",
     "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
     "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md"
   },
@@ -63,12 +61,14 @@
     "product_mode_eligibility": "docs/P0_PRODUCT_MODE_ELIGIBILITY.md",
     "regulatory_function_classification": "docs/P0_REGULATORY_FUNCTION_CLASSIFICATION.md",
     "launch_path_without_pypsx": "docs/P0_LAUNCH_PATH_WITHOUT_PYPSX.md",
+    "fallback_partner_strategy": "docs/P0_FALLBACK_PARTNER_STRATEGY.md",
     "machine_feature_gates": ".ai/regulatory-feature-gates.json",
     "pypsx_reply_status": "USER_CONFIRMED_NOT_RECEIVED_AS_OF_2026_08_25",
     "live_broker_contract_verified": false,
     "securities_manager_public_framework_minimum_client_investment_pkr": 5000000,
     "small_ticket_guarded_auto_assumed_legal": false,
-    "ai_research_assumed_unregulated": false
+    "ai_research_assumed_unregulated": false,
+    "fallback_partner_roles": ["broker_execution", "research", "personalized_advice", "discretionary_management", "custody", "market_data"]
   },
   "active_task": {
     "id": "P0-T1",
@@ -105,10 +105,11 @@
     "paper_portfolio_after_data_rights_check",
     "ai_shadow_after_F0_with_non_production_controls",
     "security_and_resilience",
-    "client_shells_with_non_live_states"
+    "client_shells_with_non_live_states",
+    "regulated_partner_due_diligence"
   ],
   "open_security_remediation_issues": [1, 2, 3, 4, 5],
   "latest_checkpoint": ".ai/checkpoints/2026-08-25-p0-pypsx-operating-model.md",
-  "next_action": "Resolve repository governance Issues #1/#2 so generic foundation work can safely merge; continue P0 regulatory evidence and paper/shadow preparation in parallel; when pyPSX replies, map partner evidence to the P0 RACI/capability matrix and BrokerAdapter contract before any live integration.",
+  "next_action": "Owner/admin resolves repository governance Issues #1/#2; engineering then merges/continues generic foundation and paper/shadow work. In parallel evaluate regulated fallback partner roles. When pyPSX replies, map partner evidence to P0 RACI/capability matrix and BrokerAdapter before live integration.",
   "last_updated": "2026-08-25"
 }
