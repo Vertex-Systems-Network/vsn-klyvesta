@@ -82,6 +82,88 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("ck_outbox_attempt_count", "attempt_count >= 0");
                         });
                 });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.SecurityDeviceRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<string>("IntegrityState").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("integrity_state");
+                    b.Property<DateTimeOffset>("LastSeenAt").HasColumnType("timestamp with time zone").HasColumnName("last_seen_at");
+                    b.Property<Guid>("PrincipalId").HasColumnType("uuid").HasColumnName("principal_id");
+                    b.Property<string>("PrincipalType").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("principal_type");
+                    b.Property<DateTimeOffset>("RegisteredAt").HasColumnType("timestamp with time zone").HasColumnName("registered_at");
+                    b.Property<DateTimeOffset?>("RestrictedAt").HasColumnType("timestamp with time zone").HasColumnName("restricted_at");
+                    b.Property<string>("RestrictionReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("restriction_reason");
+                    b.Property<DateTimeOffset?>("RevokedAt").HasColumnType("timestamp with time zone").HasColumnName("revoked_at");
+                    b.Property<string>("RevocationReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("revocation_reason");
+                    b.Property<string>("TrustState").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("trust_state");
+                    b.HasKey("Id").HasName("pk_security_device");
+                    b.HasAlternateKey("Id", "PrincipalId", "PrincipalType").HasName("ak_security_device_identity");
+                    b.HasIndex("LastSeenAt").HasDatabaseName("ix_security_device_last_seen_at");
+                    b.HasIndex("PrincipalId", "TrustState").HasDatabaseName("ix_security_device_principal_state");
+                    b.ToTable("security_device", "identity", t =>
+                        {
+                            t.HasCheckConstraint("ck_security_device_integrity_state", "integrity_state IN ('unknown', 'meets_baseline', 'degraded', 'failed')");
+                            t.HasCheckConstraint("ck_security_device_last_seen_chronology", "last_seen_at >= registered_at");
+                            t.HasCheckConstraint("ck_security_device_principal_type", "principal_type IN ('customer', 'staff', 'service')");
+                            t.HasCheckConstraint("ck_security_device_restriction_chronology", "restricted_at IS NULL OR restricted_at >= registered_at");
+                            t.HasCheckConstraint("ck_security_device_restriction_pair", "(restricted_at IS NULL AND restriction_reason IS NULL) OR (restricted_at IS NOT NULL AND restriction_reason IS NOT NULL)");
+                            t.HasCheckConstraint("ck_security_device_revocation_chronology", "revoked_at IS NULL OR revoked_at >= registered_at");
+                            t.HasCheckConstraint("ck_security_device_revocation_pair", "(revoked_at IS NULL AND revocation_reason IS NULL) OR (revoked_at IS NOT NULL AND revocation_reason IS NOT NULL)");
+                            t.HasCheckConstraint("ck_security_device_state_evidence", "(trust_state IN ('untrusted', 'trusted') AND restricted_at IS NULL AND revoked_at IS NULL) OR (trust_state = 'restricted' AND restricted_at IS NOT NULL AND revoked_at IS NULL) OR (trust_state = 'revoked' AND revoked_at IS NOT NULL)");
+                            t.HasCheckConstraint("ck_security_device_transition_chronology", "restricted_at IS NULL OR revoked_at IS NULL OR revoked_at >= restricted_at");
+                            t.HasCheckConstraint("ck_security_device_trust_state", "trust_state IN ('untrusted', 'trusted', 'restricted', 'revoked')");
+                        });
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.SecuritySessionRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<DateTimeOffset>("AbsoluteExpiresAt").HasColumnType("timestamp with time zone").HasColumnName("absolute_expires_at");
+                    b.Property<DateTimeOffset>("AuthenticatedAt").HasColumnType("timestamp with time zone").HasColumnName("authenticated_at");
+                    b.Property<string>("AuthenticationStrength").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("authentication_strength");
+                    b.Property<DateTimeOffset>("CreatedAt").HasColumnType("timestamp with time zone").HasColumnName("created_at");
+                    b.Property<Guid>("DeviceId").HasColumnType("uuid").HasColumnName("device_id");
+                    b.Property<int>("IdleTimeoutSeconds").HasColumnType("integer").HasColumnName("idle_timeout_seconds");
+                    b.Property<DateTimeOffset>("LastSeenAt").HasColumnType("timestamp with time zone").HasColumnName("last_seen_at");
+                    b.Property<Guid>("PrincipalId").HasColumnType("uuid").HasColumnName("principal_id");
+                    b.Property<string>("PrincipalType").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("principal_type");
+                    b.Property<bool>("Restricted").HasColumnType("boolean").HasColumnName("restricted");
+                    b.Property<DateTimeOffset?>("RestrictedAt").HasColumnType("timestamp with time zone").HasColumnName("restricted_at");
+                    b.Property<string>("RestrictionReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("restriction_reason");
+                    b.Property<DateTimeOffset?>("RevokedAt").HasColumnType("timestamp with time zone").HasColumnName("revoked_at");
+                    b.Property<string>("RevocationReason").HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("revocation_reason");
+                    b.HasKey("Id").HasName("pk_security_session");
+                    b.HasIndex("AbsoluteExpiresAt").HasDatabaseName("ix_security_session_absolute_expires_at");
+                    b.HasIndex("DeviceId", "PrincipalId", "PrincipalType");
+                    b.HasIndex("DeviceId", "RevokedAt").HasDatabaseName("ix_security_session_device_lifecycle");
+                    b.HasIndex("PrincipalId", "RevokedAt", "AbsoluteExpiresAt").HasDatabaseName("ix_security_session_principal_lifecycle");
+                    b.ToTable("security_session", "identity", t =>
+                        {
+                            t.HasCheckConstraint("ck_security_session_absolute_expiry", "absolute_expires_at > created_at");
+                            t.HasCheckConstraint("ck_security_session_auth_chronology", "authenticated_at <= created_at");
+                            t.HasCheckConstraint("ck_security_session_auth_strength", "authentication_strength IN ('password', 'strong_mfa', 'phishing_resistant')");
+                            t.HasCheckConstraint("ck_security_session_idle_timeout", "idle_timeout_seconds > 0");
+                            t.HasCheckConstraint("ck_security_session_last_seen_chronology", "last_seen_at >= created_at AND last_seen_at < absolute_expires_at");
+                            t.HasCheckConstraint("ck_security_session_principal_type", "principal_type IN ('customer', 'staff', 'service')");
+                            t.HasCheckConstraint("ck_security_session_restriction_chronology", "restricted_at IS NULL OR restricted_at >= created_at");
+                            t.HasCheckConstraint("ck_security_session_restriction_pair", "(restricted_at IS NULL AND restriction_reason IS NULL) OR (restricted_at IS NOT NULL AND restriction_reason IS NOT NULL)");
+                            t.HasCheckConstraint("ck_security_session_revocation_chronology", "revoked_at IS NULL OR revoked_at >= created_at");
+                            t.HasCheckConstraint("ck_security_session_revocation_pair", "(revoked_at IS NULL AND revocation_reason IS NULL) OR (revoked_at IS NOT NULL AND revocation_reason IS NOT NULL)");
+                            t.HasCheckConstraint("ck_security_session_state_evidence", "(revoked_at IS NULL AND restricted = FALSE AND restricted_at IS NULL) OR (revoked_at IS NULL AND restricted = TRUE AND restricted_at IS NOT NULL) OR (revoked_at IS NOT NULL AND restricted = FALSE)");
+                            t.HasCheckConstraint("ck_security_session_transition_chronology", "restricted_at IS NULL OR revoked_at IS NULL OR revoked_at >= restricted_at");
+                        });
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Records.SecuritySessionRecord", b =>
+                {
+                    b.HasOne("Klyvesta.Infrastructure.Persistence.Records.SecurityDeviceRecord", null)
+                        .WithMany()
+                        .HasForeignKey("DeviceId", "PrincipalId", "PrincipalType")
+                        .HasPrincipalKey("Id", "PrincipalId", "PrincipalType")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_security_session_device_identity");
+                });
 #pragma warning restore 612, 618
         }
     }
