@@ -5,12 +5,31 @@
   "engineering_governance": {
     "master_prompt": ".ai/MASTER_ENGINEERING_PROMPT.md",
     "version": 1,
-    "status": "ACTIVE"
+    "status": "ACTIVE",
+    "repository_governance": "docs/REPOSITORY_GOVERNANCE.md",
+    "licensing_model": "docs/REPOSITORY_LICENSING_MODEL.md",
+    "repository_model": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY",
+    "main_foundation_merge_sha": "f326e38bddb4e021954a966793f2bb86d2ab9922",
+    "main_branch_protection_status": "RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_ENABLED"
   },
+  "accepted_risks": [
+    {
+      "id": "F0-RISK-001",
+      "risk": "main branch protection/ruleset is not technically enabled",
+      "scope": "one-time merge sequence for PR #9 into F1, F1/F2 foundation into main through PR #6, and P0 due-diligence/state through PR #7",
+      "owner_direction_date": "2026-08-25",
+      "expires_before": "substantive production/security-sensitive implementation beyond the accepted generic foundation",
+      "required_follow_up": "Repository/org admin enables protected-main rules and required checks."
+    }
+  ],
   "product_direction": {
     "canonical_vision": "docs/PRODUCT_VISION_V2.md",
     "positioning": "AI Investment Operating System",
-    "customer_modes": ["manual", "ai_assisted", "guarded_auto"],
+    "customer_modes": [
+      "manual",
+      "ai_assisted",
+      "guarded_auto"
+    ],
     "ai_package_plan": "docs/AI_AGENT_PACKAGES.md",
     "investment_timeline_plan": "docs/INVESTMENT_EVENT_NOTIFICATIONS.md",
     "competitive_benchmark": "docs/COMPETITIVE_POSITIONING.md",
@@ -41,7 +60,7 @@
   },
   "foundation_specification": {
     "version": 1,
-    "status": "READY_FOR_FUTURE_IMPLEMENTATION_TASK_NOT_ACTIVE",
+    "status": "GENERIC_FOUNDATION_MERGED_TO_MAIN_REAL_MONEY_NOT_AUTHORIZED",
     "database_domain_model": "docs/DOMAIN_DATABASE_MODEL_V1.md",
     "auth_session_architecture": "docs/AUTH_SESSION_ARCHITECTURE_V1.md",
     "authorization_matrix": "docs/AUTHORIZATION_MATRIX_V1.md",
@@ -55,7 +74,8 @@
     "p1_implementation_backlog": "docs/P1_PAPER_SHADOW_IMPLEMENTATION_BACKLOG.md",
     "p1_security_acceptance": "contracts/security/P1_SECURITY_ACCEPTANCE_V1.yaml",
     "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
-    "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md"
+    "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md",
+    "f2_persistence_checkpoint": ".ai/checkpoints/2026-08-25-f2-postgres-persistence.md"
   },
   "p0_operating_model": {
     "status": "PARTIALLY_COMPLETE_WAITING_FOR_PARTNER_EVIDENCE",
@@ -76,7 +96,14 @@
     "ai_research_assumed_unregulated": false,
     "personal_data_protection_act_2026_assumed_enacted": false,
     "privacy_law_status_requires_prelaunch_recheck": true,
-    "fallback_partner_roles": ["broker_execution", "research", "personalized_advice", "discretionary_management", "custody", "market_data"]
+    "fallback_partner_roles": [
+      "broker_execution",
+      "research",
+      "personalized_advice",
+      "discretionary_management",
+      "custody",
+      "market_data"
+    ]
   },
   "active_task": {
     "id": "P0-T1",
@@ -111,8 +138,6 @@
     }
   ],
   "parallel_work_allowed": [
-    "repository_governance",
-    "generic_foundation_after_F0",
     "paper_broker_after_F0",
     "paper_portfolio_after_data_rights_check",
     "ai_shadow_after_F0_with_non_production_controls",
@@ -123,8 +148,23 @@
     "investor_protection_and_complaints_design",
     "privacy_and_data_governance_design"
   ],
-  "open_security_remediation_issues": [1, 2, 3, 4, 5, 8],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-p0-compliance-p1-readiness.md",
-  "next_action": "Owner/admin resolves repository governance Issues #1/#2; engineering then merges/continues generic foundation and implements P1 backlog/security catalogue in paper/shadow mode. In parallel resolve Issue #8 and evaluate regulated partner roles/current onboarding/AML/privacy obligations. When pyPSX replies, map partner evidence to P0 RACI/capability matrix and BrokerAdapter before live integration.",
+  "resolved_repository_governance_issues": [
+    {
+      "issue": 1,
+      "resolution": "OWNER_RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_IMPLEMENTED"
+    },
+    {
+      "issue": 2,
+      "resolution": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY_MODEL_APPROVED"
+    }
+  ],
+  "open_security_remediation_issues": [
+    3,
+    4,
+    5,
+    8
+  ],
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-main-foundation-p0-integration.md",
+  "next_action": "Continue P0-T1: obtain pyPSX Broker API technical/commercial onboarding response and map partner evidence against contracts/broker/BROKER_ADAPTER_V1.md, P0 RACI, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Separately, an org/repo admin must enable protected-main controls before substantive production/security-sensitive implementation beyond the accepted generic foundation.",
   "last_updated": "2026-08-25"
 }
