@@ -10,7 +10,8 @@
     "licensing_model": "docs/REPOSITORY_LICENSING_MODEL.md",
     "repository_model": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY",
     "main_foundation_merge_sha": "f326e38bddb4e021954a966793f2bb86d2ab9922",
-    "main_branch_protection_status": "RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_ENABLED"
+    "main_branch_protection_status": "OPEN_BLOCKER_ISSUE_1_UNPROTECTED_MAIN",
+    "main_merge_blocked_by_issue": 1
   },
   "accepted_risks": [
     {
@@ -19,6 +20,7 @@
       "scope": "one-time merge sequence for PR #9 into F1, F1/F2 foundation into main through PR #6, and P0 due-diligence/state through PR #7",
       "owner_direction_date": "2026-08-25",
       "expires_before": "substantive production/security-sensitive implementation beyond the accepted generic foundation",
+      "status": "EXPIRED_FOR_SUBSTANTIVE_PRODUCTION_OR_SECURITY_SENSITIVE_IMPLEMENTATION",
       "required_follow_up": "Repository/org admin enables protected-main rules and required checks."
     }
   ],
@@ -80,6 +82,9 @@
   "p0_operating_model": {
     "status": "PARTIALLY_COMPLETE_WAITING_FOR_PARTNER_EVIDENCE",
     "due_diligence": "docs/P0_PYPSX_OPERATING_MODEL_DUE_DILIGENCE.md",
+    "public_evidence_refresh": "docs/P0_PYPSX_PUBLIC_EVIDENCE_REFRESH_2026-08-26.md",
+    "partner_evidence_checklist": "contracts/broker/PYPSX_PARTNER_EVIDENCE_CHECKLIST_V1.yaml",
+    "partner_evidence_issue": 20,
     "responsibility_raci": "docs/P0_PARTNER_RESPONSIBILITY_RACI.md",
     "product_mode_eligibility": "docs/P0_PRODUCT_MODE_ELIGIBILITY.md",
     "regulatory_function_classification": "docs/P0_REGULATORY_FUNCTION_CLASSIFICATION.md",
@@ -90,6 +95,8 @@
     "fallback_partner_strategy": "docs/P0_FALLBACK_PARTNER_STRATEGY.md",
     "machine_feature_gates": ".ai/regulatory-feature-gates.json",
     "pypsx_reply_status": "USER_CONFIRMED_NOT_RECEIVED_AS_OF_2026_08_25",
+    "pypsx_public_broker_api_rollout_state": "CONTRADICTORY_PUBLIC_EVIDENCE_UNVERIFIED_FOR_KLYVESTA",
+    "pypsx_public_evidence_last_rechecked": "2026-08-26",
     "live_broker_contract_verified": false,
     "securities_manager_public_framework_minimum_client_investment_pkr": 5000000,
     "small_ticket_guarded_auto_assumed_legal": false,
@@ -150,13 +157,12 @@
   ],
   "resolved_repository_governance_issues": [
     {
-      "issue": 1,
-      "resolution": "OWNER_RISK_ACCEPTED_F0_RISK_001_NOT_TECHNICALLY_IMPLEMENTED"
-    },
-    {
       "issue": 2,
       "resolution": "SPLIT_PUBLIC_GPL3_GENERIC_PRIVATE_PROPRIETARY_MODEL_APPROVED"
     }
+  ],
+  "open_repository_governance_issues": [
+    1
   ],
   "open_security_remediation_issues": [
     3,
@@ -164,7 +170,7 @@
     5,
     8
   ],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-main-foundation-p0-integration.md",
-  "next_action": "Continue P0-T1: obtain pyPSX Broker API technical/commercial onboarding response and map partner evidence against contracts/broker/BROKER_ADAPTER_V1.md, P0 RACI, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Separately, an org/repo admin must enable protected-main controls before substantive production/security-sensitive implementation beyond the accepted generic foundation.",
-  "last_updated": "2026-08-25"
+  "latest_checkpoint": ".ai/checkpoints/2026-08-26-p0-public-evidence-and-partner-checklist.md",
+  "next_action": "Continue P0-T1 through Issue #20: obtain current direct pyPSX Broker API technical/commercial partner evidence and populate contracts/broker/PYPSX_PARTNER_EVIDENCE_CHECKLIST_V1.yaml field-by-field. Reconcile verified evidence against the P0 due-diligence matrix, partner RACI, BROKER_ADAPTER_V1, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Issue #1 remains an open merge blocker for substantive production/security-sensitive implementation until protected-main controls are actually enabled or a new explicit owner risk decision is recorded.",
+  "last_updated": "2026-08-26"
 }
