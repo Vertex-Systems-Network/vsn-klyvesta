@@ -16,7 +16,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-Planning only. No production trading implementation is authorized yet.
+Planning/foundation only. No production trading implementation is authorized yet.
 
 The first acceptance gate is regulatory + broker fit:
 - pyPSX Broker API production capabilities confirmed.
@@ -25,13 +25,26 @@ The first acceptance gate is regulatory + broker fit:
 - Regulatory treatment of discretionary/automatic portfolio management confirmed.
 - Required adviser/securities-manager licence or licensed partner arrangement confirmed.
 
-The implementation foundation has now been specified, but it is **not an active implementation task** until canonical state/owner direction explicitly activates it within the acceptance gates.
+The implementation foundation has been specified and generic foundation work may be validated independently, but no real-money capability is unlocked until the canonical acceptance gates are satisfied.
+
+## Repository model
+
+This repository uses an approved **split distribution model**:
+
+- `vsn-klyvesta` remains public and GPL-3.0 for intentionally open/generic foundation code, public architecture/contracts/examples and public due-diligence material.
+- Proprietary investment strategy, confidential broker material, customer/business logic intended to remain closed, production secrets and customer data must not be committed here.
+- Proprietary production components require a separately approved private repository/security boundary and separate licence/dependency review.
+- Existing GPL-3.0 history is not silently relicensed.
+
+See `docs/REPOSITORY_LICENSING_MODEL.md` and `docs/REPOSITORY_GOVERNANCE.md`.
 
 ## Engineering governance
 
 All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read the machine-readable project state, guardrails, acceptance gates, and latest checkpoint before implementation.
 
 Repository evidence, tests, documentation, and Git history are the source of truth; chat memory is not.
+
+The normal workflow is protected-main + pull request + required CI/security checks + review. A narrowly scoped temporary risk acceptance for the current foundation integration is documented as `F0-RISK-001`; it does not authorize bypassing technical acceptance or production/regulatory gates.
 
 ## Core planning documents
 
@@ -52,6 +65,8 @@ Repository evidence, tests, documentation, and Git history are the source of tru
 - `docs/DESIGN_SYSTEM.md`
 - `docs/QA_PERFORMANCE.md`
 - `docs/ROADMAP.md`
+- `docs/REPOSITORY_GOVERNANCE.md`
+- `docs/REPOSITORY_LICENSING_MODEL.md`
 
 ## Implementation foundation V1
 

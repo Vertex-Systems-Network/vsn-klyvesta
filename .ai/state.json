@@ -77,7 +77,7 @@
     }
   ],
   "open_security_remediation_issues": [1, 2, 3, 4, 5],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-25-foundation-specification-v1.md",
+  "latest_checkpoint": ".ai/checkpoints/2026-08-25-f2-postgres-persistence.md",
   "next_action": "Obtain pyPSX Broker API technical/commercial onboarding response, map the partner contract against contracts/broker/BROKER_ADAPTER_V1.md, and update BrokerAdapter/data-flow/threat-model/acceptance evidence before real-money integration.",
   "last_updated": "2026-08-25"
 }
