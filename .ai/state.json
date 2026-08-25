@@ -25,6 +25,7 @@
     "threat_model": "docs/THREAT_MODEL.md",
     "security_requirements": "docs/SECURITY.md",
     "auth_session_architecture": "docs/AUTH_SESSION_ARCHITECTURE_V1.md",
+    "p1_security_acceptance": "contracts/security/P1_SECURITY_ACCEPTANCE_V1.yaml",
     "audit_status": "ARCHITECTURE_AUDIT_COMPLETE_IMPLEMENTATION_NOT_VERIFIED"
   },
   "implementation_stack": {
@@ -51,6 +52,8 @@
     "implementation_plan": "docs/FOUNDATION_IMPLEMENTATION_PLAN_V1.md",
     "paper_shadow_acceptance": "docs/PAPER_SHADOW_ACCEPTANCE_SPEC_V1.md",
     "paper_broker_scenarios": "contracts/broker/PAPER_BROKER_SCENARIOS_V1.yaml",
+    "p1_implementation_backlog": "docs/P1_PAPER_SHADOW_IMPLEMENTATION_BACKLOG.md",
+    "p1_security_acceptance": "contracts/security/P1_SECURITY_ACCEPTANCE_V1.yaml",
     "identity_adr": "docs/adr/ADR-003-AUTHENTICATION-AND-FINANCIAL-API-SECURITY.md",
     "financial_integrity_adr": "docs/adr/ADR-004-FINANCIAL-DATA-INTEGRITY-AND-STATE-MACHINES.md"
   },
@@ -60,6 +63,9 @@
     "responsibility_raci": "docs/P0_PARTNER_RESPONSIBILITY_RACI.md",
     "product_mode_eligibility": "docs/P0_PRODUCT_MODE_ELIGIBILITY.md",
     "regulatory_function_classification": "docs/P0_REGULATORY_FUNCTION_CLASSIFICATION.md",
+    "digital_onboarding_aml_baseline": "docs/P0_DIGITAL_ONBOARDING_AML_OPERATING_BASELINE.md",
+    "investor_protection_complaints_baseline": "docs/P0_INVESTOR_PROTECTION_COMPLAINTS_BASELINE.md",
+    "privacy_data_governance_baseline": "docs/P0_PRIVACY_DATA_GOVERNANCE_BASELINE.md",
     "launch_path_without_pypsx": "docs/P0_LAUNCH_PATH_WITHOUT_PYPSX.md",
     "fallback_partner_strategy": "docs/P0_FALLBACK_PARTNER_STRATEGY.md",
     "machine_feature_gates": ".ai/regulatory-feature-gates.json",
@@ -68,6 +74,8 @@
     "securities_manager_public_framework_minimum_client_investment_pkr": 5000000,
     "small_ticket_guarded_auto_assumed_legal": false,
     "ai_research_assumed_unregulated": false,
+    "personal_data_protection_act_2026_assumed_enacted": false,
+    "privacy_law_status_requires_prelaunch_recheck": true,
     "fallback_partner_roles": ["broker_execution", "research", "personalized_advice", "discretionary_management", "custody", "market_data"]
   },
   "active_task": {
@@ -106,10 +114,13 @@
     "ai_shadow_after_F0_with_non_production_controls",
     "security_and_resilience",
     "client_shells_with_non_live_states",
-    "regulated_partner_due_diligence"
+    "regulated_partner_due_diligence",
+    "digital_onboarding_and_aml_design",
+    "investor_protection_and_complaints_design",
+    "privacy_and_data_governance_design"
   ],
   "open_security_remediation_issues": [1, 2, 3, 4, 5],
   "latest_checkpoint": ".ai/checkpoints/2026-08-25-p0-no-reply-continuation.md",
-  "next_action": "Owner/admin resolves repository governance Issues #1/#2; engineering then merges/continues generic foundation and paper/shadow work. In parallel evaluate regulated fallback partner roles. When pyPSX replies, map partner evidence to P0 RACI/capability matrix and BrokerAdapter before live integration.",
+  "next_action": "Owner/admin resolves repository governance Issues #1/#2; engineering then merges/continues generic foundation and implements P1 backlog/security catalogue in paper/shadow mode. In parallel evaluate regulated partner roles and current onboarding/AML/privacy obligations. When pyPSX replies, map partner evidence to P0 RACI/capability matrix and BrokerAdapter before live integration.",
   "last_updated": "2026-08-25"
 }
