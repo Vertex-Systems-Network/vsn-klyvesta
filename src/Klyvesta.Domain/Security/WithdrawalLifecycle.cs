@@ -32,27 +32,16 @@ public sealed class WithdrawalBeneficiaryVersion
     }
 
     public Guid BeneficiaryId { get; }
-
     public Guid VersionId { get; }
-
     public int VersionNumber { get; }
-
     public Guid CustomerId { get; }
-
     public string DestinationHash { get; }
-
     public DateTimeOffset CreatedAt { get; }
-
     public BeneficiaryLifecycleState State { get; private set; } = BeneficiaryLifecycleState.PendingVerification;
-
     public string? VerificationEvidenceReference { get; private set; }
-
     public DateTimeOffset? VerifiedAt { get; private set; }
-
     public DateTimeOffset? AvailableAfter { get; private set; }
-
     public string? BlockReason { get; private set; }
-
     public string? RevocationReason { get; private set; }
 
     public static WithdrawalBeneficiaryVersion CreatePending(
@@ -73,7 +62,6 @@ public sealed class WithdrawalBeneficiaryVersion
         }
 
         EnsureSha256Hex(destinationHash, nameof(destinationHash));
-
         return new WithdrawalBeneficiaryVersion(
             beneficiaryId,
             versionId,
@@ -93,11 +81,7 @@ public sealed class WithdrawalBeneficiaryVersion
             return SecurityDecision.Deny(SecurityDenialReason.InvalidStateTransition);
         }
 
-        if (string.IsNullOrWhiteSpace(evidenceReference))
-        {
-            throw new ArgumentException("Verification evidence reference must be non-blank.", nameof(evidenceReference));
-        }
-
+        EnsureReason(evidenceReference, nameof(evidenceReference));
         if (verifiedAt < CreatedAt)
         {
             throw new ArgumentOutOfRangeException(nameof(verifiedAt), verifiedAt, "Verification cannot predate beneficiary creation.");
@@ -171,8 +155,6 @@ public sealed class WithdrawalBeneficiaryVersion
                 SecurityDecision.Deny(SecurityDenialReason.BeneficiaryCoolingOff),
             BeneficiaryLifecycleState.VerifiedCoolingOff => SecurityDecision.Deny(SecurityDenialReason.BeneficiaryUnavailable),
             BeneficiaryLifecycleState.Active => SecurityDecision.Allow(),
-            BeneficiaryLifecycleState.Blocked or BeneficiaryLifecycleState.Revoked =>
-                SecurityDecision.Deny(SecurityDenialReason.BeneficiaryUnavailable),
             _ => SecurityDecision.Deny(SecurityDenialReason.BeneficiaryUnavailable),
         };
     }
@@ -202,8 +184,7 @@ public sealed class WithdrawalBeneficiaryVersion
 
         foreach (var character in value)
         {
-            var isHex = character is >= '0' and <= '9' or >= 'A' and <= 'F' or >= 'a' and <= 'f';
-            if (!isHex)
+            if (character is not (>= '0' and <= '9') and not (>= 'A' and <= 'F') and not (>= 'a' and <= 'f'))
             {
                 throw new ArgumentException("Destination hash must be hexadecimal.", parameterName);
             }
@@ -231,17 +212,11 @@ public sealed class WithdrawalTransactionData
     }
 
     public Guid WithdrawalId { get; }
-
     public Guid CustomerId { get; }
-
     public Guid BeneficiaryVersionId { get; }
-
     public decimal Amount { get; }
-
     public string Currency { get; }
-
     public string DestinationHash { get; }
-
     public string DataHash { get; }
 
     public static WithdrawalTransactionData Create(
@@ -252,20 +227,9 @@ public sealed class WithdrawalTransactionData
         string currency,
         string destinationHash)
     {
-        if (withdrawalId == Guid.Empty)
-        {
-            throw new ArgumentException("Withdrawal identifier must be non-empty.", nameof(withdrawalId));
-        }
-
-        if (customerId == Guid.Empty)
-        {
-            throw new ArgumentException("Customer identifier must be non-empty.", nameof(customerId));
-        }
-
-        if (beneficiaryVersionId == Guid.Empty)
-        {
-            throw new ArgumentException("Beneficiary version identifier must be non-empty.", nameof(beneficiaryVersionId));
-        }
+        EnsureNonEmpty(withdrawalId, nameof(withdrawalId));
+        EnsureNonEmpty(customerId, nameof(customerId));
+        EnsureNonEmpty(beneficiaryVersionId, nameof(beneficiaryVersionId));
 
         if (amount <= decimal.Zero)
         {
@@ -278,28 +242,12 @@ public sealed class WithdrawalTransactionData
         }
 
         var normalizedCurrency = currency.ToUpperInvariant();
-        foreach (var character in normalizedCurrency)
+        if (normalizedCurrency.Any(character => character is < 'A' or > 'Z'))
         {
-            if (character is < 'A' or > 'Z')
-            {
-                throw new ArgumentException("Currency must contain only ASCII letters.", nameof(currency));
-            }
+            throw new ArgumentException("Currency must contain only ASCII letters.", nameof(currency));
         }
 
-        if (string.IsNullOrWhiteSpace(destinationHash) || destinationHash.Length != 64)
-        {
-            throw new ArgumentException("Destination hash must be a 64-character SHA-256 hex value.", nameof(destinationHash));
-        }
-
-        foreach (var character in destinationHash)
-        {
-            var isHex = character is >= '0' and <= '9' or >= 'A' and <= 'F' or >= 'a' and <= 'f';
-            if (!isHex)
-            {
-                throw new ArgumentException("Destination hash must be hexadecimal.", nameof(destinationHash));
-            }
-        }
-
+        EnsureSha256Hex(destinationHash, nameof(destinationHash));
         return new WithdrawalTransactionData(
             withdrawalId,
             customerId,
@@ -320,6 +268,30 @@ public sealed class WithdrawalTransactionData
             Currency,
             DestinationHash);
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical)));
+    }
+
+    private static void EnsureNonEmpty(Guid value, string parameterName)
+    {
+        if (value == Guid.Empty)
+        {
+            throw new ArgumentException("Identifier must be non-empty.", parameterName);
+        }
+    }
+
+    private static void EnsureSha256Hex(string value, string parameterName)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length != 64)
+        {
+            throw new ArgumentException("Destination hash must be a 64-character SHA-256 hex value.", parameterName);
+        }
+
+        foreach (var character in value)
+        {
+            if (character is not (>= '0' and <= '9') and not (>= 'A' and <= 'F') and not (>= 'a' and <= 'f'))
+            {
+                throw new ArgumentException("Destination hash must be hexadecimal.", parameterName);
+            }
+        }
     }
 }
 
@@ -348,17 +320,11 @@ public sealed class WithdrawalAuthorizationSnapshot
     }
 
     public Guid AuthorizationId { get; }
-
     public Guid WithdrawalId { get; }
-
     public Guid PrincipalId { get; }
-
     public Guid SessionId { get; }
-
     public string TransactionDataHash { get; }
-
     public DateTimeOffset AuthorizedAt { get; }
-
     public DateTimeOffset ExpiresAt { get; }
 
     public static WithdrawalAuthorizationAttempt TryCreate(
@@ -375,16 +341,12 @@ public sealed class WithdrawalAuthorizationSnapshot
 
         if (authorizationId == Guid.Empty || sessionId == Guid.Empty || principal.PrincipalId == Guid.Empty)
         {
-            return new WithdrawalAuthorizationAttempt(
-                SecurityDecision.Deny(SecurityDenialReason.AuthRequired),
-                null);
+            return new WithdrawalAuthorizationAttempt(SecurityDecision.Deny(SecurityDenialReason.AuthRequired), null);
         }
 
         if (principal.Type is not PrincipalType.Customer || principal.Role is not SecurityRole.Investor)
         {
-            return new WithdrawalAuthorizationAttempt(
-                SecurityDecision.Deny(SecurityDenialReason.RoleDenied),
-                null);
+            return new WithdrawalAuthorizationAttempt(SecurityDecision.Deny(SecurityDenialReason.RoleDenied), null);
         }
 
         if (principal.CustomerId is null ||
@@ -409,23 +371,21 @@ public sealed class WithdrawalAuthorizationSnapshot
                 AuthenticationStrength.StrongMfa,
                 authorizedAt))
         {
-            return new WithdrawalAuthorizationAttempt(
-                SecurityDecision.Deny(SecurityDenialReason.StepUpRequired),
-                null);
+            return new WithdrawalAuthorizationAttempt(SecurityDecision.Deny(SecurityDenialReason.StepUpRequired), null);
         }
 
         var requestedExpiry = authorizedAt.Add(validity);
         var expiresAt = requestedExpiry <= stepUpGrant.ExpiresAt ? requestedExpiry : stepUpGrant.ExpiresAt;
-        var snapshot = new WithdrawalAuthorizationSnapshot(
-            authorizationId,
-            transactionData.WithdrawalId,
-            principal.PrincipalId,
-            sessionId,
-            transactionData.DataHash,
-            authorizedAt,
-            expiresAt);
-
-        return new WithdrawalAuthorizationAttempt(SecurityDecision.Allow(), snapshot);
+        return new WithdrawalAuthorizationAttempt(
+            SecurityDecision.Allow(),
+            new WithdrawalAuthorizationSnapshot(
+                authorizationId,
+                transactionData.WithdrawalId,
+                principal.PrincipalId,
+                sessionId,
+                transactionData.DataHash,
+                authorizedAt,
+                expiresAt));
     }
 
     public SecurityDecision ValidateFor(
@@ -492,25 +452,15 @@ public sealed class WithdrawalRequestLifecycle
     }
 
     public WithdrawalTransactionData TransactionData { get; }
-
     public Guid RequestedByPrincipalId { get; }
-
     public DateTimeOffset CreatedAt { get; }
-
     public DateTimeOffset UpdatedAt { get; private set; }
-
     public WithdrawalLifecycleState State { get; private set; } = WithdrawalLifecycleState.Requested;
-
     public string? ReasonCode { get; private set; }
-
     public Guid? ApprovedByPrincipalId { get; private set; }
-
     public DateTimeOffset? ApprovedAt { get; private set; }
-
     public Guid? AuthorizationId { get; private set; }
-
     public string? ExternalReference { get; private set; }
-
     public string? OutcomeEvidenceReference { get; private set; }
 
     public static WithdrawalRequestCreation TryCreate(
@@ -524,9 +474,7 @@ public sealed class WithdrawalRequestLifecycle
 
         if (requestedByPrincipalId == Guid.Empty)
         {
-            return new WithdrawalRequestCreation(
-                SecurityDecision.Deny(SecurityDenialReason.AuthRequired),
-                null);
+            return new WithdrawalRequestCreation(SecurityDecision.Deny(SecurityDenialReason.AuthRequired), null);
         }
 
         if (beneficiaryVersion.VersionId != transactionData.BeneficiaryVersionId ||
@@ -582,10 +530,7 @@ public sealed class WithdrawalRequestLifecycle
         return decision;
     }
 
-    public SecurityDecision PassPolicyCheck(
-        bool requiresApproval,
-        DateTimeOffset now,
-        TimeSpan approvalValidity)
+    public SecurityDecision PassPolicyCheck(bool requiresApproval, DateTimeOffset now, TimeSpan approvalValidity)
     {
         if (State is not WithdrawalLifecycleState.PolicyCheck || !IsChronological(now))
         {
@@ -601,10 +546,7 @@ public sealed class WithdrawalRequestLifecycle
 
         if (approvalValidity <= TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(approvalValidity),
-                approvalValidity,
-                "Approval validity must be positive.");
+            throw new ArgumentOutOfRangeException(nameof(approvalValidity), approvalValidity, "Approval validity must be positive.");
         }
 
         _protectedApproval = new ProtectedApproval(
@@ -622,9 +564,7 @@ public sealed class WithdrawalRequestLifecycle
     {
         ArgumentNullException.ThrowIfNull(approver);
 
-        if (State is not WithdrawalLifecycleState.ApprovalPending ||
-            _protectedApproval is null ||
-            !IsChronological(now))
+        if (State is not WithdrawalLifecycleState.ApprovalPending || _protectedApproval is null || !IsChronological(now))
         {
             return SecurityDecision.Deny(SecurityDenialReason.InvalidStateTransition);
         }
@@ -653,6 +593,11 @@ public sealed class WithdrawalRequestLifecycle
         if (State is not WithdrawalLifecycleState.Approved || !IsChronological(now))
         {
             return SecurityDecision.Deny(SecurityDenialReason.InvalidStateTransition);
+        }
+
+        if (principalId != RequestedByPrincipalId)
+        {
+            return SecurityDecision.Deny(SecurityDenialReason.TransactionAuthorizationInvalid);
         }
 
         var authorizationDecision = snapshot.ValidateFor(TransactionData, principalId, sessionId, now);
@@ -685,7 +630,6 @@ public sealed class WithdrawalRequestLifecycle
     public SecurityDecision MarkUnknown(string reason, DateTimeOffset now)
     {
         EnsureReason(reason, nameof(reason));
-
         if (!IsChronological(now) ||
             State is not WithdrawalLifecycleState.SubmissionPending and
                 not WithdrawalLifecycleState.Submitted and
@@ -703,9 +647,7 @@ public sealed class WithdrawalRequestLifecycle
     public SecurityDecision MarkCompleted(string outcomeEvidenceReference, DateTimeOffset now)
     {
         EnsureReason(outcomeEvidenceReference, nameof(outcomeEvidenceReference));
-
-        if (!IsChronological(now) ||
-            State is not WithdrawalLifecycleState.Processing and not WithdrawalLifecycleState.Unknown)
+        if (!IsChronological(now) || State is not WithdrawalLifecycleState.Processing and not WithdrawalLifecycleState.Unknown)
         {
             return SecurityDecision.Deny(SecurityDenialReason.InvalidStateTransition);
         }
@@ -720,7 +662,6 @@ public sealed class WithdrawalRequestLifecycle
     {
         EnsureReason(reason, nameof(reason));
         EnsureReason(outcomeEvidenceReference, nameof(outcomeEvidenceReference));
-
         if (!IsChronological(now) ||
             State is not WithdrawalLifecycleState.Submitted and
                 not WithdrawalLifecycleState.Processing and
