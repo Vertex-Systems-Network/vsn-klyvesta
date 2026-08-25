@@ -1,0 +1,72 @@
+version: 1
+project: klyvesta
+
+gates:
+  P0_REGULATORY_BROKER:
+    required: true
+    criteria:
+      - pypsx_broker_api_contract_obtained
+      - underlying_regulated_roles_identified
+      - custody_settlement_flow_documented
+      - funding_flow_documented
+      - market_data_rights_documented
+      - ai_assisted_legal_classification_documented
+      - discretionary_auto_legal_classification_documented
+      - required_licence_or_licensed_partner_path_decided
+    unlocks:
+      - production_manual_integration_planning
+
+  P1_PAPER_SHADOW:
+    depends_on: []
+    criteria:
+      - ledger_invariants_pass
+      - risk_engine_tests_pass
+      - ai_evals_pass
+      - backtest_bias_checks_pass
+      - security_baseline_pass
+    unlocks:
+      - manual_real_money_candidate
+
+  P2_MANUAL_REAL_MONEY:
+    depends_on:
+      - P0_REGULATORY_BROKER
+      - P1_PAPER_SHADOW
+    criteria:
+      - broker_sandbox_e2e_pass
+      - broker_production_certification_pass
+      - reconciliation_pass
+      - incident_runbook_approved
+      - security_review_pass
+    unlocks:
+      - production_manual_trading
+
+  P3_AI_ASSISTED:
+    depends_on:
+      - P2_MANUAL_REAL_MONEY
+    criteria:
+      - adviser_or_partner_permission_accepted
+      - recommendation_evals_pass
+      - disclosures_approved
+      - evidence_audit_pass
+    unlocks:
+      - production_ai_assisted
+
+  P4_GUARDED_AUTO:
+    depends_on:
+      - P3_AI_ASSISTED
+    criteria:
+      - discretionary_management_permission_accepted
+      - mandate_contract_approved
+      - shadow_live_validation_pass
+      - risk_committee_acceptance
+      - controlled_pilot_pass
+      - global_kill_switch_tested
+    unlocks:
+      - guarded_auto_progressive_rollout
+
+zero_tolerance:
+  - unauthorized_order
+  - mandate_breach_execution
+  - ledger_imbalance
+  - fabricated_execution_state
+  - ai_direct_broker_execution
