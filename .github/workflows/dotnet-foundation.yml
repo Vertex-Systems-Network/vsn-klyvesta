@@ -6,6 +6,7 @@ on:
       - "foundation/**"
     paths:
       - ".github/workflows/dotnet-foundation.yml"
+      - ".github/workflows/f2-postgres.yml"
       - "global.json"
       - "Directory.Build.props"
       - "Directory.Packages.props"
