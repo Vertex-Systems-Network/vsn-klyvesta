@@ -1,0 +1,64 @@
+name: f2-persistence-bootstrap
+
+on:
+  push:
+    branches:
+      - "foundation/f2-postgres-persistence"
+    paths:
+      - ".github/workflows/f2-persistence-bootstrap.yml"
+      - ".config/dotnet-tools.json"
+      - "Directory.Packages.props"
+      - "src/Klyvesta.Infrastructure/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: f2-persistence-bootstrap-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  NUGET_XMLDOC_MODE: skip
+  KLYVESTA_DB_CONNECTION: "Host=localhost;Database=klyvesta_design;Username=klyvesta_design"
+
+jobs:
+  scaffold-migration:
+    name: Scaffold persistence migration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Restore tools and infrastructure
+        run: |
+          dotnet tool restore
+          dotnet restore src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj
+
+      - name: Verify formatting
+        run: dotnet format src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj --verify-no-changes --no-restore
+
+      - name: Build infrastructure
+        run: dotnet build src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj --configuration Release --no-restore
+
+      - name: Scaffold initial persistence migration
+        run: |
+          dotnet ef migrations add F2InitialPersistence \
+            --project src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj \
+            --context KlyvestaDbContext \
+            --output-dir Persistence/Migrations \
+            --no-build
+
+      - name: Print generated migration files for review
+        run: |
+          find src/Klyvesta.Infrastructure/Persistence/Migrations -maxdepth 1 -type f -print -exec sed -n '1,320p' {} \;
