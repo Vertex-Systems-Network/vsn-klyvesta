@@ -1,0 +1,287 @@
+version: 1
+project: klyvesta
+scope: P0_NON_LIVE_PRIVACY_VENDOR_AND_AI_GOVERNANCE
+status: DESIGN_BASELINE_NOT_PRODUCTION_APPROVAL
+
+principles:
+  default_external_restricted_data_sharing: DENY
+  generic_vendor_privacy_policy_is_sufficient_contract_evidence: false
+  unverified_provider_terms_status: CONTRACT_REVIEW_REQUIRED
+  customer_data_external_model_training_default: PROHIBITED
+  broker_credentials_in_ai_context_allowed: false
+  raw_kyc_or_biometric_data_in_general_ai_context_allowed: false
+  minimum_necessary_context_required: true
+  direct_identifiers_redacted_or_tokenized_where_practical: true
+  cross_border_processing_requires_documented_review: true
+  provider_exit_and_portability_plan_required: true
+
+approval_states:
+  - UNKNOWN
+  - CONTRACT_REVIEW_REQUIRED
+  - SECURITY_REVIEW_REQUIRED
+  - LEGAL_PRIVACY_REVIEW_REQUIRED
+  - APPROVED_NON_PRODUCTION
+  - APPROVED_PRODUCTION
+  - REJECTED
+
+required_contract_fields:
+  - legal_entity
+  - service_role
+  - data_categories
+  - processing_purpose
+  - hosting_regions
+  - transfer_regions
+  - subprocessors
+  - encryption_in_transit
+  - encryption_at_rest
+  - tenant_isolation
+  - credential_boundary
+  - retention_period
+  - deletion_process
+  - backup_deletion_behavior
+  - incident_notification_terms
+  - breach_cooperation_terms
+  - law_enforcement_request_process
+  - customer_data_training_terms
+  - model_improvement_terms
+  - human_review_terms
+  - portability_export
+  - termination_assistance
+  - audit_or_assurance_evidence
+  - regulatory_financial_data_suitability
+
+processor_register:
+  - id: IDENTITY_PROOFING_PROVIDER
+    role: identity_verification
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [B]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    permitted_data:
+      - minimum_identity_attributes_required_for_verification
+      - purpose_limited_identity_evidence
+    prohibited_without_separate_approval:
+      - unrestricted_customer_financial_history
+      - broker_credentials
+      - unrelated_portfolio_data
+    retention: UNKNOWN_CONTRACT_REQUIRED
+    deletion: UNKNOWN_CONTRACT_REQUIRED
+    incident_notification: UNKNOWN_CONTRACT_REQUIRED
+    notes: Raw identity or biometric evidence must not be copied into Klyvesta or another vendor merely because an API exposes it.
+
+  - id: BIOMETRIC_VERIFICATION_PROVIDER
+    role: biometric_or_liveness_verification
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [B]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    biometric_template_storage: UNKNOWN_CONTRACT_REQUIRED
+    model_training_use: MUST_BE_EXPLICITLY_DISABLED_OR_SEPARATELY_APPROVED
+    retention: MINIMUM_LEGAL_AND_OPERATIONAL_ONLY
+    deletion: UNKNOWN_CONTRACT_REQUIRED
+
+  - id: BANK_IBAN_EWALLET_VERIFICATION_PROVIDER
+    role: funding_account_ownership_verification
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [B, C]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    required_controls:
+      - server_side_credentials_only
+      - tokenized_or_redacted_account_identifiers_where_possible
+      - no_full_bank_identifiers_in_logs_or_analytics
+      - callback_authentication_and_replay_protection
+    retention: UNKNOWN_CONTRACT_REQUIRED
+
+  - id: SANCTIONS_PEP_TFS_PROVIDER
+    role: financial_crime_screening_reference
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [B]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    final_alert_disposition_by_ai_allowed: false
+    evidence_retention: POLICY_AND_REGULATED_PERSON_RACI_REQUIRED
+
+  - id: BROKER_OR_PYPSX
+    role: broker_account_execution_or_onboarding_dependency
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [B, C]
+    candidate_provider: pyPSX_or_verified_broker_path
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    customer_legal_relationship: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+    controller_processor_roles: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+    pii_retention_and_deletion: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+    incident_notification: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+    notes: Public marketing claims do not satisfy these fields.
+
+  - id: CLOUD_HOSTING
+    role: application_database_and_infrastructure_hosting
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [A, B, C, D]
+    candidate_provider: UNKNOWN
+    hosting_regions: UNKNOWN
+    subprocessors: UNKNOWN
+    required_controls:
+      - encryption_in_transit
+      - encryption_at_rest
+      - workload_identity
+      - least_privilege
+      - auditable_privileged_access
+      - backup_retention_and_deletion_mapping
+      - incident_notification_terms
+      - portability_and_exit_plan
+
+  - id: OBSERVABILITY_ERROR_MONITORING
+    role: telemetry_and_incident_diagnostics
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [D]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    class_b_or_c_payloads_allowed: false
+    required_controls:
+      - structured_redaction
+      - secret_detection
+      - short_purpose_retention
+      - no_raw_request_response_financial_payloads
+
+  - id: NOTIFICATION_PROVIDER
+    role: email_sms_push_or_other_notification_delivery
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [B, D]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    payload_rule: SANITIZED_MINIMUM_PAYLOAD_ONLY
+    financial_truth_dependency: false
+
+  - id: AI_MODEL_PROVIDER
+    role: approved_ai_inference_or_model_service
+    status: CONTRACT_REVIEW_REQUIRED
+    data_classes: [C, D]
+    candidate_provider: UNKNOWN
+    regions: UNKNOWN
+    subprocessors: UNKNOWN
+    restricted_identity_data_default: DENY
+    customer_data_training_default: DISABLED
+    model_improvement_reuse_default: DISABLED
+    human_review_default: UNKNOWN_CONTRACT_REQUIRED
+    retention_default: MINIMUM_NECESSARY_CONTRACT_REVIEW_REQUIRED
+    required_controls:
+      - minimum_necessary_structured_context
+      - direct_identifier_redaction_or_tokenization_where_practical
+      - no_broker_or_service_secrets
+      - no_raw_kyc_biometric_documents
+      - no_cross_customer_retrieval
+      - approved_tool_and_data_scope
+      - model_and_prompt_version_evidence
+      - sensitive_trace_retention_limits
+      - provider_training_and_retention_terms_reviewed
+
+ai_data_use_policy:
+  prohibited_by_default:
+    - customer_conversations_for_general_model_training
+    - kyc_identity_or_biometric_evidence_for_model_training
+    - holdings_orders_fills_or_financial_history_for_general_model_training
+    - customer_specific_recommendation_history_for_external_general_training
+    - broker_api_credentials
+    - signing_keys
+    - access_or_refresh_tokens
+    - unrelated_customer_data
+  inference_context_allowed_only_if_purpose_required:
+    - opaque_customer_or_portfolio_reference
+    - approved_portfolio_summary
+    - normalized_risk_or_suitability_constraints
+    - licensed_or_approved_market_reference_data
+    - policy_and_evidence_ids
+    - minimal customer_request_context
+  separately_approved_training_process_requires:
+    - explicit_legal_and_privacy_basis
+    - product_owner_approval
+    - security_review
+    - data_minimization
+    - de_identification_where_applicable
+    - documented_retention_and_deletion
+    - provider_contract_approval
+    - user_notice_or_consent_where_required
+    - rollback_and_dataset_provenance
+  current_separately_approved_training_process: NONE
+
+cross_border_review:
+  required_before_restricted_data_transfer: true
+  record_fields:
+    - source_country_or_region
+    - destination_country_or_region
+    - data_categories
+    - processing_purpose
+    - legal_and_sectoral_review
+    - encryption
+    - provider_and_subprocessor_chain
+    - retention
+    - deletion
+    - incident_notification
+    - government_request_process
+    - termination_and_portability
+  unknown_destination_or_subprocessor_behavior: BLOCK_RESTRICTED_DATA_TRANSFER
+
+incident_and_government_request_controls:
+  provider_incident_requires:
+    - immediate_internal_case_reference
+    - affected_data_classification
+    - credential_rotation_if_applicable
+    - evidence_preservation
+    - partner_and_legal_privacy_escalation
+    - regulatory_notification_decision_by_authorized_humans
+  ai_may_suppress_reportable_incident: false
+  government_or_law_enforcement_request_requires:
+    - provider_notification_terms_review
+    - legal_authority_review_where_permitted
+    - minimum_disclosure
+    - immutable_internal_record
+
+termination_and_portability:
+  required_before_production_approval: true
+  requirements:
+    - export_or_portability_format_known
+    - customer_and_regulatory_records_recoverable
+    - secrets_revoked
+    - retained_copies_and_backups_disposition_known
+    - subprocessor_deletion_chain_known
+    - service_dependency_exit_runbook_exists
+
+production_gate:
+  live_restricted_data_sharing_allowed: false
+  required_before_true:
+    - named_provider_and_legal_entity
+    - approved_data_categories_and_purpose
+    - regions_and_subprocessors_documented
+    - security_review_passed
+    - legal_privacy_review_passed
+    - retention_and_deletion_terms_approved
+    - incident_notification_terms_approved
+    - AI_training_and_model_improvement_terms_approved_where_applicable
+    - processor_controller_roles_documented
+    - portability_and_termination_plan_approved
+    - canonical_repository_acceptance_recorded
+
+unresolved_external_dependencies:
+  pypsx_or_broker_data_terms: UNKNOWN_PARTNER_EVIDENCE_REQUIRED
+  identity_provider: UNKNOWN
+  biometric_provider: UNKNOWN
+  bank_or_iban_provider: UNKNOWN
+  sanctions_pep_tfs_provider: UNKNOWN
+  cloud_provider: UNKNOWN
+  observability_provider: UNKNOWN
+  notification_provider: UNKNOWN
+  ai_model_provider: UNKNOWN
+
+safety:
+  authorizes_live_customer_data: false
+  authorizes_real_money: false
+  advances_p0_t1: false
+  advances_p1_p2_p3_p4: false
