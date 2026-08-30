@@ -1,0 +1,65 @@
+name: repository-governance
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/**"
+      - "scripts/apply_main_protection.ps1"
+      - "scripts/verify_main_protection.ps1"
+      - "docs/governance/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Repository governance
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Parse protection PowerShell
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($path in @('scripts/apply_main_protection.ps1','scripts/verify_main_protection.ps1')) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path), [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) {
+              foreach ($parseError in $errors) { Write-Host $parseError.Message }
+              exit 1
+            }
+            Write-Host "PowerShell parse PASS: $path"
+          }
+
+      - name: Verify stable protection contract
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $apply = Get-Content 'scripts/apply_main_protection.ps1' -Raw
+          $verify = Get-Content 'scripts/verify_main_protection.ps1' -Raw
+          $foundation = Get-Content '.github/workflows/dotnet-foundation.yml' -Raw
+          $codeql = Get-Content '.github/workflows/codeql.yml' -Raw
+          $postgres = Get-Content '.github/workflows/f2-postgres.yml' -Raw
+
+          foreach ($marker in @('Build and architecture verify','Analyze C#','PostgreSQL migration and constraints','Repository governance')) {
+            if (-not $apply.Contains($marker)) { throw "Applicator missing required check: $marker" }
+            if (-not $verify.Contains($marker)) { throw "Verifier missing required check: $marker" }
+          }
+          foreach ($workflow in @($foundation,$codeql,$postgres)) {
+            if ($workflow -notmatch '(?m)^  pull_request:\s*$') { throw 'Canonical workflow must run for pull requests.' }
+            if ($workflow -notmatch '(?m)^\s+branches:\s*$') { throw 'Canonical workflow must target main pull requests explicitly.' }
+          }
+          if (-not $apply.Contains('app_id = $GitHubActionsAppId')) { throw 'Required checks must be app-bound.' }
+          Write-Host 'Repository governance static contract PASS.'
