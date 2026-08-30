@@ -1,0 +1,331 @@
+version: 1
+project: klyvesta
+scope: P0_NON_LIVE_PRIVILEGED_PII_AND_OBSERVABILITY_CONTROL
+status: DESIGN_BASELINE_NOT_RUNTIME_ACCEPTANCE
+
+principles:
+  authorization: SERVER_SIDE_DENY_BY_DEFAULT
+  customer_isolation: REQUIRED
+  purpose_limitation: REQUIRED
+  least_privilege: REQUIRED
+  standing_superuser: PROHIBITED
+  privileged_access_audited: true
+  high_risk_mutation_maker_checker: true
+  support_can_edit_financial_truth: false
+  raw_secrets_in_logs: false
+  raw_class_b_pii_in_logs: false
+  analytics_privilege_equals_support_privilege: false
+  ai_may_grant_privilege_or_suppress_audit: false
+
+access_decision_inputs:
+  - authenticated_principal
+  - role_or_workload_identity
+  - action
+  - resource_scope
+  - customer_or_case_scope
+  - documented_purpose
+  - current_security_state
+  - current_compliance_state
+  - approval_or_break_glass_context_if_required
+
+privileged_roles:
+  SUPPORT_L1:
+    allowed:
+      - read_redacted_customer_case_context
+      - create_support_case_or_note
+      - trigger_approved_verification_workflow
+    forbidden:
+      - read_raw_kyc_documents
+      - read_biometric_artifacts
+      - read_broker_credentials
+      - alter_kyc_or_aml_decision
+      - alter_bank_or_beneficiary
+      - alter_ledger_order_fill_or_balance
+      - approve_financial_remediation
+
+  SUPPORT_L2:
+    inherits: SUPPORT_L1
+    additional_allowed:
+      - limited_security_session_diagnostics
+      - request_session_or_recovery_action_through_approved_workflow
+    forbidden:
+      - unilateral_security_hold_release
+      - financial_authority
+
+  KYC_ANALYST:
+    allowed:
+      - read_assigned_identity_evidence_for_case_purpose
+      - review_onboarding_case
+      - approve_reject_or_escalate_with_policy
+    forbidden:
+      - trade
+      - move_funds
+      - bulk_export_without_separate_approval
+      - alter_audit_history
+
+  AML_COMPLIANCE_ANALYST:
+    allowed:
+      - read_assigned_aml_evidence
+      - review_screening_or_monitoring_alert
+      - propose_or_apply_policy_permitted_restrictions
+      - document_disposition
+    forbidden:
+      - clear_alert_by_ai_only
+      - originate_customer_trade
+      - redirect_customer_money
+      - delete_evidence
+
+  COMPLIANCE_OFFICER:
+    allowed:
+      - approve_high_impact_compliance_actions_under_maker_checker
+      - approve_policy_release_where_authorized
+    forbidden:
+      - unilateral_customer_withdrawal_or_trade
+      - silent_financial_record_mutation
+
+  SECURITY_ANALYST:
+    allowed:
+      - inspect_security_telemetry
+      - revoke_session_or_device
+      - freeze_security_state_where_authorized
+      - investigate_incident_with_case_scoped_pii
+    forbidden:
+      - standing_broad_portfolio_access
+      - financial_override
+
+  RECONCILIATION_FINANCE_OPERATOR:
+    allowed:
+      - read_reconciliation_and_ledger_evidence
+      - initiate_documented_compensating_correction
+    forbidden:
+      - edit_posted_ledger_history
+      - create_arbitrary_balance
+      - self_approve_thresholded_high_risk_adjustment
+
+  PLATFORM_ADMIN:
+    allowed:
+      - non_financial_application_configuration
+    forbidden:
+      - wildcard_financial_authorization
+      - unrestricted_customer_data_browsing
+      - broker_secret_access_by_default
+
+  DEVOPS_SRE:
+    allowed:
+      - operate_approved_infrastructure_and_deployments
+      - view_redacted_operational_telemetry
+    forbidden:
+      - standing_production_customer_data_access
+      - standing_broker_secret_access
+      - use_break_glass_without_ticket_reason_and_expiry
+
+  AUDITOR:
+    allowed:
+      - read_approved_audit_evidence_scope
+    forbidden:
+      - mutation
+
+redacted_view_policy:
+  default_support_fields:
+    allowed:
+      - opaque_customer_id
+      - account_or_case_status
+      - redacted_contact_hint
+      - verification_state
+      - redacted_reason_code
+      - approved_timeline_or_case_metadata
+    masked_or_denied:
+      - full_cnic_or_passport
+      - identity_document_image
+      - biometric_image_or_template
+      - full_bank_or_iban
+      - broker_credentials
+      - raw_aml_provider_payload
+      - unrestricted_portfolio_or_ledger_history
+
+  compliance_case_fields:
+    policy: MINIMUM_REQUIRED_FOR_ASSIGNED_CASE
+    raw_evidence_access: EXPLICIT_PURPOSE_AND_AUDIT_REQUIRED
+    bulk_export: SECOND_LEVEL_APPROVAL_REQUIRED
+
+maker_checker_actions:
+  - change_or_override_kyc_decision_when_high_risk
+  - release_material_compliance_or_security_hold
+  - internal_change_to_customer_bank_or_beneficiary
+  - manual_financial_adjustment_above_threshold
+  - restore_high_risk_fraud_frozen_account
+  - change_broker_credential_access
+  - production_compliance_policy_change
+  - bulk_export_restricted_identity_or_financial_data
+
+separation_of_duties:
+  rules:
+    - proposer_must_not_approve_same_high_risk_action
+    - evidence_reviewer_must_not_be_able_to_delete_source_evidence
+    - support_role_must_not_create_and_approve_financial_remediation
+    - kyc_or_aml_reviewer_must_not_gain_trading_or_funding_authority
+    - platform_admin_must_not_bypass_domain_authorization
+
+break_glass:
+  standing_break_glass_principal: false
+  requirements:
+    - phishing_resistant_mfa
+    - incident_or_ticket_reference
+    - explicit_reason
+    - minimum_temporary_scope
+    - expiry_timestamp
+    - security_or_compliance_notification
+    - immutable_audit_record
+    - after_action_review
+  second_person_approval: REQUIRED_WHERE_PRACTICAL
+
+privileged_audit_event:
+  required_fields:
+    - event_id
+    - actor_principal
+    - actor_role_or_workload_identity
+    - action
+    - target_type
+    - target_reference
+    - customer_or_case_scope_if_applicable
+    - documented_purpose
+    - request_or_correlation_id
+    - occurred_at_utc
+    - policy_version
+    - decision
+    - reason_code
+    - approval_reference_if_applicable
+    - break_glass_reference_if_applicable
+    - before_hash_or_approved_redacted_change_summary_for_mutation
+    - after_hash_or_approved_redacted_change_summary_for_mutation
+  forbidden_payloads:
+    - passwords
+    - otp_or_recovery_codes
+    - raw_session_or_access_tokens
+    - broker_or_provider_secrets
+    - private_keys
+    - full_identity_documents
+    - biometric_templates_or_images
+    - unnecessary_full_bank_or_iban
+  mutability: APPEND_ONLY
+
+log_redaction:
+  default_action_on_restricted_field: REDACT_OR_DROP
+  application_log_denylist:
+    - password
+    - otp
+    - recovery_code
+    - passkey_private_material
+    - authorization_header
+    - cookie_header
+    - access_token
+    - refresh_token
+    - session_token
+    - broker_api_secret
+    - provider_api_secret
+    - private_key
+    - full_cnic
+    - full_passport_number
+    - identity_document_image_or_raw_payload
+    - biometric_image_or_template
+    - full_bank_account
+    - full_iban
+    - raw_kyc_document_body
+    - raw_aml_provider_payload
+    - full_sensitive_payment_order_or_withdrawal_body
+  preferred_observability_fields:
+    - opaque_resource_id
+    - request_or_correlation_id
+    - redacted_provider_reference
+    - normalized_result_state
+    - normalized_reason_code
+    - schema_or_policy_version
+    - latency
+    - freshness_timestamp
+    - circuit_breaker_state
+    - reconciliation_break_category
+  structured_redaction_required: true
+  freeform_exception_dumping_restricted_payloads: PROHIBITED
+
+analytics_separation:
+  analytics_subject: OPAQUE_SUBJECT_ID
+  prohibited_dimensions:
+    - cnic
+    - passport
+    - email
+    - phone
+    - full_address
+    - full_bank_or_iban
+    - raw_kyc_or_aml_evidence
+    - secrets_or_tokens
+  exact_financial_values:
+    policy: USE_DERIVED_OR_BUCKETED_VALUE_WHEN_EXACT_VALUE_NOT_REQUIRED
+  production_analytics_access_separate_from:
+    - support_privilege
+    - compliance_privilege
+    - infrastructure_privilege
+
+ai_boundary:
+  ai_may_decide_privileged_access: false
+  ai_may_modify_audit_record: false
+  ai_may_clear_aml_alert_by_itself: false
+  ai_may_release_security_or_compliance_hold_by_itself: false
+  ai_may_receive_broker_credentials: false
+  ai_may_receive_raw_kyc_or_biometric_evidence_by_default: false
+  allowed_role: ASSISTIVE_SUMMARIZATION_OR_TRIAGE_WITH_APPROVED_REDACTED_CONTEXT
+
+runtime_test_plan:
+  authorization_matrix:
+    - support_cannot_read_other_customer_raw_pii
+    - support_cannot_access_broker_secrets
+    - kyc_analyst_cannot_trade_or_withdraw
+    - compliance_analyst_cannot_redirect_funds
+    - platform_admin_cannot_wildcard_financial_authorization
+    - devops_has_no_standing_customer_data_access
+    - auditor_cannot_mutate
+    - break_glass_expires_and_scope_is_enforced
+  maker_checker:
+    - proposer_cannot_approve_same_high_risk_action
+    - bulk_export_requires_second_level_approval
+    - high_risk_financial_adjustment_requires_separate_approver
+  audit:
+    - privileged_read_creates_append_only_event
+    - privileged_export_creates_case_and_approval_linked_event
+    - audit_payload_contains_no_forbidden_sensitive_content
+    - audit_event_cannot_be_mutated_by_runtime_role
+  log_redaction:
+    - cnic_fixture_not_emitted_unredacted
+    - passport_fixture_not_emitted_unredacted
+    - token_fixture_not_emitted
+    - broker_secret_fixture_not_emitted
+    - iban_fixture_not_emitted_unredacted
+    - biometric_fixture_not_emitted
+    - raw_kyc_payload_not_emitted
+    - sensitive_request_body_not_dumped_on_exception
+  analytics:
+    - direct_identity_fields_rejected_from_event_schema
+    - operational_analytics_role_cannot_query_pii_vault
+
+acceptance:
+  design_artifact_complete_when:
+    - role_and_purpose_boundaries_explicit
+    - redacted_staff_views_explicit
+    - maker_checker_boundaries_explicit
+    - immutable_privileged_audit_schema_explicit
+    - log_denylist_and_redaction_rules_explicit
+    - analytics_separation_explicit
+    - automated_test_plan_defined
+  production_acceptance_requires:
+    - runtime_implementation_exists
+    - authorization_tests_pass
+    - pii_and_secret_logging_tests_pass
+    - audit_integrity_tests_pass
+    - break_glass_tests_pass
+    - security_review_passes
+    - canonical_repository_acceptance_recorded
+
+safety:
+  authorizes_live_customer_data: false
+  authorizes_real_money: false
+  advances_p0_t1: false
+  advances_p1_p2_p3_p4: false
