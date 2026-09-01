@@ -56,7 +56,7 @@ static Task VerifyDeterministicRebuildAsync()
     var first = PortfolioProjection.Rebuild(account, events);
     var second = PortfolioProjection.Rebuild(account, events.Reverse());
 
-    Require(first == second, "rebuild from identical source events must be deterministic regardless of input enumeration order");
+    Require(ProjectionEquals(first, second), "rebuild from identical source events must be deterministic regardless of input enumeration order");
     Require(first.Cash == 600m, "rebuild cash must be exact");
     Require(first.Positions.Count == 2, "rebuild must contain both projected positions");
     return Task.CompletedTask;
@@ -65,7 +65,7 @@ static Task VerifyDeterministicRebuildAsync()
 static Task VerifyDeduplicationAsync()
 {
     const string account = "paper-portfolio-002";
-    var adapter = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var adapter = CreatePaperBroker(1_000m);
     var service = new PortfolioProjectionService(adapter, FixedClock);
     var opening = Opening(10, account, 0, 1_000m);
     var execution = Execution(11, account, 1, "exec-002", "AAA", PortfolioTradeSide.Buy, 2m, 100m);
@@ -77,7 +77,7 @@ static Task VerifyDeduplicationAsync()
         Execution(12, account, 2, "exec-002", "AAA", PortfolioTradeSide.Buy, 2m, 100m));
 
     Require(once.Cash == 800m && once.Positions.Single().Quantity == 2m, "first execution must affect projection once");
-    Require(duplicateEvent == once, "same source event replay must be idempotent");
+    Require(ProjectionEquals(duplicateEvent, once), "same source event replay must be idempotent");
     Require(duplicateExecution.Cash == 800m, "same execution id under a new source event must not duplicate cash effect");
     Require(duplicateExecution.Positions.Single().Quantity == 2m, "same execution id must not duplicate position effect");
     Require(duplicateExecution.UniqueExecutionCount == 1, "execution identity count must remain one");
@@ -106,7 +106,7 @@ static Task VerifyCostBasisAsync()
 static async Task VerifyMatchingReconciliationAsync()
 {
     const string account = "paper-portfolio-004";
-    var adapter = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var adapter = CreatePaperBroker(1_000m);
     var service = new PortfolioProjectionService(adapter, FixedClock);
     _ = service.AppendSourceEvent(Opening(30, account, 0, 1_000m));
 
@@ -132,7 +132,7 @@ static async Task VerifyMatchingReconciliationAsync()
 static async Task VerifyCashMismatchAsync()
 {
     const string account = "paper-portfolio-005";
-    var adapter = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 900m });
+    var adapter = CreatePaperBroker(900m);
     var service = new PortfolioProjectionService(adapter, FixedClock);
     var before = service.AppendSourceEvent(Opening(40, account, 0, 1_000m));
 
@@ -141,14 +141,14 @@ static async Task VerifyCashMismatchAsync()
 
     Require(!report.IsMatch, "cash mismatch must fail reconciliation");
     Require(report.Mismatches.Any(item => item.Kind == PortfolioMismatchKind.CashMismatch), "cash mismatch must be classified explicitly");
-    Require(before == after, "reconciliation comparison must not silently rewrite projection");
+    Require(ProjectionEquals(before, after), "reconciliation comparison must not silently rewrite projection");
     Require(service.GetHold(account).IsHeld, "critical cash mismatch must activate execution hold");
 }
 
 static async Task VerifyMissingBrokerPositionAsync()
 {
     const string account = "paper-portfolio-006";
-    var adapter = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var adapter = CreatePaperBroker(1_000m);
     var service = new PortfolioProjectionService(adapter, FixedClock);
     _ = service.AppendSourceEvent(Opening(50, account, 0, 1_000m));
     _ = service.AppendSourceEvent(Execution(51, account, 1, "exec-006", "AAA", PortfolioTradeSide.Buy, 1m, 100m));
@@ -162,7 +162,7 @@ static async Task VerifyMissingBrokerPositionAsync()
 static async Task VerifyUnexpectedBrokerPositionAsync()
 {
     const string account = "paper-portfolio-007";
-    var adapter = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var adapter = CreatePaperBroker(1_000m);
     var service = new PortfolioProjectionService(adapter, FixedClock);
     _ = service.AppendSourceEvent(Opening(60, account, 0, 1_000m));
     _ = await SubmitPaperBuyAsync(adapter, account, seed: 60, quantity: 1m, price: 100m);
@@ -176,7 +176,7 @@ static async Task VerifyUnexpectedBrokerPositionAsync()
 static async Task VerifyQuantityMismatchAsync()
 {
     const string account = "paper-portfolio-008";
-    var adapter = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var adapter = CreatePaperBroker(1_000m);
     var service = new PortfolioProjectionService(adapter, FixedClock);
     _ = service.AppendSourceEvent(Opening(70, account, 0, 1_000m));
     _ = service.AppendSourceEvent(Execution(71, account, 1, "exec-projected-008", "SYNTH", PortfolioTradeSide.Buy, 2m, 100m));
@@ -192,7 +192,7 @@ static async Task VerifyQuantityMismatchAsync()
 static async Task VerifyExecutionHoldAsync()
 {
     const string account = "paper-portfolio-009";
-    var inner = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var inner = CreatePaperBroker(1_000m);
     var portfolio = new PortfolioProjectionService(inner, FixedClock);
     _ = portfolio.AppendSourceEvent(Opening(80, account, 0, 1_000m));
     _ = await SubmitPaperBuyAsync(inner, account, seed: 80, quantity: 1m, price: 100m);
@@ -203,7 +203,7 @@ static async Task VerifyExecutionHoldAsync()
     var guardedAdapter = new ExecutionHoldBrokerAdapter(inner, portfolio, FixedClock);
     using var oms = new OrderManagementService(guardedAdapter, FixedClock);
     var request = CreateOmsRequest(account, seed: 80);
-    await PrepareApprovedOmsAsync(oms, request);
+    await PrepareApprovedOmsAsync(oms, request, seed: 80);
 
     var blocked = await oms.ExecuteAsync(request.OrderIntentId);
 
@@ -215,7 +215,7 @@ static async Task VerifyExecutionHoldAsync()
 static async Task VerifyHoldClearAsync()
 {
     const string account = "paper-portfolio-010";
-    var inner = new PaperBrokerAdapter(new PaperBrokerProfile { StartingCashPerAccount = 1_000m });
+    var inner = CreatePaperBroker(1_000m);
     var portfolio = new PortfolioProjectionService(inner, FixedClock);
     _ = portfolio.AppendSourceEvent(Opening(90, account, 0, 1_000m));
 
@@ -226,7 +226,7 @@ static async Task VerifyHoldClearAsync()
     var guardedAdapter = new ExecutionHoldBrokerAdapter(inner, portfolio, FixedClock);
     using var oms = new OrderManagementService(guardedAdapter, FixedClock);
     var request = CreateOmsRequest(account, seed: 90);
-    await PrepareApprovedOmsAsync(oms, request);
+    await PrepareApprovedOmsAsync(oms, request, seed: 90);
     var blocked = await oms.ExecuteAsync(request.OrderIntentId);
     var acceptedWhileHeld = inner.AcceptedOrderCount;
     Require(blocked.BrokerOrderState == ManagedBrokerOrderState.PendingSubmit, "held OMS order must remain retryable");
@@ -250,6 +250,15 @@ static async Task VerifyHoldClearAsync()
     Require(allowed.BrokerOrderState == ManagedBrokerOrderState.Filled, "same pending OMS broker order must proceed after hold clears");
     Require(inner.AcceptedOrderCount == acceptedWhileHeld + 1, "cleared hold must allow exactly one forwarded PaperBroker submit");
 }
+
+static PaperBrokerAdapter CreatePaperBroker(decimal startingCash) =>
+    new(new PaperBrokerProfile
+    {
+        StartingCash = startingCash,
+        SubmissionOutcome = PaperSubmissionOutcome.FullFill,
+        FillPrice = 100m,
+        StartTime = DateTimeOffset.UnixEpoch,
+    });
 
 static PortfolioProjectionEvent Opening(int seed, string account, long sequence, decimal cash) =>
     PortfolioProjectionEvent.OpeningCash(
@@ -317,22 +326,51 @@ static OmsOrderRequest CreateOmsRequest(string account, int seed) => new(
     100m,
     BrokerTimeInForce.Day);
 
-static async Task PrepareApprovedOmsAsync(OrderManagementService oms, OmsOrderRequest request)
+static async Task PrepareApprovedOmsAsync(OrderManagementService oms, OmsOrderRequest request, int seed)
 {
     await oms.CreateIntentAsync(request);
     await oms.BeginValidationAsync(request.OrderIntentId);
     await oms.RecordValidationAsync(
         request.OrderIntentId,
-        new OrderValidationEvidence(true, "ALLOW_SYNTHETIC_POLICY", "synthetic-policy-v1", $"synthetic-portfolio-evidence-{request.OrderIntentId:N}"),
-        new OmsReservationSpec(CreateGuid(50_000 + ParseSeed(request.OrderIntentId)), ReservationKind.Cash, 100m));
+        new OrderValidationEvidence(
+            true,
+            "ALLOW_SYNTHETIC_POLICY",
+            "synthetic-policy-v1",
+            $"synthetic-portfolio-evidence-{seed:D3}"),
+        new OmsReservationSpec(CreateGuid(50_000 + seed), ReservationKind.Cash, 100m));
     await oms.QueueForExecutionAsync(request.OrderIntentId);
+}
+
+static bool ProjectionEquals(PortfolioProjectionSnapshot left, PortfolioProjectionSnapshot right)
+{
+    if (!StringComparer.Ordinal.Equals(left.AccountReference, right.AccountReference) ||
+        left.Cash != right.Cash ||
+        left.LastSequence != right.LastSequence ||
+        left.UniqueSourceEventCount != right.UniqueSourceEventCount ||
+        left.UniqueExecutionCount != right.UniqueExecutionCount ||
+        left.Positions.Count != right.Positions.Count)
+    {
+        return false;
+    }
+
+    for (var index = 0; index < left.Positions.Count; index++)
+    {
+        var leftPosition = left.Positions[index];
+        var rightPosition = right.Positions[index];
+        if (!StringComparer.Ordinal.Equals(leftPosition.InstrumentReference, rightPosition.InstrumentReference) ||
+            leftPosition.Quantity != rightPosition.Quantity ||
+            leftPosition.AverageCost != rightPosition.AverageCost)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 static DateTimeOffset FixedClock() => DateTimeOffset.UnixEpoch.AddHours(2);
 
 static Guid CreateGuid(int seed) => Guid.Parse($"00000000-0000-0000-0000-{seed:D12}");
-
-static int ParseSeed(Guid id) => int.Parse(id.ToString("N")[20..], System.Globalization.CultureInfo.InvariantCulture);
 
 static void Require(bool condition, string message)
 {
