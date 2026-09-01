@@ -170,7 +170,57 @@
     5,
     8
   ],
-  "latest_checkpoint": ".ai/checkpoints/2026-08-26-p0-public-evidence-and-partner-checklist.md",
-  "next_action": "Continue P0-T1 through Issue #20: obtain current direct pyPSX Broker API technical/commercial partner evidence and populate contracts/broker/PYPSX_PARTNER_EVIDENCE_CHECKLIST_V1.yaml field-by-field. Reconcile verified evidence against the P0 due-diligence matrix, partner RACI, BROKER_ADAPTER_V1, funding/custody/market-data flows, threat model and acceptance gates before any live integration. Issue #1 remains an open merge blocker for substantive production/security-sensitive implementation until protected-main controls are actually enabled or a new explicit owner risk decision is recorded.",
-  "last_updated": "2026-08-26"
+  "latest_checkpoint": ".ai/checkpoints/2026-09-01-p0-par-tabletop-state-reconciliation.md",
+  "next_action": "Continue bounded non-live P0-PAR evidence work by executing T-02 privileged-access/break-glass and T-05 provider/subprocessor-change synthetic table tops without claiming runtime/provider authority, while P0-T1 Issue #20 remains the active external-evidence task. Obtain current direct pyPSX Broker API technical/commercial partner evidence before any live adapter or real-money semantics. Issue #1 remains an open protected-main blocker and Issue #8 remains fail-closed for live onboarding/PII until provider, runtime, legal/counsel, partner and end-to-end evidence is accepted.",
+  "last_updated": "2026-09-01",
+  "p0_par_acceptance": {
+    "status": "NON_LIVE_FAIL_CLOSED_NOT_READY_FOR_PRODUCTION",
+    "github_gate_issue": 8,
+    "production_authorizing": false,
+    "evidence_plan": "docs/P0_PAR_PRODUCTION_ACCEPTANCE_EVIDENCE_PLAN.md",
+    "current_evidence_ledger": "docs/P0_PAR_CURRENT_ACCEPTANCE_EVIDENCE_LEDGER_2026-08-30.md",
+    "privacy_legal_recheck": "docs/P0_PRIVACY_LEGAL_RECHECK_2026-08-30.md",
+    "accepted_design_artifacts": [
+      "ABD-66",
+      "ABD-67",
+      "ABD-68",
+      "ABD-69",
+      "ABD-70",
+      "ABD-71",
+      "ABD-72"
+    ],
+    "tabletop_evidence": {
+      "T-01": {
+        "artifact": "docs/P0_PAR_TABLETOP_T01_PROVIDER_INCIDENT_DRY_RUN_2026-09-01.md",
+        "state": "BLOCKED",
+        "production_authorizing": false,
+        "accepted_main_merge_sha": "86030b96f9de77761b0b834f63904a6e52047db0"
+      },
+      "T-02": {
+        "state": "NOT_EXECUTED"
+      },
+      "T-03": {
+        "artifact": "docs/P0_PAR_TABLETOP_T03_CLOSURE_RETENTION_DRY_RUN_2026-08-31.md",
+        "state": "BLOCKED",
+        "production_authorizing": false,
+        "accepted_main_merge_sha": "fcb662935ba21ce4b11049c994185d2dfc65a9eb"
+      },
+      "T-04": {
+        "artifact": "docs/P0_PAR_TABLETOP_T04_DRY_RUN_2026-08-31.md",
+        "state": "BLOCKED",
+        "production_authorizing": false,
+        "accepted_main_merge_sha": "093a144593cd41954e810dc54f410d27dc3f25b2"
+      },
+      "T-05": {
+        "state": "NOT_EXECUTED"
+      }
+    },
+    "independent_blockers": {
+      "protected_main_issue": 1,
+      "pypsx_partner_evidence_issue": 20,
+      "provider_specific_production_approval": "UNRESOLVED",
+      "privileged_pii_runtime_proof": "UNRESOLVED",
+      "formal_privacy_law_and_counsel_recheck": "UNRESOLVED"
+    }
+  }
 }
