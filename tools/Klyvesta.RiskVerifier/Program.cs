@@ -79,7 +79,7 @@ static Task VerifyMissingMarketAsync()
 
 static Task VerifyStaleMarketAsync()
 {
-    var stale = Market("AAA", observedAt: Now.AddMinutes(-10));
+    var stale = Market("AAA", observedAt: Now().AddMinutes(-10));
     var decision = Evaluate(CreateRequest(market: stale));
     RequireDenied(decision, "RISK_MARKET_DATA_STALE");
     return Task.CompletedTask;
@@ -175,7 +175,7 @@ static Task VerifyDerivativeAsync()
 
 static Task VerifyActivityLimitsAsync()
 {
-    RiskActivityWindow activity = new(Now.AddMinutes(-10), 5, 49_000m);
+    RiskActivityWindow activity = new(Now().AddMinutes(-10), 5, 49_000m);
     var decision = Evaluate(CreateRequest(activity: activity));
     RequireDenied(decision, "RISK_ORDER_RATE_LIMIT_EXCEEDED");
     Require(decision.ReasonCodes.Contains("RISK_TURNOVER_LIMIT_EXCEEDED", StringComparer.Ordinal), "turnover breach must be independently visible");
@@ -192,7 +192,7 @@ static Task VerifyKillSwitchAsync()
 static async Task VerifyAdapterDenyAsync()
 {
     var inner = CreatePaperBroker();
-    var staleContext = SubmissionContext(market: Market("AAA", observedAt: Now.AddMinutes(-10)));
+    var staleContext = SubmissionContext(market: Market("AAA", observedAt: Now().AddMinutes(-10)));
     var provider = new FixedRiskContextProvider(staleContext);
     var guarded = new RiskGuardBrokerAdapter(inner, new DeterministicRiskGovernor(), provider, FixedClock);
     var command = Command(16);
@@ -283,8 +283,8 @@ static RiskEvaluationRequest CreateRequest(
         instrument ?? Instrument(instrumentReference, "TECH"),
         useDefaultMarket ? market ?? Market(instrumentReference) : market,
         portfolio ?? Portfolio(100_000m),
-        activity ?? new RiskActivityWindow(Now.AddMinutes(-10), 0, 0m),
-        Now);
+        activity ?? new RiskActivityWindow(Now().AddMinutes(-10), 0, 0m),
+        Now());
 
 static RiskSubmissionContext SubmissionContext(
     RiskMarketEvidence? market = null,
@@ -294,7 +294,7 @@ static RiskSubmissionContext SubmissionContext(
         Instrument("AAA", "TECH"),
         useDefaultMarket ? market ?? Market("AAA") : market,
         Portfolio(100_000m),
-        new RiskActivityWindow(Now.AddMinutes(-10), 0, 0m));
+        new RiskActivityWindow(Now().AddMinutes(-10), 0, 0m));
 
 static RiskInstrumentContext Instrument(
     string instrumentReference,
@@ -309,7 +309,7 @@ static RiskMarketEvidence Market(
     string instrumentReference,
     decimal dailyTradedValue = 1_000_000m,
     DateTimeOffset? observedAt = null) =>
-    new(instrumentReference, 100m, dailyTradedValue, observedAt ?? Now.AddMinutes(-1));
+    new(instrumentReference, 100m, dailyTradedValue, observedAt ?? Now().AddMinutes(-1));
 
 static RiskPortfolioSnapshot Portfolio(decimal cash, params RiskValuedPosition[] positions) =>
     new("paper-risk-account", cash, positions);
@@ -319,7 +319,7 @@ static RiskValuedPosition Position(
     string sectorReference,
     decimal quantity,
     decimal marketPrice) =>
-    new(instrumentReference, sectorReference, quantity, marketPrice, Now.AddMinutes(-1));
+    new(instrumentReference, sectorReference, quantity, marketPrice, Now().AddMinutes(-1));
 
 static PaperBrokerAdapter CreatePaperBroker() =>
     new(new PaperBrokerProfile
@@ -343,9 +343,9 @@ static SubmitBrokerOrderCommand Command(int seed) =>
         100m,
         BrokerTimeInForce.Day);
 
-static DateTimeOffset FixedClock() => Now;
+static DateTimeOffset FixedClock() => Now();
 
-static DateTimeOffset Now => DateTimeOffset.UnixEpoch.AddHours(3);
+static DateTimeOffset Now() => DateTimeOffset.UnixEpoch.AddHours(3);
 
 static Guid CreateGuid(int seed) => Guid.Parse($"00000000-0000-0000-0000-{seed:D12}");
 
