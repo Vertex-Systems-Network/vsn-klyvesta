@@ -201,7 +201,7 @@ Safety:
 
 The product should also be developed AI-natively. Engineering work must be decomposed into contract-driven modules so multiple specialized agents can execute independent READY work concurrently without weakening review or acceptance.
 
-Canonical delivery rules are defined in `docs/PARALLEL_AGENT_DEVELOPMENT.md` and `.ai/agent-orchestration.yaml`.
+Canonical delivery rules are defined in `docs/PARALLEL_AGENT_DEVELOPMENT.md`, `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`, `.ai/agent-orchestration.yaml`, and `.ai/parallel-branch-registry.yaml`.
 
 ### Current concurrency target
 
@@ -209,31 +209,67 @@ Canonical delivery rules are defined in `docs/PARALLEL_AGENT_DEVELOPMENT.md` and
 - scale toward **12-16 agents** only after path-ownership CI, automatic verifier discovery, dependency/work-item validation, shared-file ownership enforcement, merge-train integration, migration integration and conflict automation are operational;
 - do not create artificial parallelism inside a tightly coupled dependency chain.
 
+### Supervisor model
+
+The Main-repo agent acts as **Supervisor**.
+
+Before assigning a new parallel work wave, its first repository action is to create/reserve the module branches that other agents will use. It also owns `parallel/supervisor-platform` for its own work and `parallel/integration-staging` for accepted technical integration while protected-main promotion is blocked.
+
+The canonical module/branch/agent-slot map is `.ai/parallel-branch-registry.yaml`.
+
+The Supervisor reviews every submitted module PR, integrates only after exact-head technical/security/ownership/dependency evidence passes, advances accepted work in dependency order, and remains the only role that decides final promotion into `main`.
+
+### Completion and interrupt protocol
+
+A module agent announces genuine completion by posting the exact top-level PR comment:
+
+**Work Done and Submitted**
+
+That signal causes the Supervisor to checkpoint and pause its own current module work, review the submission, integrate it if approved, verify the resulting accepted baseline, send the required refresh alert, refresh its own branch if affected, and resume from the saved checkpoint.
+
+After every accepted integration the Supervisor sends exactly:
+
+**New changes have been merged — please merge these changes into your branch first, then resume your own work.**
+
+Issue #82 is the durable Supervisor Coordination Feed. Each event includes the new accepted baseline SHA and whether it is `main` or `parallel/integration-staging`.
+
+Every active agent must refresh to that accepted baseline, update dependency/base evidence, rerun affected tests and instruction/ownership checks, and only then resume. Completion time does not override dependency order.
+
 ### Module ownership
 
-Each active module/path has one implementation owner. Module agents stay within explicit allowed paths and use stable interfaces/contracts for cross-module dependencies. Shared CI/build/state/contracts/composition/migration integration are owned by Platform/Integration roles unless a work item explicitly grants otherwise.
+Each active module/path has one implementation owner. Module agents stay within explicit allowed paths and use stable interfaces/contracts for cross-module dependencies. Shared CI/build/state/contracts/composition/migration integration are owned by Supervisor/Platform/Integration roles unless a work item explicitly grants otherwise.
 
 ### Dependency-aware scheduling
 
-Roadmap work should be represented as a DAG with `READY`, `ACTIVE`, `BLOCKED`, `VERIFYING`, and `VERIFIED` states. Independent modules start from a common stable integration baseline. Feature stacking is used only for genuine dependencies.
+Roadmap work should be represented as a DAG with `RESERVED`, `READY`, `ACTIVE`, `BLOCKED`, `VERIFYING`, `VERIFIED`, `SUBMITTED`, and `INTEGRATED` states. Independent modules start from a common stable integration baseline. Feature stacking is used only for genuine dependencies.
+
+The core technical dependency chain is:
+
+`brokerage -> orders -> portfolio -> risk -> compliance -> ai-shadow`
+
+Ledger, Identity/Authorization, Notifications, Observability, Performance/Resilience and other genuinely independent READY slices may run concurrently.
+
+Existing draft implementations must be reconciled before newly reserved parallel branches recreate the same module work.
 
 ### Integration model
 
 Module agents produce small reviewable PRs and local verification evidence. Platform/Database/Integration agents own high-contention shared wiring. An Architecture/Conflict agent checks ownership, dependency drift, circular references, duplicate implementation and shared-file collisions before integration.
 
+The requested end-state is reviewed promotion into protected `main`. While the current repository governance gate blocks safe main promotion, accepted work may be technically combined only on `parallel/integration-staging`; staging does not equal production or phase acceptance.
+
 ### Instruction synchronization
 
-Every engineering agent must perform an instruction-drift check at every task/session start. When architecture, workflow, tools, module ownership, dependencies, testing commands, safety boundaries or integration process change, the applicable canonical instructions must be updated in the same PR. Repository-level workflow changes must be reflected in `README.md`; agent process changes in `AGENTS.md`; global engineering protocol changes in `.ai/MASTER_ENGINEERING_PROMPT.md`; ownership/dependency changes in `.ai/agent-orchestration.yaml`; module-specific changes in the relevant module documentation/README.
+Every engineering agent must perform an instruction-drift check at every task/session start and after every accepted-baseline refresh. When architecture, workflow, tools, branch assignment, module ownership, dependencies, testing commands, safety boundaries or integration process change, the applicable canonical instructions must be updated in the same PR. Repository-level workflow changes must be reflected in `README.md`; agent process changes in `AGENTS.md`; global engineering protocol changes in `.ai/MASTER_ENGINEERING_PROMPT.md`; ownership/dependency/Supervisor changes in `.ai/agent-orchestration.yaml`; branch/readiness changes in `.ai/parallel-branch-registry.yaml`; module-specific changes in the relevant module documentation/README.
 
 ### M-AGENT foundation milestones
 
-- **M-AGENT-01:** documentation + orchestration manifest;
+- **M-AGENT-01:** documentation + orchestration manifest + Supervisor workflow + branch registry;
 - **M-AGENT-02:** path/module ownership validator;
 - **M-AGENT-03:** automatic verifier discovery;
 - **M-AGENT-04:** per-work-item registry + dependency readiness/base-SHA validation;
-- **M-AGENT-05:** stable integration baseline + merge train;
+- **M-AGENT-05:** stable integration baseline + merge train + completion/refresh coordination automation;
 - **M-AGENT-06:** database migration integration workflow;
 - **M-AGENT-07:** architecture/conflict automation;
 - **M-AGENT-08:** concurrency scale test before raising the recommended ceiling.
 
-Engineering parallelism must never bypass financial, regulatory, security, broker, Risk Governor, Compliance Gate, reconciliation, or production authorization gates.
+Engineering parallelism, Supervisor integration and fast branch refreshes must never bypass financial, regulatory, security, broker, Risk Governor, Compliance Gate, reconciliation, or production authorization gates.
