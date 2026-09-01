@@ -9,6 +9,7 @@ REGISTRY_PATH = File.join(ROOT, '.ai', 'parallel-branch-registry.yaml')
 WORK_ITEMS_ROOT = File.join(ROOT, '.ai', 'work-items')
 SHA_PATTERN = /\A[0-9a-f]{40}\z/
 VALID_STATUSES = %w[RESERVED READY ACTIVE BLOCKED VERIFYING VERIFIED SUBMITTED INTEGRATED].freeze
+FIELD_ALIASES = { 'forbidden_or_shared_paths' => 'shared_or_forbidden_paths' }.freeze
 
 
 def yaml(path)
@@ -36,7 +37,9 @@ Dir.glob(File.join(WORK_ITEMS_ROOT, '*', '*.yaml')).sort.each do |path|
   items << [relative, item]
 
   required_fields.each do |field|
-    error(errors, relative, "missing required field #{field}") unless item.key?(field)
+    alias_field = FIELD_ALIASES[field]
+    present = item.key?(field) || (alias_field && item.key?(alias_field))
+    error(errors, relative, "missing required field #{field}") unless present
   end
 
   id = item['id']
@@ -103,12 +106,9 @@ Dir.glob(File.join(WORK_ITEMS_ROOT, '*', '*.yaml')).sort.each do |path|
     error(errors, relative, "#{status} work item has unresolved dependency heads: #{unresolved.join(', ')}") unless unresolved.empty?
   end
 
-  if status == 'SUBMITTED'
-    error(errors, relative, 'SUBMITTED work item requires submission_pr') if item['submission_pr'].nil?
-  end
-
-  if status == 'INTEGRATED'
-    error(errors, relative, 'INTEGRATED work item requires integration_baseline_sha') unless item['integration_baseline_sha'].to_s.match?(SHA_PATTERN)
+  error(errors, relative, 'SUBMITTED work item requires submission_pr') if status == 'SUBMITTED' && item['submission_pr'].nil?
+  if status == 'INTEGRATED' && !item['integration_baseline_sha'].to_s.match?(SHA_PATTERN)
+    error(errors, relative, 'INTEGRATED work item requires integration_baseline_sha')
   end
 
   work_item_path = ".ai/work-items/#{mod}/**"
@@ -117,13 +117,10 @@ Dir.glob(File.join(WORK_ITEMS_ROOT, '*', '*.yaml')).sort.each do |path|
   end
 end
 
-if items.empty?
-  errors << 'no work-item YAML files discovered'
-end
+errors << 'no work-item YAML files discovered' if items.empty?
 
 registry_by_module.each_key do |mod|
-  next if modules.key?(mod)
-  errors << "branch registry module #{mod} has no durable work item"
+  errors << "branch registry module #{mod} has no durable work item" unless modules.key?(mod)
 end
 
 unless errors.empty?
