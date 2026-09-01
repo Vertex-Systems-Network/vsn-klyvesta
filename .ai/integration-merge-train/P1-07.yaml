@@ -1,0 +1,18 @@
+work_item: P1-07
+module: orders
+source_pr: 71
+source_branch: agent/20260901-vsn-klyvesta-p1-07-oms
+source_head_sha: 5f0718fab6e8ba8678d4ecc2aa3772532a6d7933
+stack_base_sha: f1048043e7b47e2892f2ecfb72d26584aa06accb
+integration_mode: selective-module-delta
+included_paths:
+  - .ai/checkpoints/2026-09-01-p1-07-oms-feature-branch.md
+  - src/Klyvesta.Application/Orders/OrderManagementService.cs
+  - src/Klyvesta.Domain/Orders/OrderManagementState.cs
+  - tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj
+  - tools/Klyvesta.OmsVerifier/Program.cs
+excluded_shared_paths:
+  - .github/workflows/dotnet-foundation.yml
+exclusion_reason: integration staging already uses convention-based automatic verifier discovery
+status: INTEGRATING
+production_authority: false
