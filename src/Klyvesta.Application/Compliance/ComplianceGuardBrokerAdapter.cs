@@ -9,12 +9,16 @@ public sealed record ComplianceSubmissionContext(
     ComplianceAccountStatus AccountStatus,
     RegulatoryFeatureStatus RegulatoryFeatureStatus,
     ManualReviewStatus ManualReviewStatus,
-    InstrumentRestrictionStatus InstrumentRestrictionStatus,
     ComplianceMandateEvidence? Mandate = null);
 
 public interface IComplianceSubmissionContextProvider
 {
     ComplianceSubmissionContext GetContext(SubmitBrokerOrderCommand command, DateTimeOffset evaluatedAt);
+}
+
+public interface IInstrumentRestrictionProvider
+{
+    InstrumentRestrictionStatus GetRestriction(SubmitBrokerOrderCommand command, DateTimeOffset evaluatedAt);
 }
 
 public sealed class ComplianceGuardBrokerAdapter : IBrokerAdapter
@@ -23,6 +27,7 @@ public sealed class ComplianceGuardBrokerAdapter : IBrokerAdapter
     private readonly IBrokerAdapter _inner;
     private readonly IComplianceGate _gate;
     private readonly IComplianceSubmissionContextProvider _contextProvider;
+    private readonly IInstrumentRestrictionProvider _instrumentRestrictionProvider;
     private readonly Func<DateTimeOffset> _clock;
     private readonly Dictionary<Guid, ComplianceDecision> _decisions = [];
 
@@ -30,11 +35,13 @@ public sealed class ComplianceGuardBrokerAdapter : IBrokerAdapter
         IBrokerAdapter inner,
         IComplianceGate gate,
         IComplianceSubmissionContextProvider contextProvider,
+        IInstrumentRestrictionProvider instrumentRestrictionProvider,
         Func<DateTimeOffset>? clock = null)
     {
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         _gate = gate ?? throw new ArgumentNullException(nameof(gate));
         _contextProvider = contextProvider ?? throw new ArgumentNullException(nameof(contextProvider));
+        _instrumentRestrictionProvider = instrumentRestrictionProvider ?? throw new ArgumentNullException(nameof(instrumentRestrictionProvider));
         _clock = clock ?? (() => DateTimeOffset.UtcNow);
     }
 
@@ -76,6 +83,7 @@ public sealed class ComplianceGuardBrokerAdapter : IBrokerAdapter
             throw new InvalidOperationException("Compliance submission context provider returned null.");
         ArgumentNullException.ThrowIfNull(context.Policy);
 
+        var instrumentRestriction = _instrumentRestrictionProvider.GetRestriction(command, evaluatedAt);
         ComplianceEvaluationRequest request = new(
             command.AccountReference,
             command.InstrumentReference,
@@ -83,7 +91,7 @@ public sealed class ComplianceGuardBrokerAdapter : IBrokerAdapter
             context.AccountStatus,
             context.RegulatoryFeatureStatus,
             context.ManualReviewStatus,
-            context.InstrumentRestrictionStatus,
+            instrumentRestriction,
             context.Mandate,
             evaluatedAt);
 
