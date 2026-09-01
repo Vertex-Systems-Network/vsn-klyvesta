@@ -460,7 +460,7 @@ public sealed class OrderManagementService : IDisposable
         {
             ReservationKind.Cash => execution.Quantity * execution.Price,
             ReservationKind.PositionQuantity => execution.Quantity,
-            _ => throw new ArgumentOutOfRangeException(nameof(reservation.Kind), reservation.Kind, "Unknown reservation kind."),
+            _ => throw new InvalidOperationException($"Unknown reservation kind {reservation.Kind}."),
         };
 
         reservation.Consume(amount);
