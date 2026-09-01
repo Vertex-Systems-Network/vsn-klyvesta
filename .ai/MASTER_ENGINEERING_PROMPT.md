@@ -121,8 +121,8 @@ Before implementation:
 
 1. Read `AGENTS.md`.
 2. Read `.ai/MASTER_ENGINEERING_PROMPT.md`.
-3. Read `.ai/agent-orchestration.yaml`, `.ai/parallel-branch-registry.yaml`, and the active work item/module ownership instructions.
-4. Read `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md` and inspect the Supervisor Coordination Feed when working in parallel mode.
+3. Read `.ai/agent-orchestration.yaml`, `.ai/parallel-branch-registry.yaml`, `.ai/integration-baseline.yaml`, and the active work item/module ownership instructions.
+4. Read `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`, `docs/NEW_AGENT_ONBOARDING.md`, and inspect the Supervisor Coordination Feed when working in parallel mode.
 5. Read `.ai/state.json`.
 6. Read `.ai/guardrails.md`.
 7. Read `.ai/acceptance-gates.yaml`.
@@ -278,7 +278,7 @@ Current preferred concurrency is approximately 8-10 specialized agents when enou
 
 ### Mandatory instruction-drift check
 
-At the start of every task/session and after every accepted-baseline refresh, determine whether the instructions required to perform the work changed because of architecture, tooling, CI, branch assignment, module ownership, dependencies, testing commands, security/safety boundaries, Supervisor behavior, or integration process changes.
+At the start of every task/session and after every accepted-baseline refresh, determine whether the instructions required to perform the work changed because of architecture, tooling, CI, branch assignment, module ownership, dependencies, testing commands, security/safety boundaries, Supervisor behavior, onboarding, or integration process changes.
 
 When instructions changed, update the canonical repository instructions in the same PR:
 
@@ -287,7 +287,8 @@ When instructions changed, update the canonical repository instructions in the s
 - global engineering protocol change → `.ai/MASTER_ENGINEERING_PROMPT.md`;
 - module-specific instruction change → relevant module documentation/README;
 - ownership/dependency/concurrency/shared-file/Supervisor policy change → `.ai/agent-orchestration.yaml`;
-- branch assignment/readiness/baseline change → `.ai/parallel-branch-registry.yaml`.
+- branch assignment/readiness/occupancy change → `.ai/parallel-branch-registry.yaml`;
+- accepted merge-train baseline change → `.ai/integration-baseline.yaml`.
 
 Do not leave new operating instructions only in chat, memory, or an issue comment. If no instruction change is required, record that the instruction-drift check was performed in the PR/checkpoint evidence.
 
@@ -343,3 +344,29 @@ Every active agent must checkpoint, fetch the accepted baseline named by the Sup
 A stale accepted baseline blocks continued implementation after a refresh alert.
 
 Issue #82 is the durable coordination feed. Chat-only coordination is insufficient for accepted integration events.
+
+## 31. New Agent Allocation and Operational Merge Train
+
+### New agent arrival
+
+Every new agent starts from **`main`** before assignment. It must not self-select a module, branch from another feature, or begin implementation before Supervisor allocation.
+
+The Supervisor immediately checks `.ai/parallel-branch-registry.yaml` and the corresponding durable work items. A free slot requires `READY` registry state, `OPEN` occupancy, a `READY` work item, and no existing active owner.
+
+If a free slot exists, Supervisor assigns the deterministic free slot, records the agent name/start state, marks the slot occupied and work item active, then tells the agent to checkout the already-created canonical module branch. Before coding, that branch must contain the current accepted `parallel/integration-staging` baseline.
+
+If no free slot exists, Supervisor stops onboarding and sends exactly:
+
+**Go Home Come Back Next Time**
+
+The unassigned agent creates no branch and starts no work.
+
+### Merge train and integration baseline
+
+`parallel/integration-staging` is the accepted technical baseline while hosted `main` promotion remains governance-blocked. Accepted work advances that baseline one reviewed item at a time only after exact-head CI, ownership/dependency freshness, architecture/conflict checks, migration ownership, security, instruction drift, review-thread checks and full relevant regression pass.
+
+After each accepted advance, Supervisor publishes the exact refresh alert and active agents must refresh before resuming. Integration-staging is never regulatory, live-trading, broker, PII, real-money or production authorization.
+
+### Migration and conflict ownership
+
+Final EF migrations and `*ModelSnapshot.cs` belong to `parallel/database-integration`. Other parallel branches fail orchestration validation if they change them. Orchestration also validates unique canonical branches/ownership patterns, known acyclic dependencies, plan occupancy invariants, baseline ancestry and configured concurrency overflow behavior.
