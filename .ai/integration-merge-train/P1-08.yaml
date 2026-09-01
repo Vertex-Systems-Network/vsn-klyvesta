@@ -1,0 +1,20 @@
+work_item: P1-08
+module: portfolio
+source_pr: 73
+source_branch: agent/20260901-vsn-klyvesta-p1-08-portfolio-recon
+source_head_sha: f325b8383bc23881ccd6cfabbb5caf1af2455342
+stack_base_sha: 5f0718fab6e8ba8678d4ecc2aa3772532a6d7933
+integration_mode: selective-module-delta
+included_paths:
+  - .ai/checkpoints/2026-09-01-p1-08-portfolio-reconciliation-feature-branch.md
+  - src/Klyvesta.Application/Brokerage/ExecutionHoldBrokerAdapter.cs
+  - src/Klyvesta.Application/Orders/IOrderExecutionHoldProvider.cs
+  - src/Klyvesta.Application/Portfolios/PortfolioProjectionService.cs
+  - src/Klyvesta.Domain/Portfolios/PortfolioProjection.cs
+  - tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj
+  - tools/Klyvesta.PortfolioVerifier/Program.cs
+excluded_shared_paths:
+  - .github/workflows/dotnet-foundation.yml
+exclusion_reason: integration staging already uses convention-based automatic verifier discovery
+status: INTEGRATING
+production_authority: false
