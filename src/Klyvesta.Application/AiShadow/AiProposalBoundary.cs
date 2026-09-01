@@ -15,7 +15,12 @@ public sealed record AiProposalValidationResult(
     bool IsValid,
     IReadOnlyList<string> Errors);
 
-public sealed class AiProposalJsonParser
+public interface IAiProposalParser
+{
+    AiProposalParseResult Parse(string json);
+}
+
+public sealed class AiProposalJsonParser : IAiProposalParser
 {
     private const int MaxPayloadLength = 65_536;
 
@@ -125,7 +130,15 @@ public sealed class AiProposalJsonParser
     }
 }
 
-public sealed class DeterministicAiProposalValidator
+public interface IAiProposalValidator
+{
+    AiProposalValidationResult Validate(
+        AiInvestmentProposal proposal,
+        AiProposalValidationPolicy policy,
+        DateTimeOffset evaluatedAt);
+}
+
+public sealed class DeterministicAiProposalValidator : IAiProposalValidator
 {
     public AiProposalValidationResult Validate(
         AiInvestmentProposal proposal,
