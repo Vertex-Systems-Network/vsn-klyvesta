@@ -1,0 +1,238 @@
+version: 1
+status: planned-foundation
+canonical_human_plan: docs/PARALLEL_AGENT_DEVELOPMENT.md
+canonical_agent_entrypoint: AGENTS.md
+
+concurrency:
+  current_recommended_min: 6
+  current_recommended_max: 10
+  mature_recommended_max: 16
+  scale_up_requires:
+    - path_ownership_ci
+    - dependency_manifest_validation
+    - automatic_verifier_discovery
+    - shared_file_ownership_enforcement
+    - integration_merge_train
+    - migration_integration_workflow
+    - architecture_conflict_checks
+    - per_work_item_state
+    - instruction_drift_evidence
+
+roles:
+  module-agent:
+    purpose: implement one owned module slice and its local verifier
+  platform-agent:
+    purpose: own shared CI, build, package and repository-wide engineering mechanics
+  database-integration-agent:
+    purpose: own final EF migration ordering, snapshots and integrated schema verification
+  integration-agent:
+    purpose: own dependency-order integration, composition wiring, merge-train and full regressions
+  architecture-conflict-agent:
+    purpose: detect ownership overlap, forbidden dependencies, contract drift and collisions
+  verification-security-agent:
+    purpose: independently verify acceptance, security and regressions without redefining implementation
+
+shared_paths:
+  default_owner_roles:
+    - platform-agent
+    - integration-agent
+  paths:
+    - .github/workflows/**
+    - Directory.Build.props
+    - Directory.Packages.props
+    - .ai/state.json
+    - .ai/agent-orchestration.yaml
+    - contracts/**
+  conditional_shared_paths:
+    - src/Klyvesta.Api/**
+    - '**/*.sln'
+    - '**/*ModelSnapshot.cs'
+    - '**/Migrations/**'
+
+module_defaults:
+  cross_module_rule: contract-first
+  shared_file_rule: explicit-grant-required
+  duplicate_implementation_rule: forbidden
+  base_sha_required: true
+  dependency_evidence_required: true
+  instruction_drift_check_required: true
+
+modules:
+  brokerage:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Application/Brokerage/**
+      - src/Klyvesta.Infrastructure/Brokerage/**
+      - tools/Klyvesta.PaperBrokerVerifier/**
+    contracts:
+      - IBrokerAdapter
+
+  orders:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Orders/**
+      - src/Klyvesta.Application/Orders/**
+      - tools/Klyvesta.OmsVerifier/**
+    dependencies:
+      - brokerage
+
+  portfolio:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Portfolios/**
+      - src/Klyvesta.Application/Portfolios/**
+      - tools/Klyvesta.PortfolioVerifier/**
+    dependencies:
+      - brokerage
+      - orders
+
+  risk:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Risk/**
+      - src/Klyvesta.Application/Risk/**
+      - tools/Klyvesta.RiskVerifier/**
+    dependencies:
+      - portfolio
+    contracts:
+      - IRiskGovernor
+
+  compliance:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Compliance/**
+      - src/Klyvesta.Application/Compliance/**
+      - tools/Klyvesta.ComplianceVerifier/**
+    dependencies:
+      - risk
+    contracts:
+      - IComplianceGate
+
+  ai-shadow:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/AiShadow/**
+      - src/Klyvesta.Application/AiShadow/**
+      - src/Klyvesta.Infrastructure/AiShadow/**
+      - tools/Klyvesta.AiShadowVerifier/**
+    dependencies:
+      - portfolio
+      - risk
+      - compliance
+
+  ledger:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Ledger/**
+      - src/Klyvesta.Application/Ledger/**
+      - src/Klyvesta.Infrastructure/Ledger/**
+      - tools/Klyvesta.LedgerVerifier/**
+
+  identity-authorization:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Identity/**
+      - src/Klyvesta.Application/Identity/**
+      - src/Klyvesta.Infrastructure/Identity/**
+      - tools/Klyvesta.AuthorizationVerifier/**
+
+  notifications:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Domain/Notifications/**
+      - src/Klyvesta.Application/Notifications/**
+      - src/Klyvesta.Infrastructure/Notifications/**
+      - tools/Klyvesta.NotificationsVerifier/**
+
+  observability:
+    owner_role: module-agent
+    allowed_paths:
+      - src/Klyvesta.Application/Observability/**
+      - src/Klyvesta.Infrastructure/Observability/**
+      - tools/Klyvesta.ObservabilityVerifier/**
+
+  security-acceptance:
+    owner_role: verification-security-agent
+    allowed_paths:
+      - contracts/security/**
+      - tools/Klyvesta.SecurityVerifier/**
+      - docs/SECURITY*.md
+      - docs/THREAT_MODEL.md
+
+  performance-resilience:
+    owner_role: verification-security-agent
+    allowed_paths:
+      - tools/Klyvesta.PerformanceVerifier/**
+      - docs/QA_PERFORMANCE.md
+      - perf/**
+
+instruction_drift:
+  required_every_task_start: true
+  required_reads:
+    - AGENTS.md
+    - .ai/MASTER_ENGINEERING_PROMPT.md
+    - .ai/agent-orchestration.yaml
+    - .ai/state.json
+    - .ai/guardrails.md
+    - .ai/acceptance-gates.yaml
+    - active_work_item
+    - relevant_module_docs_and_contracts
+    - current_branch_and_base_sha
+    - relevant_open_prs_and_issues
+  update_rules:
+    agent_behavior_or_process_changed:
+      - AGENTS.md
+    repository_onboarding_or_workflow_changed:
+      - README.md
+    global_engineering_protocol_changed:
+      - .ai/MASTER_ENGINEERING_PROMPT.md
+    module_specific_instructions_changed:
+      - relevant_module_documentation_or_readme
+    ownership_or_dependency_policy_changed:
+      - .ai/agent-orchestration.yaml
+  evidence_required_in_checkpoint_or_pr: true
+
+work_item_contract:
+  required_fields:
+    - id
+    - module
+    - owner_role
+    - base_sha
+    - dependencies
+    - allowed_paths
+    - forbidden_or_shared_paths
+    - status
+    - acceptance_evidence
+    - instruction_drift_check
+  statuses:
+    - READY
+    - ACTIVE
+    - BLOCKED
+    - VERIFYING
+    - VERIFIED
+
+integration_rules:
+  prefer_common_stable_baseline_for_independent_work: true
+  stacking_requires_real_dependency: true
+  final_diff_against_recorded_base_required: true
+  full_regression_before_integration_baseline_advance: true
+  unresolved_ownership_violation_blocks_integration: true
+  unresolved_dependency_blocks_acceptance: true
+
+planned_milestones:
+  - id: M-AGENT-01
+    name: documentation-and-manifest
+  - id: M-AGENT-02
+    name: ownership-validator
+  - id: M-AGENT-03
+    name: automatic-verifier-discovery
+  - id: M-AGENT-04
+    name: work-item-registry-and-dependency-readiness
+  - id: M-AGENT-05
+    name: integration-baseline-and-merge-train
+  - id: M-AGENT-06
+    name: migration-integration
+  - id: M-AGENT-07
+    name: conflict-and-architecture-automation
+  - id: M-AGENT-08
+    name: concurrency-scale-test
