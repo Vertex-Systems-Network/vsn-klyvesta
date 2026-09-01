@@ -1,0 +1,20 @@
+work_item: P1-11
+module: ai-shadow
+source_pr: 79
+source_branch: agent/20260902-vsn-klyvesta-p1-11-ai-shadow
+source_head_sha: 807a469eacdcba636774a99978de4f3f1d9831c6
+stack_base_sha: a6b116671f087fbfca1c4509270b45ac7b8c341e
+integration_mode: selective-module-delta
+included_paths:
+  - .ai/checkpoints/2026-09-02-p1-11-ai-shadow-feature-branch.md
+  - src/Klyvesta.Application/AiShadow/AiProposalBoundary.cs
+  - src/Klyvesta.Application/AiShadow/DeterministicAiShadowPlanner.cs
+  - src/Klyvesta.Domain/AiShadow/AiShadowModels.cs
+  - src/Klyvesta.Infrastructure/AiShadow/PaperShadowOrderExecutor.cs
+  - tools/Klyvesta.AiShadowVerifier/Klyvesta.AiShadowVerifier.csproj
+  - tools/Klyvesta.AiShadowVerifier/Program.cs
+excluded_shared_paths:
+  - .github/workflows/dotnet-foundation.yml
+exclusion_reason: integration staging already uses convention-based automatic verifier discovery
+status: INTEGRATING
+production_authority: false
