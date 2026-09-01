@@ -171,7 +171,7 @@
     8
   ],
   "latest_checkpoint": ".ai/checkpoints/2026-09-01-p0-par-tabletop-state-reconciliation.md",
-  "next_action": "Continue bounded non-live P0-PAR evidence work by executing T-02 privileged-access/break-glass and T-05 provider/subprocessor-change synthetic table tops without claiming runtime/provider authority, while P0-T1 Issue #20 remains the active external-evidence task. Obtain current direct pyPSX Broker API technical/commercial partner evidence before any live adapter or real-money semantics. Issue #1 remains an open protected-main blocker and Issue #8 remains fail-closed for live onboarding/PII until provider, runtime, legal/counsel, partner and end-to-end evidence is accepted.",
+  "next_action": "Continue bounded non-live P0-PAR evidence work by executing T-05 provider/subprocessor-change synthetic tabletop without claiming provider authority, while P0-T1 Issue #20 remains the active external-evidence task. Obtain current direct pyPSX Broker API technical/commercial partner evidence before any live adapter or real-money semantics. Issue #1 remains an open protected-main blocker and Issue #8 remains fail-closed for live onboarding/PII until provider, runtime, legal/counsel, partner and successful end-to-end evidence is accepted.",
   "last_updated": "2026-09-01",
   "p0_par_acceptance": {
     "status": "NON_LIVE_FAIL_CLOSED_NOT_READY_FOR_PRODUCTION",
@@ -197,7 +197,9 @@
         "accepted_main_merge_sha": "86030b96f9de77761b0b834f63904a6e52047db0"
       },
       "T-02": {
-        "state": "NOT_EXECUTED"
+        "artifact": "docs/P0_PAR_TABLETOP_T02_PRIVILEGED_ACCESS_BREAK_GLASS_DRY_RUN_2026-09-01.md",
+        "state": "BLOCKED",
+        "production_authorizing": false
       },
       "T-03": {
         "artifact": "docs/P0_PAR_TABLETOP_T03_CLOSURE_RETENTION_DRY_RUN_2026-08-31.md",
