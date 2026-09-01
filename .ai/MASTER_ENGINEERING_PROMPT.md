@@ -121,15 +121,17 @@ Before implementation:
 
 1. Read `AGENTS.md`.
 2. Read `.ai/MASTER_ENGINEERING_PROMPT.md`.
-3. Read `.ai/state.json`.
-4. Read `.ai/guardrails.md`.
-5. Read `.ai/acceptance-gates.yaml`.
-6. Inspect repository structure and relevant docs.
-7. Inspect current branch/HEAD and recent Git history.
-8. Inspect open PRs/issues relevant to the active task.
-9. Identify latest checkpoint and unfinished work.
-10. Inspect relevant implementation and available dev/test commands.
-11. Only then begin work.
+3. Read `.ai/agent-orchestration.yaml` and the active work item/module ownership instructions.
+4. Read `.ai/state.json`.
+5. Read `.ai/guardrails.md`.
+6. Read `.ai/acceptance-gates.yaml`.
+7. Inspect repository structure and relevant docs/contracts.
+8. Inspect current branch/HEAD, recorded base SHA, dependency heads, and recent Git history.
+9. Inspect open PRs/issues relevant to the active task and check for ownership overlap or duplicate implementation.
+10. Identify latest checkpoint and unfinished work.
+11. Inspect relevant implementation and available dev/test commands.
+12. Perform the mandatory instruction-drift check in Section 29.
+13. Only then begin work.
 
 Never assume a previous AI session completed work because it was discussed. Verify repository state.
 
@@ -255,3 +257,35 @@ At the end of each meaningful task provide a concise engineering report containi
 - recommended next step.
 
 The goal is not merely working code. The goal is a **secure, maintainable, testable, observable, documented, recoverable, production-grade software system with a trustworthy engineering history.**
+
+## 29. Parallel-Agent Development and Instruction Drift
+
+Klyvesta engineering is designed to support multiple concurrent specialized agents. The canonical human plan is `docs/PARALLEL_AGENT_DEVELOPMENT.md`; the machine-readable ownership/dependency policy is `.ai/agent-orchestration.yaml`.
+
+### Ownership and concurrency
+
+- One active implementation owner per module/path at a time.
+- Every work item must record its module, owner role, exact base SHA, dependencies, allowed paths, shared/forbidden paths, status, and acceptance evidence.
+- Independent READY work should use a common stable integration baseline rather than forming an unnecessary sequential feature stack.
+- Stack on another feature only when a real dependency requires it.
+- Module agents must not modify another module's implementation simply to unblock themselves; use stable contracts/interfaces and route shared/breaking changes through Platform/Integration ownership.
+- High-contention shared files such as central CI, shared build/package configuration, shared state, shared contracts/composition wiring, and final EF migration/model-snapshot integration are Platform/Integration-owned unless explicitly granted.
+- Before writing code, inspect active PRs/issues for overlapping ownership, duplicate implementation, stale bases, changed dependencies, or required shared-file edits. A detected collision must be resolved through ownership/integration rather than competing edits.
+
+Current preferred concurrency is approximately 8-10 specialized agents when enough independent READY work exists. Scale toward 12-16 only after the orchestration controls listed in `.ai/agent-orchestration.yaml` are operational and verified.
+
+### Mandatory instruction-drift check
+
+At the start of every task/session, determine whether the instructions required to perform the work changed because of architecture, tooling, CI, module ownership, dependencies, testing commands, security/safety boundaries, or integration process changes.
+
+When instructions changed, update the canonical repository instructions in the same PR:
+
+- agent process/behavior change → `AGENTS.md`;
+- repository onboarding/workflow change → `README.md`;
+- global engineering protocol change → `.ai/MASTER_ENGINEERING_PROMPT.md`;
+- module-specific instruction change → relevant module documentation/README;
+- ownership/dependency/concurrency/shared-file policy change → `.ai/agent-orchestration.yaml`.
+
+Do not leave new operating instructions only in chat, memory, or an issue comment. If no instruction change is required, record that the instruction-drift check was performed in the PR/checkpoint evidence.
+
+Parallel development accelerates delivery only; it never weakens Klyvesta's financial, regulatory, security, broker, risk, compliance, reconciliation, or production-authorization gates.
