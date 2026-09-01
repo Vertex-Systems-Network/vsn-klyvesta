@@ -8,8 +8,10 @@ on:
       - ".github/workflows/agent-orchestration.yml"
       - ".ai/agent-orchestration.yaml"
       - ".ai/parallel-branch-registry.yaml"
+      - ".ai/work-items/**"
       - "scripts/validate-agent-ownership.rb"
       - "scripts/test-agent-ownership.rb"
+      - "scripts/validate-work-items.rb"
       - "src/**"
       - "tools/**"
       - "contracts/**"
@@ -30,7 +32,7 @@ concurrency:
 
 jobs:
   ownership:
-    name: Validate parallel branch ownership
+    name: Validate parallel branch ownership and readiness
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -44,13 +46,17 @@ jobs:
       - name: Display Ruby version
         run: ruby --version
 
-      - name: Validate ownership scripts syntax
+      - name: Validate orchestration scripts syntax
         run: |
           ruby -c scripts/validate-agent-ownership.rb
           ruby -c scripts/test-agent-ownership.rb
+          ruby -c scripts/validate-work-items.rb
 
       - name: Run ownership validator self-tests
         run: ruby scripts/test-agent-ownership.rb
+
+      - name: Validate durable work-item registry
+        run: ruby scripts/validate-work-items.rb
 
       - name: Validate branch ownership and readiness
         env:
