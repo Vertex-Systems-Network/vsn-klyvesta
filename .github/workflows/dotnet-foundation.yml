@@ -66,6 +66,9 @@ jobs:
       - name: Restore portfolio verifier
         run: dotnet restore tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj
 
+      - name: Restore risk verifier
+        run: dotnet restore tools/Klyvesta.RiskVerifier/Klyvesta.RiskVerifier.csproj
+
       - name: Verify formatting
         run: |
           dotnet format src/Klyvesta.Api/Klyvesta.Api.csproj --verify-no-changes --no-restore
@@ -73,6 +76,7 @@ jobs:
           dotnet format tools/Klyvesta.PaperBrokerVerifier/Klyvesta.PaperBrokerVerifier.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj --verify-no-changes --no-restore
+          dotnet format tools/Klyvesta.RiskVerifier/Klyvesta.RiskVerifier.csproj --verify-no-changes --no-restore
 
       - name: Build API graph
         run: dotnet build src/Klyvesta.Api/Klyvesta.Api.csproj --configuration Release --no-restore
@@ -89,6 +93,9 @@ jobs:
       - name: Build portfolio verifier
         run: dotnet build tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj --configuration Release --no-restore
 
+      - name: Build risk verifier
+        run: dotnet build tools/Klyvesta.RiskVerifier/Klyvesta.RiskVerifier.csproj --configuration Release --no-restore
+
       - name: Verify architecture boundaries
         run: dotnet run --project tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-build
 
@@ -100,3 +107,6 @@ jobs:
 
       - name: Verify portfolio projection and reconciliation
         run: dotnet run --project tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj --configuration Release --no-build
+
+      - name: Verify deterministic risk governor
+        run: dotnet run --project tools/Klyvesta.RiskVerifier/Klyvesta.RiskVerifier.csproj --configuration Release --no-build
