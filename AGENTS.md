@@ -161,3 +161,13 @@ Every meaningful engineering session must end with:
 - exact integration order/next action.
 
 If an important requirement remains unverified, report the work as PARTIALLY COMPLETE rather than DONE.
+
+## Operational onboarding / merge-train addendum
+
+- A new agent **must arrive on `main`** before Supervisor assignment. Read `docs/NEW_AGENT_ONBOARDING.md` and `.ai/integration-baseline.yaml` during onboarding.
+- Supervisor assigns only a `READY` + `OPEN` slot whose durable work item is `READY`, then records the agent name and start state and marks the work item active.
+- After assignment the agent checks out the pre-created canonical module branch; implementation does not happen on `main`.
+- If no free slot exists, Supervisor must stop the agent and send exactly **Go Home Come Back Next Time**. The unassigned agent creates no substitute branch and starts no work.
+- `parallel/integration-staging` is the accepted technical baseline while `main` promotion is governance-blocked. A stale assigned branch must refresh before work/resume.
+- Final EF migrations and `*ModelSnapshot.cs` belong to `parallel/database-integration`; other parallel branches fail orchestration CI if they change them.
+- Orchestration CI validates onboarding behavior, work-item readiness, baseline ancestry, migration ownership, dependency-DAG/branch/occupancy consistency, concurrency capacity/overflow behavior, and module changed-path ownership.

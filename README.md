@@ -157,3 +157,13 @@ Accepted planning ADRs:
 - `docs/PARALLEL_AGENT_DEVELOPMENT.md`
 - `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`
 - latest checkpoint path is recorded in `.ai/state.json`
+
+## New-agent onboarding and operational orchestration
+
+Every **new agent starts on `main`**. The Supervisor immediately checks `.ai/parallel-branch-registry.yaml` for a `READY` + `OPEN` module whose durable work item is also `READY`. If available, Supervisor assigns the pre-created module branch, marks the slot occupied, records agent/start state, and the agent then checks out that assigned branch. Before implementation the assigned branch must contain the latest `parallel/integration-staging` accepted baseline.
+
+If no free slot exists, Supervisor sends exactly **Go Home Come Back Next Time** and the unassigned agent starts no work.
+
+See `docs/NEW_AGENT_ONBOARDING.md`, `.ai/integration-baseline.yaml`, and `scripts/onboard-new-agent.rb`.
+
+Operational orchestration CI now verifies onboarding allocation/overflow behavior, durable work-item readiness, accepted-baseline ancestry, module ownership, migration/model-snapshot ownership, dependency-DAG/branch/occupancy consistency, and configured concurrency capacity. `parallel/integration-staging` advances one reviewed integration at a time while protected `main` remains governance-blocked.
