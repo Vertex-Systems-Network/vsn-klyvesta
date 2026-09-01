@@ -40,15 +40,50 @@ See `docs/REPOSITORY_LICENSING_MODEL.md` and `docs/REPOSITORY_GOVERNANCE.md`.
 
 ## Engineering governance
 
-All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read the machine-readable project state, guardrails, acceptance gates, and latest checkpoint before implementation.
+All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read `.ai/agent-orchestration.yaml`, the machine-readable project state, guardrails, acceptance gates, active work item, relevant module contracts/documentation, and latest checkpoint before implementation.
 
 Repository evidence, tests, documentation, and Git history are the source of truth; chat memory is not.
 
 The normal workflow is protected-main + pull request + required CI/security checks + review. A narrowly scoped temporary risk acceptance for the current foundation integration is documented as `F0-RISK-001`; it does not authorize bypassing technical acceptance or production/regulatory gates.
 
+### Parallel-agent development
+
+Klyvesta uses a module-ownership and dependency-DAG model so independent engineering agents can work concurrently without routinely modifying the same files.
+
+Current recommended concurrency is **8-10 specialized agents** when enough independent READY work exists. The target may scale toward **12-16 agents** only after path-ownership CI, automatic verifier discovery, dependency/work-item validation, shared-file enforcement, integration/merge-train automation, migration integration, and conflict checks are operational.
+
+Key rules:
+
+- one active implementation owner per module/path;
+- independent modules should branch from a common stable integration baseline rather than an unnecessary sequential feature stack;
+- dependent modules may stack only when a real dependency requires it;
+- module agents work inside explicit allowed paths and communicate across modules through stable contracts/interfaces;
+- shared files such as central CI, build/package configuration, shared state, contracts, composition wiring, and final migration/model-snapshot integration are Platform/Integration-owned by default;
+- every work item records its exact base SHA and dependency evidence;
+- every agent performs a pre-work collision check against active PRs/issues and module ownership;
+- every meaningful PR/checkpoint records its instruction-drift check.
+
+The canonical parallel development plan is `docs/PARALLEL_AGENT_DEVELOPMENT.md`; the machine-readable ownership/dependency model is `.ai/agent-orchestration.yaml`.
+
+### Mandatory instruction synchronization
+
+At the start of **every task/session**, the agent must re-check the working instructions relevant to that task. If architecture, tooling, workflow, module ownership, dependencies, testing commands, safety boundaries, or integration rules changed, the new instructions must be persisted in the repository in the same PR.
+
+At minimum:
+
+- agent process changes → update `AGENTS.md`;
+- repository onboarding/workflow changes → update `README.md`;
+- global engineering protocol changes → update `.ai/MASTER_ENGINEERING_PROMPT.md`;
+- module-specific working changes → update the relevant module documentation/README;
+- ownership/dependency/shared-file changes → update `.ai/agent-orchestration.yaml`.
+
+New working rules must not exist only in chat, memory, or issue comments.
+
 ## Core planning documents
 
 - `AI-PLAN.md`
+- `docs/PARALLEL_AGENT_DEVELOPMENT.md`
+- `.ai/agent-orchestration.yaml`
 - `docs/PRODUCT_VISION_V2.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
 - `docs/AI_AGENT_PACKAGES.md`
@@ -90,7 +125,9 @@ Accepted planning ADRs:
 
 - `AGENTS.md`
 - `.ai/MASTER_ENGINEERING_PROMPT.md`
+- `.ai/agent-orchestration.yaml`
 - `.ai/state.json`
 - `.ai/guardrails.md`
 - `.ai/acceptance-gates.yaml`
+- `docs/PARALLEL_AGENT_DEVELOPMENT.md`
 - latest checkpoint path is recorded in `.ai/state.json`
