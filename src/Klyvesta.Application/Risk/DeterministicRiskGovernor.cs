@@ -2,7 +2,12 @@ using Klyvesta.Domain.Risk;
 
 namespace Klyvesta.Application.Risk;
 
-public sealed class DeterministicRiskGovernor
+public interface IRiskGovernor
+{
+    RiskDecision Evaluate(PaperRiskPolicy policy, RiskEvaluationRequest request);
+}
+
+public sealed class DeterministicRiskGovernor : IRiskGovernor
 {
     public RiskDecision Evaluate(PaperRiskPolicy policy, RiskEvaluationRequest request)
     {
