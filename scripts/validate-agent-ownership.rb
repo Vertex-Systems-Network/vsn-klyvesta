@@ -77,6 +77,7 @@ status = entry.fetch('status', 'RESERVED')
 module_rules = orchestration.fetch('modules', {})[module_name]
 role = entry.fetch('agent_slot', '').start_with?('supervisor') ? 'supervisor' : module_rules&.fetch('owner_role', nil)
 files = changed_files
+owned_work_item_pattern = ".ai/work-items/#{module_name}/**"
 
 puts "Branch: #{branch}"
 puts "Module: #{module_name}"
@@ -102,7 +103,7 @@ end
 
 if %w[BLOCKED RESERVED].include?(status)
   substantive = files.reject do |path|
-    path.start_with?('.ai/checkpoints/') || path == '.ai/parallel-branch-registry.yaml'
+    path.start_with?('.ai/checkpoints/') || matches?(owned_work_item_pattern, path)
   end
   unless substantive.empty?
     warn "Readiness violation: #{module_name} is #{status}; substantive implementation changes are not permitted yet."
@@ -111,7 +112,7 @@ if %w[BLOCKED RESERVED].include?(status)
   end
 end
 
-allowed = Array(module_rules['allowed_paths']) + ['.ai/checkpoints/**']
+allowed = Array(module_rules['allowed_paths']) + ['.ai/checkpoints/**', owned_work_item_pattern]
 violations = files.reject { |path| any_match?(allowed, path) }
 
 unless violations.empty?
