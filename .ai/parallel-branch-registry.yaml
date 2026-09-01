@@ -1,0 +1,123 @@
+version: 1
+created_by_role: supervisor
+created_from_ref: main
+created_from_sha: 9ee91496e9e606a050de14142cf225640a94406c
+coordination_issue: 82
+completion_signal: "Work Done and Submitted"
+refresh_alert: "New changes have been merged — please merge these changes into your branch first, then resume your own work."
+
+supervisor:
+  role: supervisor
+  working_branch: parallel/supervisor-platform
+  integration_branch: parallel/integration-staging
+  main_branch: main
+  responsibilities:
+    - review every submitted module PR
+    - verify ownership and dependency freshness
+    - verify CI and security evidence
+    - integrate accepted work in dependency order
+    - publish refresh alerts after every accepted integration
+    - resume paused supervisor work after review/integration
+
+branches:
+  - module: brokerage
+    branch: parallel/brokerage
+    agent_slot: agent-brokerage
+    status: BLOCKED
+    reason: existing-draft-pr-68-must-be-reconciled-first
+    merge_order_group: 20
+  - module: orders
+    branch: parallel/orders
+    agent_slot: agent-orders
+    status: BLOCKED
+    reason: existing-draft-pr-71-and-brokerage-dependency
+    merge_order_group: 30
+  - module: portfolio
+    branch: parallel/portfolio
+    agent_slot: agent-portfolio
+    status: BLOCKED
+    reason: existing-draft-pr-73-and-orders-dependency
+    merge_order_group: 40
+  - module: risk
+    branch: parallel/risk
+    agent_slot: agent-risk
+    status: BLOCKED
+    reason: existing-draft-pr-75-and-portfolio-dependency
+    merge_order_group: 50
+  - module: compliance
+    branch: parallel/compliance
+    agent_slot: agent-compliance
+    status: BLOCKED
+    reason: existing-draft-pr-77-and-risk-dependency
+    merge_order_group: 60
+  - module: ai-shadow
+    branch: parallel/ai-shadow
+    agent_slot: agent-ai-shadow
+    status: BLOCKED
+    reason: existing-draft-pr-79-and-compliance-dependency
+    merge_order_group: 70
+  - module: ledger
+    branch: parallel/ledger
+    agent_slot: agent-ledger
+    status: READY
+    merge_order_group: 10
+  - module: identity-authorization
+    branch: parallel/identity-authorization
+    agent_slot: agent-identity-authorization
+    status: READY
+    merge_order_group: 10
+  - module: notifications
+    branch: parallel/notifications
+    agent_slot: agent-notifications
+    status: READY
+    merge_order_group: 10
+  - module: observability
+    branch: parallel/observability
+    agent_slot: agent-observability
+    status: READY
+    merge_order_group: 10
+  - module: security-acceptance
+    branch: parallel/security-acceptance
+    agent_slot: agent-security-acceptance
+    status: BLOCKED
+    reason: reconcile-existing-security-draft-prs-and-governance-first
+    merge_order_group: 80
+  - module: performance-resilience
+    branch: parallel/performance-resilience
+    agent_slot: agent-performance-resilience
+    status: READY
+    merge_order_group: 10
+  - module: database-integration
+    branch: parallel/database-integration
+    agent_slot: agent-database-integration
+    status: READY
+    merge_order_group: 90
+  - module: supervisor-platform
+    branch: parallel/supervisor-platform
+    agent_slot: supervisor
+    status: ACTIVE
+    merge_order_group: 5
+
+merge_strategy:
+  independent_ready_modules:
+    - supervisor-platform
+    - ledger
+    - identity-authorization
+    - notifications
+    - observability
+    - performance-resilience
+  dependency_chain:
+    - brokerage
+    - orders
+    - portfolio
+    - risk
+    - compliance
+    - ai-shadow
+  integration_only_after:
+    - exact-head-ci-green
+    - zero-unresolved-review-threads
+    - ownership-check-green
+    - dependency-head-fresh
+    - instruction-drift-check-recorded
+    - security-review-complete
+  protected_main_rule: promote to main only when repository governance permits it; otherwise integrate only on parallel/integration-staging and record the blocked promotion
