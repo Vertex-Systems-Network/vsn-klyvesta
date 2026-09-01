@@ -11,6 +11,7 @@ allowed_paths:
   - .github/workflows/**
   - scripts/**
   - .ai/**
+  - .ai/work-items/supervisor-platform/**
   - docs/**
   - README.md
   - AGENTS.md
