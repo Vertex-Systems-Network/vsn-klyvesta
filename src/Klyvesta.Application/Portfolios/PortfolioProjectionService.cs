@@ -177,7 +177,7 @@ public sealed class PortfolioProjectionService : IOrderExecutionHoldProvider
         return report;
     }
 
-    private static IReadOnlyList<PortfolioMismatch> Compare(
+    private static List<PortfolioMismatch> Compare(
         PortfolioProjectionSnapshot projection,
         BrokerOperationResult<IReadOnlyList<BrokerCashBalance>> balanceResult,
         BrokerOperationResult<IReadOnlyList<BrokerPosition>> positionResult)
@@ -212,7 +212,7 @@ public sealed class PortfolioProjectionService : IOrderExecutionHoldProvider
     private static void CompareCash(
         PortfolioProjectionSnapshot projection,
         IReadOnlyList<BrokerCashBalance> brokerBalances,
-        ICollection<PortfolioMismatch> mismatches)
+        List<PortfolioMismatch> mismatches)
     {
         var pkrBalances = brokerBalances
             .Where(balance => StringComparer.Ordinal.Equals(balance.Currency, "PKR"))
@@ -242,7 +242,7 @@ public sealed class PortfolioProjectionService : IOrderExecutionHoldProvider
     private static void ComparePositions(
         PortfolioProjectionSnapshot projection,
         IReadOnlyList<BrokerPosition> brokerPositions,
-        ICollection<PortfolioMismatch> mismatches)
+        List<PortfolioMismatch> mismatches)
     {
         var duplicateBrokerInstrument = brokerPositions
             .GroupBy(position => position.InstrumentReference, StringComparer.Ordinal)
