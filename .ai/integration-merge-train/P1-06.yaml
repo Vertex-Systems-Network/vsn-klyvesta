@@ -1,0 +1,11 @@
+work_item: P1-06
+module: brokerage
+source_pr: 68
+source_branch: agent/20260901-vsn-klyvesta-p1-06-paper-broker
+source_head_sha: f1048043e7b47e2892f2ecfb72d26584aa06accb
+integration_mode: selective-module-delta
+excluded_shared_paths:
+  - .github/workflows/dotnet-foundation.yml
+exclusion_reason: current integration baseline uses convention-based automatic verifier discovery; legacy manual verifier registration is superseded
+status: INTEGRATING
+production_authority: false
