@@ -1,0 +1,53 @@
+name: agent-orchestration
+
+on:
+  push:
+    branches:
+      - "parallel/**"
+    paths:
+      - ".github/workflows/agent-orchestration.yml"
+      - ".ai/agent-orchestration.yaml"
+      - ".ai/parallel-branch-registry.yaml"
+      - "scripts/validate-agent-ownership.rb"
+      - "src/**"
+      - "tools/**"
+      - "contracts/**"
+      - "Directory.Build.props"
+      - "Directory.Packages.props"
+      - "docs/**"
+      - ".ai/checkpoints/**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agent-orchestration-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ownership:
+    name: Validate parallel branch ownership
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Display Ruby version
+        run: ruby --version
+
+      - name: Validate ownership script syntax
+        run: ruby -c scripts/validate-agent-ownership.rb
+
+      - name: Validate branch ownership and readiness
+        env:
+          AGENT_HEAD_BRANCH: ${{ github.head_ref || github.ref_name }}
+          AGENT_BASE_REF: origin/main
+        run: ruby scripts/validate-agent-ownership.rb
