@@ -21,14 +21,14 @@ public sealed class RiskGuardBrokerAdapter : IBrokerAdapter
 {
     private readonly object _sync = new();
     private readonly IBrokerAdapter _inner;
-    private readonly DeterministicRiskGovernor _governor;
+    private readonly IRiskGovernor _governor;
     private readonly IRiskSubmissionContextProvider _contextProvider;
     private readonly Func<DateTimeOffset> _clock;
     private readonly Dictionary<Guid, RiskDecision> _decisions = [];
 
     public RiskGuardBrokerAdapter(
         IBrokerAdapter inner,
-        DeterministicRiskGovernor governor,
+        IRiskGovernor governor,
         IRiskSubmissionContextProvider contextProvider,
         Func<DateTimeOffset>? clock = null)
     {
