@@ -170,13 +170,14 @@
     5,
     8
   ],
-  "latest_checkpoint": ".ai/checkpoints/2026-09-01-p0-par-tabletop-state-reconciliation.md",
-  "next_action": "Continue bounded non-live P0-PAR evidence work by executing T-05 provider/subprocessor-change synthetic tabletop without claiming provider authority, while P0-T1 Issue #20 remains the active external-evidence task. Obtain current direct pyPSX Broker API technical/commercial partner evidence before any live adapter or real-money semantics. Issue #1 remains an open protected-main blocker and Issue #8 remains fail-closed for live onboarding/PII until provider, runtime, legal/counsel, partner and successful end-to-end evidence is accepted.",
+  "latest_checkpoint": ".ai/checkpoints/2026-09-01-p0-par-tabletop-catalogue-status.md",
+  "next_action": "Stop extending the synthetic tabletop catalogue merely for coverage. Convert fail-closed blockers into authoritative evidence: obtain current direct pyPSX Broker API technical/commercial partner evidence under Issue #20/P0-T1; instantiate B-01 for actual selected provider/subprocessor paths; implement and execute B-02 privileged-PII runtime acceptance evidence; obtain current legal/privacy/counsel evidence; enable and verify protected-main governance under Issue #1; then re-run affected table tops against the actual accepted production path with named accountable participants before fresh Issue #8 reconciliation.",
   "last_updated": "2026-09-01",
   "p0_par_acceptance": {
     "status": "NON_LIVE_FAIL_CLOSED_NOT_READY_FOR_PRODUCTION",
     "github_gate_issue": 8,
     "production_authorizing": false,
+    "synthetic_tabletop_catalogue_status": "ALL_PLANNED_SCENARIOS_EXECUTED_ALL_BLOCKED",
     "evidence_plan": "docs/P0_PAR_PRODUCTION_ACCEPTANCE_EVIDENCE_PLAN.md",
     "current_evidence_ledger": "docs/P0_PAR_CURRENT_ACCEPTANCE_EVIDENCE_LEDGER_2026-08-30.md",
     "privacy_legal_recheck": "docs/P0_PRIVACY_LEGAL_RECHECK_2026-08-30.md",
@@ -199,7 +200,8 @@
       "T-02": {
         "artifact": "docs/P0_PAR_TABLETOP_T02_PRIVILEGED_ACCESS_BREAK_GLASS_DRY_RUN_2026-09-01.md",
         "state": "BLOCKED",
-        "production_authorizing": false
+        "production_authorizing": false,
+        "accepted_main_merge_sha": "0f1882df23c7ed9e8b12837b46b3607cbc8c01ea"
       },
       "T-03": {
         "artifact": "docs/P0_PAR_TABLETOP_T03_CLOSURE_RETENTION_DRY_RUN_2026-08-31.md",
@@ -214,7 +216,9 @@
         "accepted_main_merge_sha": "093a144593cd41954e810dc54f410d27dc3f25b2"
       },
       "T-05": {
-        "state": "NOT_EXECUTED"
+        "artifact": "docs/P0_PAR_TABLETOP_T05_PROVIDER_SUBPROCESSOR_CHANGE_DRY_RUN_2026-09-01.md",
+        "state": "BLOCKED",
+        "production_authorizing": false
       }
     },
     "independent_blockers": {
