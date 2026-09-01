@@ -40,9 +40,9 @@ See `docs/REPOSITORY_LICENSING_MODEL.md` and `docs/REPOSITORY_GOVERNANCE.md`.
 
 ## Engineering governance
 
-All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read `.ai/agent-orchestration.yaml`, the machine-readable project state, guardrails, acceptance gates, active work item, relevant module contracts/documentation, and latest checkpoint before implementation.
+All AI/human engineering sessions must begin with `AGENTS.md` and `.ai/MASTER_ENGINEERING_PROMPT.md`, then read `.ai/agent-orchestration.yaml`, `.ai/parallel-branch-registry.yaml`, the machine-readable project state, guardrails, acceptance gates, active work item, Supervisor Coordination Feed, relevant module contracts/documentation, and latest checkpoint before implementation.
 
-Repository evidence, tests, documentation, and Git history are the source of truth; chat memory is not.
+Repository evidence, tests, documentation, Git history, branch registry and Supervisor coordination events are the source of truth; chat memory is not.
 
 The normal workflow is protected-main + pull request + required CI/security checks + review. A narrowly scoped temporary risk acceptance for the current foundation integration is documented as `F0-RISK-001`; it does not authorize bypassing technical acceptance or production/regulatory gates.
 
@@ -55,19 +55,39 @@ Current recommended concurrency is **8-10 specialized agents** when enough indep
 Key rules:
 
 - one active implementation owner per module/path;
+- before a new parallel work wave, the Main-repo Supervisor first creates/reserves all module branches before assignment or Supervisor implementation work;
+- branch/module/agent-slot/readiness mapping is canonical in `.ai/parallel-branch-registry.yaml`;
 - independent modules should branch from a common stable integration baseline rather than an unnecessary sequential feature stack;
 - dependent modules may stack only when a real dependency requires it;
 - module agents work inside explicit allowed paths and communicate across modules through stable contracts/interfaces;
-- shared files such as central CI, build/package configuration, shared state, contracts, composition wiring, and final migration/model-snapshot integration are Platform/Integration-owned by default;
+- shared files such as central CI, build/package configuration, shared state, contracts, composition wiring, and final migration/model-snapshot integration are Supervisor/Platform/Integration-owned by default;
 - every work item records its exact base SHA and dependency evidence;
 - every agent performs a pre-work collision check against active PRs/issues and module ownership;
 - every meaningful PR/checkpoint records its instruction-drift check.
 
-The canonical parallel development plan is `docs/PARALLEL_AGENT_DEVELOPMENT.md`; the machine-readable ownership/dependency model is `.ai/agent-orchestration.yaml`.
+The canonical parallel development plan is `docs/PARALLEL_AGENT_DEVELOPMENT.md`; the audited Supervisor workflow is `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`; the deep audit is `docs/MULTI_AGENT_WORKFLOW_AUDIT.md`; machine-readable ownership/dependencies live in `.ai/agent-orchestration.yaml` and branch assignments in `.ai/parallel-branch-registry.yaml`.
+
+### Supervisor submission and refresh protocol
+
+A module agent announces completion by posting the exact top-level PR comment:
+
+**Work Done and Submitted**
+
+That signal causes the Supervisor to checkpoint/pause its own platform work, review the submission, integrate it only if ownership/dependency/CI/security/review gates pass, broadcast the accepted-baseline refresh, and then resume its own saved work.
+
+After every accepted integration the Supervisor sends exactly:
+
+**New changes have been merged — please merge these changes into your branch first, then resume your own work.**
+
+The durable coordination feed is GitHub Issue #82. Each alert records the accepted baseline SHA and whether it is protected `main` or `parallel/integration-staging`.
+
+Every active agent must refresh its assigned branch to that accepted baseline and rerun affected validation before resuming. Agents must not continue against a stale accepted baseline after receiving/observing a refresh alert.
+
+Current hosted-main governance remains fail-closed: when `main` promotion is not permitted, the Supervisor may technically integrate accepted work on `parallel/integration-staging`, but must not silently promote it to `main`.
 
 ### Mandatory instruction synchronization
 
-At the start of **every task/session**, the agent must re-check the working instructions relevant to that task. If architecture, tooling, workflow, module ownership, dependencies, testing commands, safety boundaries, or integration rules changed, the new instructions must be persisted in the repository in the same PR.
+At the start of **every task/session** and after every accepted-baseline refresh, the agent must re-check the working instructions relevant to that task. If architecture, tooling, workflow, branch assignment, module ownership, dependencies, testing commands, safety boundaries, Supervisor behavior, or integration rules changed, the new instructions must be persisted in the repository in the same PR.
 
 At minimum:
 
@@ -75,7 +95,8 @@ At minimum:
 - repository onboarding/workflow changes → update `README.md`;
 - global engineering protocol changes → update `.ai/MASTER_ENGINEERING_PROMPT.md`;
 - module-specific working changes → update the relevant module documentation/README;
-- ownership/dependency/shared-file changes → update `.ai/agent-orchestration.yaml`.
+- ownership/dependency/shared-file/Supervisor changes → update `.ai/agent-orchestration.yaml`;
+- branch assignment/readiness/baseline changes → update `.ai/parallel-branch-registry.yaml`.
 
 New working rules must not exist only in chat, memory, or issue comments.
 
@@ -83,7 +104,10 @@ New working rules must not exist only in chat, memory, or issue comments.
 
 - `AI-PLAN.md`
 - `docs/PARALLEL_AGENT_DEVELOPMENT.md`
+- `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`
+- `docs/MULTI_AGENT_WORKFLOW_AUDIT.md`
 - `.ai/agent-orchestration.yaml`
+- `.ai/parallel-branch-registry.yaml`
 - `docs/PRODUCT_VISION_V2.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
 - `docs/AI_AGENT_PACKAGES.md`
@@ -126,8 +150,10 @@ Accepted planning ADRs:
 - `AGENTS.md`
 - `.ai/MASTER_ENGINEERING_PROMPT.md`
 - `.ai/agent-orchestration.yaml`
+- `.ai/parallel-branch-registry.yaml`
 - `.ai/state.json`
 - `.ai/guardrails.md`
 - `.ai/acceptance-gates.yaml`
 - `docs/PARALLEL_AGENT_DEVELOPMENT.md`
+- `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`
 - latest checkpoint path is recorded in `.ai/state.json`
