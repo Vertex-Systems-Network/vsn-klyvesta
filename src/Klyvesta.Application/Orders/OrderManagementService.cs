@@ -15,10 +15,7 @@ public sealed record OmsOrderRequest(
     decimal? LimitPrice,
     BrokerTimeInForce TimeInForce);
 
-public sealed record OmsReservationSpec(
-    Guid ReservationId,
-    ReservationKind Kind,
-    decimal Amount);
+public sealed record OmsReservationSpec(Guid ReservationId, ReservationKind Kind, decimal Amount);
 
 public sealed record OmsSnapshot(
     Guid OrderIntentId,
@@ -41,7 +38,7 @@ public sealed record OmsReconciliationItem(
     DateTimeOffset CreatedAt,
     DateTimeOffset? ResolvedAt);
 
-public sealed class OrderManagementService
+public sealed class OrderManagementService : IDisposable
 {
     private readonly IBrokerAdapter _brokerAdapter;
     private readonly Func<DateTimeOffset> _clock;
@@ -49,6 +46,7 @@ public sealed class OrderManagementService
     private readonly Dictionary<Guid, OmsEntry> _entries = [];
     private readonly Dictionary<string, IntentFingerprint> _idempotency = new(StringComparer.Ordinal);
     private readonly Dictionary<Guid, MutableReconciliationItem> _reconciliationByBrokerOrder = [];
+    private bool _disposed;
 
     public OrderManagementService(IBrokerAdapter brokerAdapter, Func<DateTimeOffset>? clock = null)
     {
@@ -56,13 +54,10 @@ public sealed class OrderManagementService
         _clock = clock ?? (() => DateTimeOffset.UtcNow);
     }
 
-    public async Task<OmsSnapshot> CreateIntentAsync(
-        OmsOrderRequest request,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> CreateIntentAsync(OmsOrderRequest request, CancellationToken cancellationToken = default)
     {
         ValidateRequest(request);
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var fingerprint = IntentFingerprint.From(request);
@@ -100,12 +95,9 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<OmsSnapshot> BeginValidationAsync(
-        Guid orderIntentId,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> BeginValidationAsync(Guid orderIntentId, CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
@@ -125,8 +117,7 @@ public sealed class OrderManagementService
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(evidence);
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
@@ -134,15 +125,8 @@ public sealed class OrderManagementService
 
             if (evidence.Approved)
             {
-                if (reservationSpec is null)
-                {
-                    throw new InvalidOperationException("Approved validation requires a reservation specification.");
-                }
-
-                reservation = new OrderReservation(
-                    reservationSpec.ReservationId,
-                    reservationSpec.Kind,
-                    reservationSpec.Amount);
+                var spec = reservationSpec ?? throw new InvalidOperationException("Approved validation requires a reservation specification.");
+                reservation = new OrderReservation(spec.ReservationId, spec.Kind, spec.Amount);
             }
             else if (reservationSpec is not null)
             {
@@ -158,12 +142,9 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<OmsSnapshot> QueueForExecutionAsync(
-        Guid orderIntentId,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> QueueForExecutionAsync(Guid orderIntentId, CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
@@ -176,16 +157,12 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<OmsSnapshot> ExecuteAsync(
-        Guid orderIntentId,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> ExecuteAsync(Guid orderIntentId, CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
-
             if (entry.Intent.State == OrderIntentState.Rejected)
             {
                 return Snapshot(entry);
@@ -211,22 +188,8 @@ public sealed class OrderManagementService
             }
 
             entry.BrokerOrder.BeginSubmission();
-            BrokerOperationResult<BrokerOrderSnapshot> result;
-
-            try
-            {
-                result = await _brokerAdapter.SubmitOrderAsync(
-                    ToBrokerCommand(entry.Request),
-                    cancellationToken).ConfigureAwait(false);
-            }
-            catch
-            {
-                entry.BrokerOrder.MarkUnknown("BROKER_CALL_EXCEPTION_AFTER_SUBMISSION_STARTED", externalOrderId: null);
-                QueueReconciliation(entry.BrokerOrder.Id, "BROKER_CALL_EXCEPTION_AFTER_SUBMISSION_STARTED");
-                throw;
-            }
-
-            ApplyBrokerResult(entry, result, operation: "SUBMIT");
+            var result = await _brokerAdapter.SubmitOrderAsync(ToBrokerCommand(entry.Request), cancellationToken).ConfigureAwait(false);
+            ApplyBrokerResult(entry, result, isSubmit: true);
             return Snapshot(entry);
         }
         finally
@@ -235,54 +198,37 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<OmsSnapshot> CancelAsync(
-        Guid orderIntentId,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> CancelAsync(Guid orderIntentId, CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
-
             if (entry.BrokerOrder is null)
             {
                 entry.Intent.CancelBeforeBrokerSubmission();
                 return Snapshot(entry);
             }
 
-            if (entry.BrokerOrder.State == ManagedBrokerOrderState.Unknown)
+            var brokerOrder = entry.BrokerOrder;
+            if (brokerOrder.State == ManagedBrokerOrderState.Unknown)
             {
-                QueueReconciliation(entry.BrokerOrder.Id, "CANCEL_BLOCKED_BY_UNKNOWN_ORDER_STATE");
+                QueueReconciliation(brokerOrder.Id, "CANCEL_BLOCKED_BY_UNKNOWN_ORDER_STATE");
                 return Snapshot(entry);
             }
 
-            if (entry.BrokerOrder.State is ManagedBrokerOrderState.Filled or ManagedBrokerOrderState.Cancelled or ManagedBrokerOrderState.Rejected)
+            if (IsTerminal(brokerOrder.State))
             {
                 return Snapshot(entry);
             }
 
-            if (entry.BrokerOrder.State != ManagedBrokerOrderState.CancelPending)
+            if (brokerOrder.State != ManagedBrokerOrderState.CancelPending)
             {
-                entry.BrokerOrder.BeginCancel();
+                brokerOrder.BeginCancel();
             }
 
-            BrokerOperationResult<BrokerOrderSnapshot> result;
-
-            try
-            {
-                result = await _brokerAdapter.CancelOrderAsync(
-                    entry.BrokerOrder.Id,
-                    cancellationToken).ConfigureAwait(false);
-            }
-            catch
-            {
-                entry.BrokerOrder.MarkUnknown("BROKER_CANCEL_EXCEPTION", entry.BrokerOrder.ExternalOrderId);
-                QueueReconciliation(entry.BrokerOrder.Id, "BROKER_CANCEL_EXCEPTION");
-                throw;
-            }
-
-            ApplyBrokerResult(entry, result, operation: "CANCEL");
+            var result = await _brokerAdapter.CancelOrderAsync(brokerOrder.Id, cancellationToken).ConfigureAwait(false);
+            ApplyBrokerResult(entry, result, isSubmit: false);
             return Snapshot(entry);
         }
         finally
@@ -291,24 +237,19 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<OmsSnapshot> RecoverUnknownAsync(
-        Guid orderIntentId,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> RecoverUnknownAsync(Guid orderIntentId, CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
             var brokerOrder = entry.BrokerOrder ?? throw new InvalidOperationException("Order intent has no broker order to reconcile.");
-
             if (brokerOrder.State != ManagedBrokerOrderState.Unknown)
             {
                 return Snapshot(entry);
             }
 
             var result = await _brokerAdapter.GetOrderAsync(brokerOrder.Id, cancellationToken).ConfigureAwait(false);
-
             if (result.State == BrokerResultState.Success && result.Value is not null)
             {
                 ApplyBrokerSnapshot(entry, result.Value, resolvingUnknown: true);
@@ -333,8 +274,7 @@ public sealed class OrderManagementService
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             var entry = GetEntry(orderIntentId);
@@ -343,10 +283,7 @@ public sealed class OrderManagementService
                 throw new InvalidOperationException("Order intent has no broker order for snapshot application.");
             }
 
-            ApplyBrokerSnapshot(
-                entry,
-                snapshot,
-                resolvingUnknown: entry.BrokerOrder.State == ManagedBrokerOrderState.Unknown);
+            ApplyBrokerSnapshot(entry, snapshot, resolvingUnknown: entry.BrokerOrder.State == ManagedBrokerOrderState.Unknown);
             ResolveReconciliationIfSafe(entry);
             return Snapshot(entry);
         }
@@ -356,12 +293,9 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<OmsSnapshot> GetSnapshotAsync(
-        Guid orderIntentId,
-        CancellationToken cancellationToken = default)
+    public async Task<OmsSnapshot> GetSnapshotAsync(Guid orderIntentId, CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             return Snapshot(GetEntry(orderIntentId));
@@ -372,11 +306,9 @@ public sealed class OrderManagementService
         }
     }
 
-    public async Task<IReadOnlyList<OmsReconciliationItem>> GetOpenReconciliationAsync(
-        CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<OmsReconciliationItem>> GetOpenReconciliationAsync(CancellationToken cancellationToken = default)
     {
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-
+        await EnterAsync(cancellationToken).ConfigureAwait(false);
         try
         {
             return _reconciliationByBrokerOrder.Values
@@ -392,17 +324,30 @@ public sealed class OrderManagementService
         }
     }
 
-    private void ApplyBrokerResult(
-        OmsEntry entry,
-        BrokerOperationResult<BrokerOrderSnapshot> result,
-        string operation)
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _gate.Dispose();
+        _disposed = true;
+    }
+
+    private async Task EnterAsync(CancellationToken cancellationToken)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+    }
+
+    private void ApplyBrokerResult(OmsEntry entry, BrokerOperationResult<BrokerOrderSnapshot> result, bool isSubmit)
     {
         var brokerOrder = entry.BrokerOrder ?? throw new InvalidOperationException("Broker order is required.");
-
         switch (result.State)
         {
             case BrokerResultState.RetryableFailure:
-                if (operation == "SUBMIT")
+                if (isSubmit)
                 {
                     brokerOrder.MarkRetryableBeforeSideEffect(result.ReasonCode ?? "SAFE_RETRYABLE_FAILURE");
                 }
@@ -414,10 +359,8 @@ public sealed class OrderManagementService
                 return;
 
             case BrokerResultState.Unknown:
-                brokerOrder.MarkUnknown(
-                    result.ReasonCode ?? $"{operation}_UNKNOWN",
-                    result.ExternalCorrelationId);
-                QueueReconciliation(brokerOrder.Id, result.ReasonCode ?? $"{operation}_UNKNOWN");
+                brokerOrder.MarkUnknown(result.ReasonCode ?? "BROKER_RESULT_UNKNOWN", result.ExternalCorrelationId);
+                QueueReconciliation(brokerOrder.Id, result.ReasonCode ?? "BROKER_RESULT_UNKNOWN");
                 return;
 
             case BrokerResultState.Rejected:
@@ -425,12 +368,9 @@ public sealed class OrderManagementService
                 {
                     ApplyBrokerSnapshot(entry, result.Value, resolvingUnknown: false);
                 }
-                else if (operation == "SUBMIT")
+                else if (isSubmit)
                 {
-                    brokerOrder.ObserveState(
-                        ManagedBrokerOrderState.Rejected,
-                        result.ExternalCorrelationId,
-                        result.ReasonCode);
+                    brokerOrder.ObserveState(ManagedBrokerOrderState.Rejected, result.ExternalCorrelationId, result.ReasonCode);
                 }
                 else
                 {
@@ -460,38 +400,24 @@ public sealed class OrderManagementService
     private void ApplyBrokerSnapshot(OmsEntry entry, BrokerOrderSnapshot snapshot, bool resolvingUnknown)
     {
         var brokerOrder = entry.BrokerOrder ?? throw new InvalidOperationException("Broker order is required.");
-
         if (snapshot.BrokerOrderId != brokerOrder.Id)
         {
-            QueueReconciliation(brokerOrder.Id, "BROKER_ORDER_ID_MISMATCH");
-            if (brokerOrder.State != ManagedBrokerOrderState.Unknown && !IsTerminal(brokerOrder.State))
-            {
-                brokerOrder.MarkUnknown("BROKER_ORDER_ID_MISMATCH", brokerOrder.ExternalOrderId);
-            }
-
+            QuarantineSnapshot(brokerOrder, "BROKER_ORDER_ID_MISMATCH", snapshot.ExternalOrderId);
             return;
         }
 
         var executionQuantity = snapshot.Executions.Sum(execution => execution.Quantity);
         if (snapshot.RequestedQuantity != brokerOrder.RequestedQuantity || snapshot.FilledQuantity != executionQuantity)
         {
-            QueueReconciliation(brokerOrder.Id, "BROKER_SNAPSHOT_QUANTITY_MISMATCH");
-            if (brokerOrder.State != ManagedBrokerOrderState.Unknown && !IsTerminal(brokerOrder.State))
-            {
-                brokerOrder.MarkUnknown("BROKER_SNAPSHOT_QUANTITY_MISMATCH", snapshot.ExternalOrderId);
-            }
-
+            QuarantineSnapshot(brokerOrder, "BROKER_SNAPSHOT_QUANTITY_MISMATCH", snapshot.ExternalOrderId);
             return;
         }
 
-        foreach (var execution in snapshot.Executions.OrderBy(execution => execution.TradeAt).ThenBy(execution => execution.ExecutionId, StringComparer.Ordinal))
+        foreach (var execution in snapshot.Executions
+                     .OrderBy(execution => execution.TradeAt)
+                     .ThenBy(execution => execution.ExecutionId, StringComparer.Ordinal))
         {
-            ManagedExecution managedExecution = new(
-                execution.ExecutionId,
-                execution.Quantity,
-                execution.Price,
-                execution.TradeAt);
-
+            ManagedExecution managedExecution = new(execution.ExecutionId, execution.Quantity, execution.Price, execution.TradeAt);
             if (brokerOrder.ApplyExecution(managedExecution))
             {
                 ConsumeReservation(entry, managedExecution);
@@ -501,13 +427,13 @@ public sealed class OrderManagementService
         var mappedState = MapState(snapshot.State);
         if (resolvingUnknown)
         {
-            if (brokerOrder.State == ManagedBrokerOrderState.Filled && mappedState == ManagedBrokerOrderState.Filled)
-            {
-                // Complete execution evidence can itself establish FILLED while processing the recovery snapshot.
-            }
-            else if (brokerOrder.State == ManagedBrokerOrderState.Unknown)
+            if (brokerOrder.State == ManagedBrokerOrderState.Unknown)
             {
                 brokerOrder.ResolveUnknown(mappedState, snapshot.ExternalOrderId, snapshot.ReasonCode);
+            }
+            else if (brokerOrder.State != ManagedBrokerOrderState.Filled || mappedState != ManagedBrokerOrderState.Filled)
+            {
+                QueueReconciliation(brokerOrder.Id, "UNKNOWN_RECOVERY_STATE_CONFLICT");
             }
         }
         else if (!IsTerminal(brokerOrder.State))
@@ -516,6 +442,15 @@ public sealed class OrderManagementService
         }
 
         ReleaseUnusedReservationIfConclusive(entry);
+    }
+
+    private void QuarantineSnapshot(ManagedBrokerOrder brokerOrder, string reasonCode, string? externalOrderId)
+    {
+        QueueReconciliation(brokerOrder.Id, reasonCode);
+        if (brokerOrder.State != ManagedBrokerOrderState.Unknown && !IsTerminal(brokerOrder.State))
+        {
+            brokerOrder.MarkUnknown(reasonCode, externalOrderId);
+        }
     }
 
     private static void ConsumeReservation(OmsEntry entry, ManagedExecution execution)
@@ -538,7 +473,7 @@ public sealed class OrderManagementService
             return;
         }
 
-        if (entry.BrokerOrder.State is ManagedBrokerOrderState.Filled or ManagedBrokerOrderState.Cancelled or ManagedBrokerOrderState.Rejected)
+        if (IsTerminal(entry.BrokerOrder.State))
         {
             entry.Intent.Reservation.ReleaseRemaining();
         }
@@ -553,10 +488,7 @@ public sealed class OrderManagementService
         }
 
         _reconciliationByBrokerOrder[brokerOrderId] = new MutableReconciliationItem(
-            Guid.NewGuid(),
-            brokerOrderId,
-            reasonCode,
-            _clock());
+            Guid.NewGuid(), brokerOrderId, reasonCode, _clock());
     }
 
     private void ResolveReconciliationIfSafe(OmsEntry entry)
@@ -571,6 +503,34 @@ public sealed class OrderManagementService
             item.ResolvedAt = _clock();
         }
     }
+
+    private OmsSnapshot Snapshot(OmsEntry entry)
+    {
+        var reservation = entry.Intent.Reservation;
+        var brokerOrder = entry.BrokerOrder;
+        var reconciliationRequired = brokerOrder is not null &&
+            _reconciliationByBrokerOrder.TryGetValue(brokerOrder.Id, out var item) &&
+            item.ResolvedAt is null;
+
+        return new OmsSnapshot(
+            entry.Intent.Id,
+            entry.Intent.State,
+            brokerOrder?.Id,
+            brokerOrder?.State,
+            brokerOrder?.FilledQuantity ?? 0m,
+            reservation?.State,
+            reservation?.InitialAmount ?? 0m,
+            reservation?.ConsumedAmount ?? 0m,
+            reservation?.ReleasedAmount ?? 0m,
+            reservation?.RemainingAmount ?? 0m,
+            reconciliationRequired,
+            brokerOrder?.ReasonCode ?? entry.Intent.RejectionReason);
+    }
+
+    private OmsEntry GetEntry(Guid orderIntentId) =>
+        _entries.TryGetValue(orderIntentId, out var entry)
+            ? entry
+            : throw new KeyNotFoundException($"Order intent {orderIntentId} does not exist.");
 
     private static SubmitBrokerOrderCommand ToBrokerCommand(OmsOrderRequest request) => new(
         request.BrokerOrderId,
@@ -601,43 +561,9 @@ public sealed class OrderManagementService
     private static bool IsTerminal(ManagedBrokerOrderState state) =>
         state is ManagedBrokerOrderState.Filled or ManagedBrokerOrderState.Cancelled or ManagedBrokerOrderState.Rejected;
 
-    private static OmsSnapshot Snapshot(OmsEntry entry)
-    {
-        var reservation = entry.Intent.Reservation;
-        var brokerOrder = entry.BrokerOrder;
-        var reconciliationRequired = brokerOrder is not null &&
-            entry.Owner._reconciliationByBrokerOrder.TryGetValue(brokerOrder.Id, out var item) &&
-            item.ResolvedAt is null;
-
-        return new OmsSnapshot(
-            entry.Intent.Id,
-            entry.Intent.State,
-            brokerOrder?.Id,
-            brokerOrder?.State,
-            brokerOrder?.FilledQuantity ?? 0m,
-            reservation?.State,
-            reservation?.InitialAmount ?? 0m,
-            reservation?.ConsumedAmount ?? 0m,
-            reservation?.ReleasedAmount ?? 0m,
-            reservation?.RemainingAmount ?? 0m,
-            reconciliationRequired,
-            brokerOrder?.ReasonCode ?? entry.Intent.RejectionReason);
-    }
-
-    private OmsEntry GetEntry(Guid orderIntentId)
-    {
-        if (!_entries.TryGetValue(orderIntentId, out var entry))
-        {
-            throw new KeyNotFoundException($"Order intent {orderIntentId} does not exist.");
-        }
-
-        return entry;
-    }
-
     private static void ValidateRequest(OmsOrderRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-
         if (request.OrderIntentId == Guid.Empty || request.BrokerOrderId == Guid.Empty)
         {
             throw new ArgumentException("Order intent and broker order identifiers are required.", nameof(request));
@@ -689,40 +615,24 @@ public sealed class OrderManagementService
             request.TimeInForce);
     }
 
-    private sealed class OmsEntry
+    private sealed class OmsEntry(OmsOrderRequest request, OrderIntent intent)
     {
-        public OmsEntry(OmsOrderRequest request, OrderIntent intent)
-        {
-            Request = request;
-            Intent = intent;
-        }
+        public OmsOrderRequest Request { get; } = request;
 
-        public OmsOrderRequest Request { get; }
-
-        public OrderIntent Intent { get; }
+        public OrderIntent Intent { get; } = intent;
 
         public ManagedBrokerOrder? BrokerOrder { get; set; }
-
-        public OrderManagementService Owner { get; set; } = null!;
     }
 
-    private sealed class MutableReconciliationItem
+    private sealed class MutableReconciliationItem(Guid id, Guid brokerOrderId, string reasonCode, DateTimeOffset createdAt)
     {
-        public MutableReconciliationItem(Guid id, Guid brokerOrderId, string reasonCode, DateTimeOffset createdAt)
-        {
-            Id = id;
-            BrokerOrderId = brokerOrderId;
-            ReasonCode = reasonCode;
-            CreatedAt = createdAt;
-        }
+        public Guid Id { get; } = id;
 
-        public Guid Id { get; }
+        public Guid BrokerOrderId { get; } = brokerOrderId;
 
-        public Guid BrokerOrderId { get; }
+        public string ReasonCode { get; set; } = reasonCode;
 
-        public string ReasonCode { get; set; }
-
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedAt { get; } = createdAt;
 
         public DateTimeOffset? ResolvedAt { get; set; }
 
