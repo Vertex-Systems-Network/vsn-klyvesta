@@ -1,7 +1,15 @@
-version: 1
-status: planned-foundation
+version: 2
+status: supervisor-workflow-foundation
 canonical_human_plan: docs/PARALLEL_AGENT_DEVELOPMENT.md
+canonical_supervisor_workflow: docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md
+canonical_workflow_audit: docs/MULTI_AGENT_WORKFLOW_AUDIT.md
+canonical_branch_registry: .ai/parallel-branch-registry.yaml
 canonical_agent_entrypoint: AGENTS.md
+coordination_issue: 82
+
+signals:
+  work_done: "Work Done and Submitted"
+  refresh_alert: "New changes have been merged — please merge these changes into your branch first, then resume your own work."
 
 concurrency:
   current_recommended_min: 6
@@ -19,6 +27,10 @@ concurrency:
     - instruction_drift_evidence
 
 roles:
+  supervisor:
+    purpose: create module branches before assignment; review/integrate every submitted module PR; broadcast baseline refreshes; own final promotion decisions
+    working_branch: parallel/supervisor-platform
+    integration_branch: parallel/integration-staging
   module-agent:
     purpose: implement one owned module slice and its local verifier
   platform-agent:
@@ -32,8 +44,48 @@ roles:
   verification-security-agent:
     purpose: independently verify acceptance, security and regressions without redefining implementation
 
+supervisor_workflow:
+  branch_bootstrap_must_precede_assignment: true
+  branch_registry_required: true
+  supervisor_works_in_parallel: true
+  supervisor_own_branch: parallel/supervisor-platform
+  accepted_integration_branch: parallel/integration-staging
+  target_main_branch: main
+  work_done_signal_source: top-level-pr-comment
+  work_done_signal_exact_match_required: true
+  interrupt_on_valid_work_done_signal: true
+  interrupt_steps:
+    - checkpoint_supervisor_work
+    - pause_supervisor_implementation
+    - review_submitted_pr
+    - verify_exact_head_ci
+    - verify_ownership_and_dependency_freshness
+    - verify_security_and_instruction_drift
+    - integrate_if_approved
+    - run_integration_regression
+    - broadcast_refresh_alert
+    - refresh_supervisor_branch_if_affected
+    - resume_supervisor_checkpoint
+  main_promotion_rule: protected-main-and-governance-gates-must-permit
+  blocked_main_fallback: parallel/integration-staging
+  completion_time_never_overrides_dependency_order: true
+
+agent_refresh_protocol:
+  required_after_supervisor_refresh_alert: true
+  steps:
+    - checkpoint_local_work
+    - fetch_supervisor_accepted_baseline
+    - merge_or_rebase_baseline_into_module_branch
+    - escalate_shared_or_cross_module_conflicts
+    - update_recorded_base_and_dependency_shas
+    - rerun_affected_tests
+    - rerun_instruction_drift_and_ownership_checks
+    - resume_assigned_work
+  stale_accepted_baseline_blocks_resume: true
+
 shared_paths:
   default_owner_roles:
+    - supervisor
     - platform-agent
     - integration-agent
   paths:
@@ -42,6 +94,7 @@ shared_paths:
     - Directory.Packages.props
     - .ai/state.json
     - .ai/agent-orchestration.yaml
+    - .ai/parallel-branch-registry.yaml
     - contracts/**
   conditional_shared_paths:
     - src/Klyvesta.Api/**
@@ -56,10 +109,13 @@ module_defaults:
   base_sha_required: true
   dependency_evidence_required: true
   instruction_drift_check_required: true
+  supervisor_review_required: true
+  work_done_signal_required_for_submission: true
 
 modules:
   brokerage:
     owner_role: module-agent
+    canonical_branch: parallel/brokerage
     allowed_paths:
       - src/Klyvesta.Application/Brokerage/**
       - src/Klyvesta.Infrastructure/Brokerage/**
@@ -69,6 +125,7 @@ modules:
 
   orders:
     owner_role: module-agent
+    canonical_branch: parallel/orders
     allowed_paths:
       - src/Klyvesta.Domain/Orders/**
       - src/Klyvesta.Application/Orders/**
@@ -78,6 +135,7 @@ modules:
 
   portfolio:
     owner_role: module-agent
+    canonical_branch: parallel/portfolio
     allowed_paths:
       - src/Klyvesta.Domain/Portfolios/**
       - src/Klyvesta.Application/Portfolios/**
@@ -88,6 +146,7 @@ modules:
 
   risk:
     owner_role: module-agent
+    canonical_branch: parallel/risk
     allowed_paths:
       - src/Klyvesta.Domain/Risk/**
       - src/Klyvesta.Application/Risk/**
@@ -99,6 +158,7 @@ modules:
 
   compliance:
     owner_role: module-agent
+    canonical_branch: parallel/compliance
     allowed_paths:
       - src/Klyvesta.Domain/Compliance/**
       - src/Klyvesta.Application/Compliance/**
@@ -110,6 +170,7 @@ modules:
 
   ai-shadow:
     owner_role: module-agent
+    canonical_branch: parallel/ai-shadow
     allowed_paths:
       - src/Klyvesta.Domain/AiShadow/**
       - src/Klyvesta.Application/AiShadow/**
@@ -122,6 +183,7 @@ modules:
 
   ledger:
     owner_role: module-agent
+    canonical_branch: parallel/ledger
     allowed_paths:
       - src/Klyvesta.Domain/Ledger/**
       - src/Klyvesta.Application/Ledger/**
@@ -130,6 +192,7 @@ modules:
 
   identity-authorization:
     owner_role: module-agent
+    canonical_branch: parallel/identity-authorization
     allowed_paths:
       - src/Klyvesta.Domain/Identity/**
       - src/Klyvesta.Application/Identity/**
@@ -138,6 +201,7 @@ modules:
 
   notifications:
     owner_role: module-agent
+    canonical_branch: parallel/notifications
     allowed_paths:
       - src/Klyvesta.Domain/Notifications/**
       - src/Klyvesta.Application/Notifications/**
@@ -146,6 +210,7 @@ modules:
 
   observability:
     owner_role: module-agent
+    canonical_branch: parallel/observability
     allowed_paths:
       - src/Klyvesta.Application/Observability/**
       - src/Klyvesta.Infrastructure/Observability/**
@@ -153,6 +218,7 @@ modules:
 
   security-acceptance:
     owner_role: verification-security-agent
+    canonical_branch: parallel/security-acceptance
     allowed_paths:
       - contracts/security/**
       - tools/Klyvesta.SecurityVerifier/**
@@ -161,17 +227,30 @@ modules:
 
   performance-resilience:
     owner_role: verification-security-agent
+    canonical_branch: parallel/performance-resilience
     allowed_paths:
       - tools/Klyvesta.PerformanceVerifier/**
       - docs/QA_PERFORMANCE.md
       - perf/**
 
+  database-integration:
+    owner_role: database-integration-agent
+    canonical_branch: parallel/database-integration
+    allowed_paths:
+      - '**/Migrations/**'
+      - '**/*ModelSnapshot.cs'
+      - docs/DOMAIN_DATABASE_MODEL_V1.md
+
 instruction_drift:
   required_every_task_start: true
+  required_after_baseline_refresh: true
   required_reads:
     - AGENTS.md
     - .ai/MASTER_ENGINEERING_PROMPT.md
     - .ai/agent-orchestration.yaml
+    - .ai/parallel-branch-registry.yaml
+    - docs/PARALLEL_AGENT_DEVELOPMENT.md
+    - docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md
     - .ai/state.json
     - .ai/guardrails.md
     - .ai/acceptance-gates.yaml
@@ -179,6 +258,7 @@ instruction_drift:
     - relevant_module_docs_and_contracts
     - current_branch_and_base_sha
     - relevant_open_prs_and_issues
+    - supervisor_coordination_feed
   update_rules:
     agent_behavior_or_process_changed:
       - AGENTS.md
@@ -190,13 +270,17 @@ instruction_drift:
       - relevant_module_documentation_or_readme
     ownership_or_dependency_policy_changed:
       - .ai/agent-orchestration.yaml
+    branch_assignment_or_readiness_changed:
+      - .ai/parallel-branch-registry.yaml
   evidence_required_in_checkpoint_or_pr: true
 
 work_item_contract:
   required_fields:
     - id
     - module
+    - branch
     - owner_role
+    - agent_slot
     - base_sha
     - dependencies
     - allowed_paths
@@ -205,11 +289,14 @@ work_item_contract:
     - acceptance_evidence
     - instruction_drift_check
   statuses:
+    - RESERVED
     - READY
     - ACTIVE
     - BLOCKED
     - VERIFYING
     - VERIFIED
+    - SUBMITTED
+    - INTEGRATED
 
 integration_rules:
   prefer_common_stable_baseline_for_independent_work: true
@@ -218,10 +305,14 @@ integration_rules:
   full_regression_before_integration_baseline_advance: true
   unresolved_ownership_violation_blocks_integration: true
   unresolved_dependency_blocks_acceptance: true
+  valid_work_done_signal_required_before_supervisor_interrupt: true
+  supervisor_review_required_before_any_integration: true
+  supervisor_refresh_alert_required_after_every_accepted_integration: true
+  agent_refresh_required_before_resume: true
 
 planned_milestones:
   - id: M-AGENT-01
-    name: documentation-and-manifest
+    name: documentation-manifest-and-supervisor-workflow
   - id: M-AGENT-02
     name: ownership-validator
   - id: M-AGENT-03
