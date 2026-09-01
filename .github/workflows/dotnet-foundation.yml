@@ -60,11 +60,15 @@ jobs:
       - name: Restore paper broker verifier
         run: dotnet restore tools/Klyvesta.PaperBrokerVerifier/Klyvesta.PaperBrokerVerifier.csproj
 
+      - name: Restore OMS verifier
+        run: dotnet restore tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj
+
       - name: Verify formatting
         run: |
           dotnet format src/Klyvesta.Api/Klyvesta.Api.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.PaperBrokerVerifier/Klyvesta.PaperBrokerVerifier.csproj --verify-no-changes --no-restore
+          dotnet format tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --verify-no-changes --no-restore
 
       - name: Build API graph
         run: dotnet build src/Klyvesta.Api/Klyvesta.Api.csproj --configuration Release --no-restore
@@ -75,8 +79,14 @@ jobs:
       - name: Build paper broker verifier
         run: dotnet build tools/Klyvesta.PaperBrokerVerifier/Klyvesta.PaperBrokerVerifier.csproj --configuration Release --no-restore
 
+      - name: Build OMS verifier
+        run: dotnet build tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --configuration Release --no-restore
+
       - name: Verify architecture boundaries
         run: dotnet run --project tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-build
 
       - name: Verify paper broker adapter
         run: dotnet run --project tools/Klyvesta.PaperBrokerVerifier/Klyvesta.PaperBrokerVerifier.csproj --configuration Release --no-build
+
+      - name: Verify OMS state machine
+        run: dotnet run --project tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --configuration Release --no-build
