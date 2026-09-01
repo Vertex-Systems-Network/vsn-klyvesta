@@ -1,0 +1,19 @@
+work_item: P1-09
+module: risk
+source_pr: 75
+source_branch: agent/20260902-vsn-klyvesta-p1-09-risk-governor
+source_head_sha: 0cc52521ea02cebda1d2dfaf4ed7eeb17502d14c
+stack_base_sha: f325b8383bc23881ccd6cfabbb5caf1af2455342
+integration_mode: selective-module-delta
+included_paths:
+  - .ai/checkpoints/2026-09-02-p1-09-risk-governor-feature-branch.md
+  - src/Klyvesta.Application/Risk/DeterministicRiskGovernor.cs
+  - src/Klyvesta.Application/Risk/RiskGuardBrokerAdapter.cs
+  - src/Klyvesta.Domain/Risk/DeterministicRiskModels.cs
+  - tools/Klyvesta.RiskVerifier/Klyvesta.RiskVerifier.csproj
+  - tools/Klyvesta.RiskVerifier/Program.cs
+excluded_shared_paths:
+  - .github/workflows/dotnet-foundation.yml
+exclusion_reason: integration staging already uses convention-based automatic verifier discovery
+status: INTEGRATING
+production_authority: false
