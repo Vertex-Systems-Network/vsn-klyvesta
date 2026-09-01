@@ -502,7 +502,7 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter
         return true;
     }
 
-    private void TryAdvanceState(PaperOrder order, BrokerOrderState targetState)
+    private static void TryAdvanceState(PaperOrder order, BrokerOrderState targetState)
     {
         if (IsTerminal(order.State))
         {
