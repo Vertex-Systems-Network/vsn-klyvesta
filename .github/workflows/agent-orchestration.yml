@@ -9,6 +9,7 @@ on:
       - ".ai/agent-orchestration.yaml"
       - ".ai/parallel-branch-registry.yaml"
       - "scripts/validate-agent-ownership.rb"
+      - "scripts/test-agent-ownership.rb"
       - "src/**"
       - "tools/**"
       - "contracts/**"
@@ -43,8 +44,13 @@ jobs:
       - name: Display Ruby version
         run: ruby --version
 
-      - name: Validate ownership script syntax
-        run: ruby -c scripts/validate-agent-ownership.rb
+      - name: Validate ownership scripts syntax
+        run: |
+          ruby -c scripts/validate-agent-ownership.rb
+          ruby -c scripts/test-agent-ownership.rb
+
+      - name: Run ownership validator self-tests
+        run: ruby scripts/test-agent-ownership.rb
 
       - name: Validate branch ownership and readiness
         env:
