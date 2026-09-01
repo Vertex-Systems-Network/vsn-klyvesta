@@ -59,7 +59,7 @@ public sealed class PaperShadowOrderExecutor
         return new PaperShadowExecutionResult(
             itemIndex,
             result.State == BrokerResultState.Success,
-            result.State == BrokerResultState.Success ? "AI_SHADOW_PAPER_SUBMITTED" : result.ErrorCode ?? "AI_SHADOW_PAPER_SUBMIT_FAILED",
+            result.State == BrokerResultState.Success ? "AI_SHADOW_PAPER_SUBMITTED" : result.ReasonCode ?? "AI_SHADOW_PAPER_SUBMIT_FAILED",
             result);
     }
 
