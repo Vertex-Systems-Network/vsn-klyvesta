@@ -279,11 +279,12 @@ static Task VerifySequentialRiskProjectionAsync()
         maxSinglePositionFraction: 0.6m,
         maxSectorFraction: 0.7m));
     var run = Plan(json, context);
+    var plan = run.Plan ?? throw new InvalidOperationException("multi-action proposal must produce a shadow plan");
 
-    Require(run.Plan is not null && run.Plan.Items.Count == 2, "multi-action proposal must retain both deterministic outputs");
-    Require(run.Plan.Items[0].Status == ShadowPlanItemStatus.ReadyForPaper, "first 50% allocation should be ready under 60k gross limit");
-    Require(run.Plan.Items[1].Status == ShadowPlanItemStatus.BlockedRisk, "second action must see the first planned trade in projected portfolio");
-    Require(run.Plan.Items[1].RiskDecision?.ReasonCodes.Contains("RISK_GROSS_EXPOSURE_LIMIT_EXCEEDED", StringComparer.Ordinal) == true,
+    Require(plan.Items.Count == 2, "multi-action proposal must retain both deterministic outputs");
+    Require(plan.Items[0].Status == ShadowPlanItemStatus.ReadyForPaper, "first 50% allocation should be ready under 60k gross limit");
+    Require(plan.Items[1].Status == ShadowPlanItemStatus.BlockedRisk, "second action must see the first planned trade in projected portfolio");
+    Require(plan.Items[1].RiskDecision?.ReasonCodes.Contains("RISK_GROSS_EXPOSURE_LIMIT_EXCEEDED", StringComparer.Ordinal) == true,
         "later action must expose combined gross-exposure breach");
     return Task.CompletedTask;
 }
