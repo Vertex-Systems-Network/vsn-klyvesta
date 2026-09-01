@@ -1,0 +1,19 @@
+work_item: P1-10
+module: compliance
+source_pr: 77
+source_branch: agent/20260902-vsn-klyvesta-p1-10-compliance-gate
+source_head_sha: a6b116671f087fbfca1c4509270b45ac7b8c341e
+stack_base_sha: 0cc52521ea02cebda1d2dfaf4ed7eeb17502d14c
+integration_mode: selective-module-delta
+included_paths:
+  - .ai/checkpoints/2026-09-02-p1-10-compliance-gate-feature-branch.md
+  - src/Klyvesta.Application/Compliance/ComplianceGuardBrokerAdapter.cs
+  - src/Klyvesta.Application/Compliance/DeterministicComplianceGate.cs
+  - src/Klyvesta.Domain/Compliance/DeterministicComplianceModels.cs
+  - tools/Klyvesta.ComplianceVerifier/Klyvesta.ComplianceVerifier.csproj
+  - tools/Klyvesta.ComplianceVerifier/Program.cs
+excluded_shared_paths:
+  - .github/workflows/dotnet-foundation.yml
+exclusion_reason: integration staging already uses convention-based automatic verifier discovery
+status: INTEGRATING
+production_authority: false
