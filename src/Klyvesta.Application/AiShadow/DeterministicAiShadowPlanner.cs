@@ -367,7 +367,7 @@ public sealed class DeterministicAiShadowPlanner
         return new AiShadowRunResult(AiShadowRunState.Planned, plan, [], audit.ToArray());
     }
 
-    private static IReadOnlyList<string> ValidateAuthoritativeContext(
+    private static List<string> ValidateAuthoritativeContext(
         AiInvestmentProposal proposal,
         AiShadowAuthoritativeContext context)
     {
