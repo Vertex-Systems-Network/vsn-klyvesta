@@ -1,0 +1,30 @@
+id: P1-02-03
+module: identity-authorization
+branch: parallel/identity-authorization
+agent_slot: agent-identity-authorization
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - src/Klyvesta.Domain/Identity/**
+  - src/Klyvesta.Application/Identity/**
+  - src/Klyvesta.Infrastructure/Identity/**
+  - tools/Klyvesta.AuthorizationVerifier/**
+  - .ai/work-items/identity-authorization/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+  - src/Klyvesta.Api/**
+status: READY
+blockers: []
+acceptance_evidence:
+  required:
+    - authentication-abstraction
+    - authorization-deny-tests
+    - privilege-boundary-tests
+    - security-review
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

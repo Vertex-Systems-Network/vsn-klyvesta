@@ -1,0 +1,29 @@
+id: P1-14
+module: security-acceptance
+branch: parallel/security-acceptance
+agent_slot: agent-security-acceptance
+owner_role: verification-security-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - contracts/security/**
+  - tools/Klyvesta.SecurityVerifier/**
+  - docs/SECURITY*.md
+  - docs/THREAT_MODEL.md
+  - .ai/work-items/security-acceptance/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/**
+status: BLOCKED
+blockers:
+  - EXISTING_SECURITY_DRAFTS_RECONCILIATION_REQUIRED
+  - MAIN_PROTECTION_GOVERNANCE_UNRESOLVED
+acceptance_evidence:
+  required:
+    - reconcile-existing-security-prs
+    - governance-decision
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

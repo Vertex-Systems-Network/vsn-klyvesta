@@ -1,0 +1,26 @@
+id: P1-06
+module: brokerage
+branch: parallel/brokerage
+agent_slot: agent-brokerage
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - src/Klyvesta.Application/Brokerage/**
+  - src/Klyvesta.Infrastructure/Brokerage/**
+  - tools/Klyvesta.PaperBrokerVerifier/**
+  - .ai/work-items/brokerage/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+status: BLOCKED
+blockers:
+  - EXISTING_DRAFT_PR_68_RECONCILIATION_REQUIRED
+acceptance_evidence:
+  required:
+    - reconcile-existing-pr-68
+instruction_drift_check: pending
+submission_pr: 68
+integration_baseline_sha: null

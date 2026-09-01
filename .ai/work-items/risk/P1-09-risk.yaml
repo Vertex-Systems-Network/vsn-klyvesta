@@ -1,0 +1,30 @@
+id: P1-09
+module: risk
+branch: parallel/risk
+agent_slot: agent-risk
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies:
+  - portfolio
+dependency_heads:
+  portfolio: null
+allowed_paths:
+  - src/Klyvesta.Domain/Risk/**
+  - src/Klyvesta.Application/Risk/**
+  - tools/Klyvesta.RiskVerifier/**
+  - .ai/work-items/risk/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+status: BLOCKED
+blockers:
+  - EXISTING_DRAFT_PR_75_RECONCILIATION_REQUIRED
+  - PORTFOLIO_NOT_INTEGRATED
+acceptance_evidence:
+  required:
+    - reconcile-existing-pr-75
+    - accepted-portfolio-head
+instruction_drift_check: pending
+submission_pr: 75
+integration_baseline_sha: null

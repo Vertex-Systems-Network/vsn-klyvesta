@@ -1,0 +1,27 @@
+id: M-AGENT-06
+module: database-integration
+branch: parallel/database-integration
+agent_slot: agent-database-integration
+owner_role: database-integration-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - docs/DOMAIN_DATABASE_MODEL_V1.md
+  - .ai/work-items/database-integration/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - module-source-without-explicit-grant
+status: READY
+blockers: []
+acceptance_evidence:
+  required:
+    - migration-order-validation
+    - snapshot-consistency
+    - rollback-analysis
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

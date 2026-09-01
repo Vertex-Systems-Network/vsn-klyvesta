@@ -1,0 +1,29 @@
+id: M-AGENT-SUPERVISOR-001
+module: supervisor-platform
+branch: parallel/supervisor-platform
+agent_slot: supervisor
+owner_role: supervisor
+base_sha: 646bfddc4822ca49ea9bf7f6a83f12434a3dd396
+accepted_baseline_sha: 646bfddc4822ca49ea9bf7f6a83f12434a3dd396
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - .github/workflows/**
+  - scripts/**
+  - .ai/**
+  - docs/**
+  - README.md
+  - AGENTS.md
+  - AI-PLAN.md
+shared_or_forbidden_paths:
+  - src/**
+status: ACTIVE
+blockers: []
+acceptance_evidence:
+  required:
+    - ownership-ci
+    - foundation-ci
+    - instruction-drift
+instruction_drift_check: recorded
+submission_pr: 83
+integration_baseline_sha: null
