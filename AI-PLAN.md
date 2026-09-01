@@ -196,3 +196,44 @@ Safety:
 - hallucinated execution facts = 0
 - unversioned model decisions = 0
 - missing decision audit trail = 0
+
+## 11. AI-native engineering delivery model
+
+The product should also be developed AI-natively. Engineering work must be decomposed into contract-driven modules so multiple specialized agents can execute independent READY work concurrently without weakening review or acceptance.
+
+Canonical delivery rules are defined in `docs/PARALLEL_AGENT_DEVELOPMENT.md` and `.ai/agent-orchestration.yaml`.
+
+### Current concurrency target
+
+- use approximately **8-10 concurrent specialized agents** when the dependency graph exposes enough independent work;
+- scale toward **12-16 agents** only after path-ownership CI, automatic verifier discovery, dependency/work-item validation, shared-file ownership enforcement, merge-train integration, migration integration and conflict automation are operational;
+- do not create artificial parallelism inside a tightly coupled dependency chain.
+
+### Module ownership
+
+Each active module/path has one implementation owner. Module agents stay within explicit allowed paths and use stable interfaces/contracts for cross-module dependencies. Shared CI/build/state/contracts/composition/migration integration are owned by Platform/Integration roles unless a work item explicitly grants otherwise.
+
+### Dependency-aware scheduling
+
+Roadmap work should be represented as a DAG with `READY`, `ACTIVE`, `BLOCKED`, `VERIFYING`, and `VERIFIED` states. Independent modules start from a common stable integration baseline. Feature stacking is used only for genuine dependencies.
+
+### Integration model
+
+Module agents produce small reviewable PRs and local verification evidence. Platform/Database/Integration agents own high-contention shared wiring. An Architecture/Conflict agent checks ownership, dependency drift, circular references, duplicate implementation and shared-file collisions before integration.
+
+### Instruction synchronization
+
+Every engineering agent must perform an instruction-drift check at every task/session start. When architecture, workflow, tools, module ownership, dependencies, testing commands, safety boundaries or integration process change, the applicable canonical instructions must be updated in the same PR. Repository-level workflow changes must be reflected in `README.md`; agent process changes in `AGENTS.md`; global engineering protocol changes in `.ai/MASTER_ENGINEERING_PROMPT.md`; ownership/dependency changes in `.ai/agent-orchestration.yaml`; module-specific changes in the relevant module documentation/README.
+
+### M-AGENT foundation milestones
+
+- **M-AGENT-01:** documentation + orchestration manifest;
+- **M-AGENT-02:** path/module ownership validator;
+- **M-AGENT-03:** automatic verifier discovery;
+- **M-AGENT-04:** per-work-item registry + dependency readiness/base-SHA validation;
+- **M-AGENT-05:** stable integration baseline + merge train;
+- **M-AGENT-06:** database migration integration workflow;
+- **M-AGENT-07:** architecture/conflict automation;
+- **M-AGENT-08:** concurrency scale test before raising the recommended ceiling.
+
+Engineering parallelism must never bypass financial, regulatory, security, broker, Risk Governor, Compliance Gate, reconciliation, or production authorization gates.
