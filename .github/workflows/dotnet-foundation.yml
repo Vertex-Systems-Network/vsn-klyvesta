@@ -5,10 +5,13 @@ on:
     branches:
       - main
       - "foundation/**"
+      - "parallel/**"
     paths:
       - ".github/workflows/*.yml"
       - ".ai/state.json"
       - ".ai/checkpoints/**"
+      - ".ai/agent-orchestration.yaml"
+      - ".ai/parallel-branch-registry.yaml"
       - "global.json"
       - "Directory.Build.props"
       - "Directory.Packages.props"
@@ -33,9 +36,9 @@ env:
 
 jobs:
   build-and-verify:
-    name: Build and architecture verify
+    name: Build and auto-discover verifiers
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -51,22 +54,55 @@ jobs:
       - name: Display SDK information
         run: dotnet --info
 
-      - name: Restore API graph
-        run: dotnet restore src/Klyvesta.Api/Klyvesta.Api.csproj
+      - name: Discover verifier projects
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t verifiers < <(find tools -type f -name '*Verifier.csproj' -print | sort)
+          if [ "${#verifiers[@]}" -eq 0 ]; then
+            echo "No verifier projects discovered under tools/."
+            exit 1
+          fi
+          printf 'Discovered %d verifier project(s):\n' "${#verifiers[@]}"
+          printf ' - %s\n' "${verifiers[@]}"
 
-      - name: Restore architecture verifier
-        run: dotnet restore tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj
+      - name: Restore API and all verifiers
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet restore src/Klyvesta.Api/Klyvesta.Api.csproj
+          while IFS= read -r project; do
+            echo "Restoring ${project}"
+            dotnet restore "${project}"
+          done < <(find tools -type f -name '*Verifier.csproj' -print | sort)
 
       - name: Verify formatting
+        shell: bash
         run: |
+          set -euo pipefail
           dotnet format src/Klyvesta.Api/Klyvesta.Api.csproj --verify-no-changes --no-restore
-          dotnet format tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --verify-no-changes --no-restore
+          while IFS= read -r project; do
+            echo "Formatting check ${project}"
+            dotnet format "${project}" --verify-no-changes --no-restore
+          done < <(find tools -type f -name '*Verifier.csproj' -print | sort)
 
       - name: Build API graph
         run: dotnet build src/Klyvesta.Api/Klyvesta.Api.csproj --configuration Release --no-restore
 
-      - name: Build architecture verifier
-        run: dotnet build tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-restore
+      - name: Build all verifiers
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r project; do
+            echo "Building ${project}"
+            dotnet build "${project}" --configuration Release --no-restore
+          done < <(find tools -type f -name '*Verifier.csproj' -print | sort)
 
-      - name: Verify architecture boundaries
-        run: dotnet run --project tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-build
+      - name: Run all verifiers
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r project; do
+            echo "Running ${project}"
+            dotnet run --project "${project}" --configuration Release --no-build
+          done < <(find tools -type f -name '*Verifier.csproj' -print | sort)
