@@ -57,6 +57,17 @@ unless branch.start_with?('parallel/')
   exit 0
 end
 
+integration_branch = orchestration.dig('supervisor_workflow', 'accepted_integration_branch').to_s
+integration_branch = orchestration.dig('roles', 'supervisor', 'integration_branch').to_s if integration_branch.empty?
+if !integration_branch.empty? && branch == integration_branch
+  files = changed_files
+  puts "Branch: #{branch}"
+  puts 'Role: Supervisor-owned accepted integration baseline'
+  puts "Changed files: #{files.length}"
+  puts 'Integration branch ownership PASS: cross-module merge-train deltas are permitted only on the configured accepted integration branch; migration, architecture, work-item, baseline and regression validators remain authoritative.'
+  exit 0
+end
+
 entry = Array(registry['branches']).find { |item| item['branch'] == branch }
 if entry.nil?
   warn "Ownership violation: parallel branch #{branch} is not registered in .ai/parallel-branch-registry.yaml"
