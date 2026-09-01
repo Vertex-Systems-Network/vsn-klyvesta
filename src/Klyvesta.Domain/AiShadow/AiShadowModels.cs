@@ -71,6 +71,7 @@ public sealed record AiShadowAuditEvent(
 
 public sealed record AiShadowPlan(
     Guid ProposalId,
+    string AccountReference,
     string PortfolioContextReference,
     string CustomerContextReference,
     string ModelVersion,
