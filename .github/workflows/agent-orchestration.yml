@@ -8,10 +8,9 @@ on:
       - ".github/workflows/agent-orchestration.yml"
       - ".ai/agent-orchestration.yaml"
       - ".ai/parallel-branch-registry.yaml"
+      - ".ai/integration-baseline.yaml"
       - ".ai/work-items/**"
-      - "scripts/validate-agent-ownership.rb"
-      - "scripts/test-agent-ownership.rb"
-      - "scripts/validate-work-items.rb"
+      - "scripts/**"
       - "src/**"
       - "tools/**"
       - "contracts/**"
@@ -31,10 +30,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ownership:
-    name: Validate parallel branch ownership and readiness
+  orchestration:
+    name: Validate multi-agent orchestration
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
 
     steps:
       - name: Checkout repository
@@ -42,6 +41,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+
+      - name: Fetch accepted integration baseline
+        run: git fetch --no-tags origin parallel/integration-staging:refs/remotes/origin/parallel/integration-staging
 
       - name: Display Ruby version
         run: ruby --version
@@ -51,15 +53,39 @@ jobs:
           ruby -c scripts/validate-agent-ownership.rb
           ruby -c scripts/test-agent-ownership.rb
           ruby -c scripts/validate-work-items.rb
+          ruby -c scripts/onboard-new-agent.rb
+          ruby -c scripts/test-agent-onboarding.rb
+          ruby -c scripts/validate-integration-baseline.rb
+          ruby -c scripts/validate-migration-integration.rb
+          ruby -c scripts/validate-architecture-orchestration.rb
+          ruby -c scripts/validate-concurrency-capacity.rb
 
       - name: Run ownership validator self-tests
         run: ruby scripts/test-agent-ownership.rb
 
+      - name: Run onboarding selector self-tests
+        run: ruby scripts/test-agent-onboarding.rb
+
       - name: Validate durable work-item registry
         run: ruby scripts/validate-work-items.rb
+
+      - name: Validate integration baseline freshness
+        env:
+          AGENT_HEAD_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: ruby scripts/validate-integration-baseline.rb
+
+      - name: Validate migration integration ownership
+        env:
+          AGENT_HEAD_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: ruby scripts/validate-migration-integration.rb
+
+      - name: Validate orchestration architecture
+        run: ruby scripts/validate-architecture-orchestration.rb
+
+      - name: Validate concurrency capacity and overflow behavior
+        run: ruby scripts/validate-concurrency-capacity.rb
 
       - name: Validate branch ownership and readiness
         env:
           AGENT_HEAD_BRANCH: ${{ github.head_ref || github.ref_name }}
-          AGENT_BASE_REF: origin/main
         run: ruby scripts/validate-agent-ownership.rb

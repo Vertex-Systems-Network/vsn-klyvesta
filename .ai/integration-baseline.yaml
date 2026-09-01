@@ -1,0 +1,24 @@
+version: 1
+baseline_branch: parallel/integration-staging
+main_anchor_sha: 9ee91496e9e606a050de14142cf225640a94406c
+last_verified_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+generation: 0
+promotion_target: main
+promotion_state: BLOCKED_MAIN_PROTECTION
+coordination_issue: 82
+refresh_alert: "New changes have been merged — please merge these changes into your branch first, then resume your own work."
+merge_train:
+  one_accepted_advance_at_a_time: true
+  dependency_order_required: true
+  exact_head_ci_required: true
+  full_regression_required_before_advance: true
+  unresolved_review_threads_block: true
+  ownership_and_architecture_checks_required: true
+  migration_integration_check_required: true
+  instruction_drift_evidence_required: true
+last_integration:
+  work_item: null
+  source_pr: null
+  source_branch: null
+  source_head_sha: null
+  integrated_at: null

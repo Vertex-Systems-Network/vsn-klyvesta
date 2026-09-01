@@ -4,204 +4,96 @@ This document is the canonical human-readable execution protocol for Supervisor-
 
 ## 1. Roles
 
-### Supervisor
+The Main-repo agent is the **Supervisor**. It allocates agents, reviews every submitted module PR, owns dependency-order integration, owns shared-file integration unless delegated, publishes baseline refreshes, and never treats technical integration as regulatory/production authorization.
 
-The agent operating the main repository acts as **Supervisor**.
+Module agents work only on assigned canonical branches/paths and signal completion only when exact-head evidence is ready. Database Integration owns final EF migrations/model snapshots. Verification/Security provides independent evidence without redefining product authority.
 
-The Supervisor:
+## 2. Supervisor-first branch bootstrap
 
-- creates/reserves module branches before assigning parallel work;
-- owns `parallel/supervisor-platform` for its own platform work;
-- reviews every submitted module PR;
-- owns merge/integration order;
-- owns shared-file integration unless explicitly delegated;
-- publishes refresh alerts after every accepted integration;
-- never treats a merge as regulatory/production authorization.
+Before assignments or Supervisor implementation, create/reserve every module branch for the work wave plus `parallel/supervisor-platform` and `parallel/integration-staging`. Branch inventory/readiness/occupancy is canonical in `.ai/parallel-branch-registry.yaml`.
 
-### Module Agent
+## 3. New agent onboarding
 
-A module agent:
+Every new agent must first arrive on **`main`**. The Supervisor immediately checks the AI-native plan for a free slot (`READY` + `OPEN` + READY work item).
 
-- works only on its assigned module branch;
-- follows `.ai/agent-orchestration.yaml` ownership/dependencies;
-- updates canonical instructions when instruction drift is discovered;
-- submits a focused PR with exact-head evidence;
-- announces the exact completion signal only when genuinely ready for Supervisor review.
+If a slot exists, Supervisor deterministically assigns it, marks it `OCCUPIED`, records agent name/start status, marks the work item `ACTIVE`, and tells the agent to checkout the pre-created module branch. Before implementation that assigned branch must contain the current `parallel/integration-staging` baseline.
 
-### Database Integration Agent
+If no free slot exists, Supervisor stops the agent and says exactly:
 
-Owns final EF migration ordering, model snapshots, integrated schema verification, and migration conflict resolution.
+**Go Home Come Back Next Time**
 
-### Verification / Security Agent
+The unassigned agent starts no work and creates no substitute branch.
 
-Provides independent technical/security acceptance evidence and does not redefine product authority.
+Detailed protocol: `docs/NEW_AGENT_ONBOARDING.md`.
 
-## 2. Immediate Supervisor bootstrap
+## 4. AI-native plan/work items
 
-Before documenting assignments or starting Supervisor feature work, the Supervisor creates/reserves every module branch intended for parallel execution.
+Every active work item records module, branch, owner/slot, exact base/dependency heads, allowed/shared paths, current status and required acceptance evidence. Independent modules use the common accepted baseline. A dependency chain cannot be outrun merely because a later agent finished first.
 
-Created branch inventory is canonical in `.ai/parallel-branch-registry.yaml`.
+## 5. Completion signal
 
-The Supervisor also maintains:
-
-- own working branch: `parallel/supervisor-platform`;
-- integration branch: `parallel/integration-staging`;
-- target production/default branch: `main`.
-
-No branch creation implies that work is automatically READY; dependency/existing-PR reconciliation still controls readiness.
-
-## 3. Assignment and AI-native plan
-
-Every assigned branch records:
-
-- module;
-- branch;
-- agent slot/role;
-- exact base SHA;
-- dependency heads;
-- allowed paths;
-- shared/forbidden paths;
-- current state;
-- merge-order group;
-- acceptance evidence required.
-
-Independent modules start from the common accepted baseline. Dependent modules do not begin implementation until required dependency contracts/heads are accepted or the work item explicitly permits isolated contract-first work.
-
-## 4. Completion signal
-
-When an agent finishes its assigned task, it must post the exact phrase below as a top-level comment on its submitted PR:
+A genuinely completed module submission posts this exact top-level PR comment:
 
 **Work Done and Submitted**
 
-The signal is valid only when:
+It is invalid for partial work, known-red CI, experiments, or work that still needs an implementation pass.
 
-- final intended commits are pushed;
-- exact head SHA is recorded;
-- required CI/checks have completed or any inability is explicitly recorded;
-- instruction-drift check is recorded;
-- changed paths match ownership;
-- remaining limitations/blockers are disclosed.
+## 6. Supervisor interrupt handling
 
-Agents must not emit the phrase for partial work, draft experiments, or a branch known to require another implementation pass.
+On a valid signal the Supervisor checkpoints and pauses its own work, reviews ownership/dependencies/architecture/exact-head CI/security/instruction drift/review threads, returns insufficient work, and integrates approved work in dependency order. It advances `main` only when governance permits; otherwise it advances `parallel/integration-staging`. It then runs regression, records the accepted baseline, publishes the refresh alert, refreshes itself if affected, and resumes its checkpoint.
 
-## 5. Supervisor interrupt handling
+## 7. Required refresh alert
 
-The Supervisor also works on its own platform module. When a valid `Work Done and Submitted` signal arrives:
-
-1. **Checkpoint own work.** Record Supervisor branch/head, current work item, pending state, and exact resume action.
-2. **Pause own implementation.** Do not continue making unrelated shared changes during submission review.
-3. **Review submitted PR.** Verify scope, ownership, dependency freshness, architecture, tests, security, instruction drift, review threads, and exact head.
-4. **Reject or return when needed.** Failed/ambiguous evidence means no integration.
-5. **Integrate if approved.** Advance the accepted integration baseline in dependency order.
-6. **Promote to `main` only when governance permits.** If hosted main protection or another canonical gate blocks promotion, integrate to `parallel/integration-staging` only and record the blocked promotion.
-7. **Run/verify full relevant regression** on the advanced integration baseline.
-8. **Broadcast refresh alert** through the canonical Supervisor Coordination Feed (Issue #82) and any active orchestration channel.
-9. **Refresh Supervisor branch** against the newly accepted baseline when its own work depends on affected contracts/shared paths.
-10. **Resume paused Supervisor work** from the saved micro-checkpoint.
-
-## 6. Required Supervisor alert
-
-After every accepted integration, the Supervisor sends exactly:
+After every accepted integration the Supervisor sends exactly:
 
 **New changes have been merged — please merge these changes into your branch first, then resume your own work.**
 
-The same event must also include:
+Issue #82 is the durable coordination feed and records source module/PR/branch, new accepted baseline SHA/target, changed shared contracts/paths and affected modules.
 
-- integrated module;
-- source PR and branch;
-- new accepted baseline SHA;
-- target used (`main` or `parallel/integration-staging`);
-- changed contracts/shared paths;
-- agents/modules materially affected;
-- required revalidation, if any.
+## 8. Agent response to refresh
 
-Canonical durable feed: GitHub Issue #82.
+Every active agent checkpoints, fetches the named accepted baseline, merges/rebases it into the assigned branch, escalates shared conflicts, updates base/dependency SHAs, reruns affected validation plus instruction-drift/ownership checks, then resumes. A stale accepted baseline blocks continued implementation.
 
-## 7. Agent response to refresh alerts
+## 9. Merge train / accepted baseline
 
-Before resuming after a refresh alert, every active agent must:
+`parallel/integration-staging` is the technical accepted-baseline branch while protected-main promotion is blocked. Accepted module work advances it **one reviewed item at a time**. Before every advance: exact-head CI, ownership/dependency freshness, architecture, security, migration ownership, instruction drift, review-thread status and full relevant regression must pass.
 
-1. save/checkpoint any uncommitted work;
-2. fetch the latest accepted baseline identified by the Supervisor;
-3. merge/rebase that baseline into its module branch according to the repository merge policy;
-4. resolve only conflicts within its ownership or escalate shared/cross-module conflicts to Supervisor/Integration;
-5. update recorded base/dependency SHAs;
-6. rerun tests affected by the refresh;
-7. repeat instruction-drift and ownership checks if the integration changed contracts/process;
-8. only then resume its assigned task.
+Machine baseline state: `.ai/integration-baseline.yaml`.
 
-An agent must not keep implementing against a stale accepted dependency baseline after receiving the alert.
+## 10. Dependency strategy
 
-## 8. Merge/integration strategy
-
-### Independent modules
-
-Independent READY modules may be implemented simultaneously. Supervisor integrates completed PRs one accepted baseline advance at a time.
-
-### Dependency chain
-
-Default chain:
+Independent READY modules may run concurrently. Default dependent chain is:
 
 `brokerage -> orders -> portfolio -> risk -> compliance -> ai-shadow`
 
-Completion time does not override dependency order.
+Existing draft implementations must be reconciled before parallel replacement work starts.
 
-### Existing work reconciliation
+## 11. Migration integration
 
-Newly-created parallel branches for modules with existing draft PRs are RESERVED/BLOCKED until Supervisor reconciles that prior work. Do not recreate an implementation that already exists on another active branch.
+Feature/module agents do not own final EF migrations or `*ModelSnapshot.cs`. Those changes are accepted only on `parallel/database-integration` unless a Supervisor-recorded exception changes the canonical policy. Duplicate migration IDs and migration edits from other parallel branches fail orchestration CI.
 
-### Shared files
+## 12. Architecture/conflict automation
 
-Module agents do not opportunistically edit shared CI/build/state/contracts/composition/migration files. Platform/Integration/Database Integration owns those changes unless the work item grants an exception.
+Orchestration CI validates unique canonical branches, unique explicit ownership patterns, known/acyclic dependency edges, registry/orchestration consistency, slot occupancy invariants, migration ownership, accepted-baseline ancestry and per-module changed-path ownership.
 
-## 9. Supervisor review gate
+## 13. Concurrency capacity
 
-Before integration, Supervisor verifies:
+Current planned active capacity is 6-10 independent specialized module agents, with scale toward 16 only after policy is updated and verified. CI simulates full-slot exhaustion and verifies that one extra agent receives exactly `Go Home Come Back Next Time`.
 
-- correct branch/module/agent ownership;
-- final diff is limited to intended paths;
-- dependency heads are accepted and fresh;
-- no duplicate active implementation exists;
-- exact-head CI is green for required checks;
-- local module verifier passes;
-- inherited regression verifiers pass where applicable;
-- security review is complete;
-- no unresolved review threads remain;
-- instruction-drift check is recorded;
-- shared-file edits have explicit authorization;
-- rollback/recovery implications are understood;
-- financial/regulatory authority boundaries remain unchanged unless separately accepted.
+## 14. Main vs integration-staging
 
-## 10. Main vs integration-staging
+Protected `main` is the desired promotion target. If branch protection/governance is unresolved, technical integration may advance only `parallel/integration-staging`; this never grants live trading, PII, broker, regulatory or production authority.
 
-The requested end-state is Supervisor-reviewed promotion into protected `main`.
+## 15. Durable sources of truth
 
-However, the workflow is fail-closed:
+- `.ai/parallel-branch-registry.yaml`: branches/readiness/occupancy/agent names.
+- `.ai/agent-orchestration.yaml`: process/ownership/dependency rules.
+- `.ai/integration-baseline.yaml`: merge-train/baseline evidence.
+- `.ai/work-items/**`: per-module state/evidence.
+- Issue #82: accepted integration/refresh events.
+- PR top-level comments: completion signal.
+- checkpoints: resumable agent/Supervisor state.
 
-- when `main` governance/protection permits promotion, accepted work may advance `main` through the required reviewed PR process;
-- when promotion is blocked, the Supervisor advances `parallel/integration-staging` for technical integration/regression and records that `main` remains unchanged;
-- no agent may interpret integration-staging as production authorization.
+## 16. Instruction synchronization
 
-## 11. Supervisor message/state durability
-
-Chat messages are not the source of truth. Important coordination state must be durable in GitHub/repository evidence.
-
-Use:
-
-- `.ai/parallel-branch-registry.yaml` for branches/agent slots/readiness;
-- `.ai/agent-orchestration.yaml` for ownership/dependencies/process rules;
-- Issue #82 for Supervisor merge/refresh events;
-- PR comments for `Work Done and Submitted` completion events;
-- checkpoints for resumable work state.
-
-## 12. Instruction synchronization
-
-At every task start and after every baseline refresh, agents re-check working instructions. If the workflow, branch map, module ownership, merge policy, commands, contracts, CI, safety boundaries, or dependencies changed, update the relevant README/instruction documents in the same PR.
-
-## 13. Required terminal wording
-
-A module agent that has actually completed and submitted its task ends its execution report with:
-
-**Work Done and Submitted**
-
-The Supervisor uses the phrase as an interrupt trigger only when it appears on the corresponding PR and the branch/head can be verified.
+At every task start and after baseline refresh, agents re-check canonical instructions. Workflow/ownership/dependency/CI/security changes must be persisted in repository instructions in the same PR.
