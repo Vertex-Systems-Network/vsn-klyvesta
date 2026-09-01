@@ -34,6 +34,12 @@ cases = [
     expected_success: false
   ),
   Case.new(
+    name: 'configured integration branch accepts cross-module merge train',
+    branch: 'parallel/integration-staging',
+    files: "src/Klyvesta.Application/Brokerage/BrokerContracts.cs\nsrc/Klyvesta.Application/Orders/OrderManagementService.cs\n",
+    expected_success: true
+  ),
+  Case.new(
     name: 'unregistered parallel branch is rejected',
     branch: 'parallel/not-registered',
     files: ".ai/checkpoints/test.md\n",
