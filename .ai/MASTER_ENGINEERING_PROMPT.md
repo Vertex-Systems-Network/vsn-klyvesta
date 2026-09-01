@@ -121,17 +121,18 @@ Before implementation:
 
 1. Read `AGENTS.md`.
 2. Read `.ai/MASTER_ENGINEERING_PROMPT.md`.
-3. Read `.ai/agent-orchestration.yaml` and the active work item/module ownership instructions.
-4. Read `.ai/state.json`.
-5. Read `.ai/guardrails.md`.
-6. Read `.ai/acceptance-gates.yaml`.
-7. Inspect repository structure and relevant docs/contracts.
-8. Inspect current branch/HEAD, recorded base SHA, dependency heads, and recent Git history.
-9. Inspect open PRs/issues relevant to the active task and check for ownership overlap or duplicate implementation.
-10. Identify latest checkpoint and unfinished work.
-11. Inspect relevant implementation and available dev/test commands.
-12. Perform the mandatory instruction-drift check in Section 29.
-13. Only then begin work.
+3. Read `.ai/agent-orchestration.yaml`, `.ai/parallel-branch-registry.yaml`, and the active work item/module ownership instructions.
+4. Read `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md` and inspect the Supervisor Coordination Feed when working in parallel mode.
+5. Read `.ai/state.json`.
+6. Read `.ai/guardrails.md`.
+7. Read `.ai/acceptance-gates.yaml`.
+8. Inspect repository structure and relevant docs/contracts.
+9. Inspect current branch/HEAD, recorded base SHA, dependency heads, and recent Git history.
+10. Inspect open PRs/issues relevant to the active task and check for ownership overlap or duplicate implementation.
+11. Identify latest checkpoint and unfinished work.
+12. Inspect relevant implementation and available dev/test commands.
+13. Perform the mandatory instruction-drift check in Section 29.
+14. Only then begin work.
 
 Never assume a previous AI session completed work because it was discussed. Verify repository state.
 
@@ -141,13 +142,14 @@ When resuming:
 
 1. Read latest checkpoint.
 2. Verify branch/HEAD and repository state.
-3. Inspect latest commits/PRs.
+3. Inspect latest commits/PRs and Supervisor coordination events.
 4. Verify what was actually completed.
-5. Re-run relevant validation when needed.
-6. Identify unfinished work.
-7. Continue from the safest known state.
+5. Verify the latest accepted integration baseline and refresh the assigned branch before resuming if the Supervisor issued a baseline refresh.
+6. Re-run relevant validation when needed.
+7. Identify unfinished work.
+8. Continue from the safest known state.
 
-**Repository state + tests + documentation + Git history are the source of truth.**
+**Repository state + tests + documentation + Git history + accepted Supervisor integration evidence are the source of truth.**
 
 ## 18. Change Impact Analysis
 
@@ -260,23 +262,23 @@ The goal is not merely working code. The goal is a **secure, maintainable, testa
 
 ## 29. Parallel-Agent Development and Instruction Drift
 
-Klyvesta engineering is designed to support multiple concurrent specialized agents. The canonical human plan is `docs/PARALLEL_AGENT_DEVELOPMENT.md`; the machine-readable ownership/dependency policy is `.ai/agent-orchestration.yaml`.
+Klyvesta engineering is designed to support multiple concurrent specialized agents. The canonical human plans are `docs/PARALLEL_AGENT_DEVELOPMENT.md` and `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`; machine-readable ownership/dependency/branch policy is `.ai/agent-orchestration.yaml` plus `.ai/parallel-branch-registry.yaml`.
 
 ### Ownership and concurrency
 
 - One active implementation owner per module/path at a time.
-- Every work item must record its module, owner role, exact base SHA, dependencies, allowed paths, shared/forbidden paths, status, and acceptance evidence.
+- Every work item must record its module, assigned branch, owner/agent role, exact base SHA, dependencies, allowed paths, shared/forbidden paths, status, and acceptance evidence.
 - Independent READY work should use a common stable integration baseline rather than forming an unnecessary sequential feature stack.
 - Stack on another feature only when a real dependency requires it.
-- Module agents must not modify another module's implementation simply to unblock themselves; use stable contracts/interfaces and route shared/breaking changes through Platform/Integration ownership.
-- High-contention shared files such as central CI, shared build/package configuration, shared state, shared contracts/composition wiring, and final EF migration/model-snapshot integration are Platform/Integration-owned unless explicitly granted.
+- Module agents must not modify another module's implementation simply to unblock themselves; use stable contracts/interfaces and route shared/breaking changes through Supervisor/Platform/Integration ownership.
+- High-contention shared files such as central CI, shared build/package configuration, shared state, shared contracts/composition wiring, orchestration registry, and final EF migration/model-snapshot integration are Supervisor/Platform/Integration-owned unless explicitly granted.
 - Before writing code, inspect active PRs/issues for overlapping ownership, duplicate implementation, stale bases, changed dependencies, or required shared-file edits. A detected collision must be resolved through ownership/integration rather than competing edits.
 
 Current preferred concurrency is approximately 8-10 specialized agents when enough independent READY work exists. Scale toward 12-16 only after the orchestration controls listed in `.ai/agent-orchestration.yaml` are operational and verified.
 
 ### Mandatory instruction-drift check
 
-At the start of every task/session, determine whether the instructions required to perform the work changed because of architecture, tooling, CI, module ownership, dependencies, testing commands, security/safety boundaries, or integration process changes.
+At the start of every task/session and after every accepted-baseline refresh, determine whether the instructions required to perform the work changed because of architecture, tooling, CI, branch assignment, module ownership, dependencies, testing commands, security/safety boundaries, Supervisor behavior, or integration process changes.
 
 When instructions changed, update the canonical repository instructions in the same PR:
 
@@ -284,8 +286,60 @@ When instructions changed, update the canonical repository instructions in the s
 - repository onboarding/workflow change → `README.md`;
 - global engineering protocol change → `.ai/MASTER_ENGINEERING_PROMPT.md`;
 - module-specific instruction change → relevant module documentation/README;
-- ownership/dependency/concurrency/shared-file policy change → `.ai/agent-orchestration.yaml`.
+- ownership/dependency/concurrency/shared-file/Supervisor policy change → `.ai/agent-orchestration.yaml`;
+- branch assignment/readiness/baseline change → `.ai/parallel-branch-registry.yaml`.
 
 Do not leave new operating instructions only in chat, memory, or an issue comment. If no instruction change is required, record that the instruction-drift check was performed in the PR/checkpoint evidence.
 
 Parallel development accelerates delivery only; it never weakens Klyvesta's financial, regulatory, security, broker, risk, compliance, reconciliation, or production-authorization gates.
+
+## 30. Supervisor-Led Repository Workflow
+
+When a parallel work wave is orchestrated, the Main-repo agent acts as **Supervisor**.
+
+### Mandatory bootstrap order
+
+The Supervisor's first repository action for a new work wave is to create/reserve the module branches that will be assigned to parallel agents, plus its own working branch and integration branch. Only after the branches exist may it document assignments, start its own module work, or dispatch agents.
+
+Canonical branch inventory: `.ai/parallel-branch-registry.yaml`.
+
+### Supervisor's own work
+
+The Supervisor works on `parallel/supervisor-platform` while agents work on their module branches. Its work must be checkpointable because completed agent submissions can interrupt it.
+
+### Completion signal
+
+A module agent signals genuine completion only by posting the exact top-level PR comment:
+
+**Work Done and Submitted**
+
+The signal is invalid for partial work or known-red/incomplete submissions.
+
+### Interrupt behavior
+
+When a valid completion signal arrives, the Supervisor:
+
+1. checkpoints its own current work;
+2. pauses its own implementation;
+3. reviews the submitted PR and exact head;
+4. verifies module/path ownership, dependency freshness, CI, regressions, security, instruction drift and review-thread status;
+5. rejects/returns the submission if evidence is insufficient;
+6. integrates approved work in dependency order;
+7. promotes to `main` only when repository governance/branch-protection permits, otherwise uses `parallel/integration-staging` and records blocked promotion;
+8. verifies the accepted integration baseline;
+9. broadcasts the required refresh alert through Issue #82 and the active orchestration channel;
+10. refreshes its own branch if affected and resumes from its checkpoint.
+
+Completion order does not override dependency order.
+
+### Required refresh alert
+
+After each accepted integration the Supervisor sends exactly:
+
+**New changes have been merged — please merge these changes into your branch first, then resume your own work.**
+
+Every active agent must checkpoint, fetch the accepted baseline named by the Supervisor, merge/rebase it into its assigned branch, resolve owned conflicts or escalate shared conflicts, update dependency/base SHAs, rerun affected tests and instruction/ownership checks, and only then resume.
+
+A stale accepted baseline blocks continued implementation after a refresh alert.
+
+Issue #82 is the durable coordination feed. Chat-only coordination is insufficient for accepted integration events.
