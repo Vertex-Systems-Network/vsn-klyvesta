@@ -63,12 +63,16 @@ jobs:
       - name: Restore OMS verifier
         run: dotnet restore tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj
 
+      - name: Restore portfolio verifier
+        run: dotnet restore tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj
+
       - name: Verify formatting
         run: |
           dotnet format src/Klyvesta.Api/Klyvesta.Api.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.PaperBrokerVerifier/Klyvesta.PaperBrokerVerifier.csproj --verify-no-changes --no-restore
           dotnet format tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --verify-no-changes --no-restore
+          dotnet format tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj --verify-no-changes --no-restore
 
       - name: Build API graph
         run: dotnet build src/Klyvesta.Api/Klyvesta.Api.csproj --configuration Release --no-restore
@@ -82,6 +86,9 @@ jobs:
       - name: Build OMS verifier
         run: dotnet build tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --configuration Release --no-restore
 
+      - name: Build portfolio verifier
+        run: dotnet build tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj --configuration Release --no-restore
+
       - name: Verify architecture boundaries
         run: dotnet run --project tools/Klyvesta.ArchitectureVerifier/Klyvesta.ArchitectureVerifier.csproj --configuration Release --no-build
 
@@ -90,3 +97,6 @@ jobs:
 
       - name: Verify OMS state machine
         run: dotnet run --project tools/Klyvesta.OmsVerifier/Klyvesta.OmsVerifier.csproj --configuration Release --no-build
+
+      - name: Verify portfolio projection and reconciliation
+        run: dotnet run --project tools/Klyvesta.PortfolioVerifier/Klyvesta.PortfolioVerifier.csproj --configuration Release --no-build
