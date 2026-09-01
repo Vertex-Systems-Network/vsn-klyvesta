@@ -67,8 +67,8 @@ public sealed class DeterministicComplianceGate : IComplianceGate
 
     private static void EvaluateAccountStatus(
         ComplianceAccountStatus status,
-        ICollection<string> denials,
-        ICollection<string> holds)
+        List<string> denials,
+        List<string> holds)
     {
         switch (status)
         {
@@ -92,8 +92,8 @@ public sealed class DeterministicComplianceGate : IComplianceGate
 
     private static void EvaluateRegulatoryFeature(
         RegulatoryFeatureStatus status,
-        ICollection<string> denials,
-        ICollection<string> holds)
+        List<string> denials,
+        List<string> holds)
     {
         switch (status)
         {
@@ -114,8 +114,8 @@ public sealed class DeterministicComplianceGate : IComplianceGate
 
     private static void EvaluateManualReview(
         ManualReviewStatus status,
-        ICollection<string> denials,
-        ICollection<string> holds)
+        List<string> denials,
+        List<string> holds)
     {
         switch (status)
         {
@@ -134,8 +134,8 @@ public sealed class DeterministicComplianceGate : IComplianceGate
 
     private static void EvaluateInstrumentRestriction(
         InstrumentRestrictionStatus status,
-        ICollection<string> denials,
-        ICollection<string> holds)
+        List<string> denials,
+        List<string> holds)
     {
         switch (status)
         {
@@ -157,8 +157,8 @@ public sealed class DeterministicComplianceGate : IComplianceGate
     private static void EvaluateMandate(
         ComplianceMandateEvidence? mandate,
         DateTimeOffset evaluatedAt,
-        ICollection<string> denials,
-        ICollection<string> holds)
+        List<string> denials,
+        List<string> holds)
     {
         if (mandate is null)
         {
@@ -192,8 +192,8 @@ public sealed class DeterministicComplianceGate : IComplianceGate
     private static void EvaluateActiveMandateWindow(
         ComplianceMandateEvidence mandate,
         DateTimeOffset evaluatedAt,
-        ICollection<string> denials,
-        ICollection<string> holds)
+        List<string> denials,
+        List<string> holds)
     {
         if (string.IsNullOrWhiteSpace(mandate.MandateReference) ||
             mandate.EffectiveFrom is null ||
