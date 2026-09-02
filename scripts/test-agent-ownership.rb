@@ -22,7 +22,7 @@ cases = [
     expected_success: false
   ),
   Case.new(
-    name: 'blocked module rejects substantive implementation',
+    name: 'integrated module rejects substantive implementation',
     branch: 'parallel/risk',
     files: "src/Klyvesta.Application/Risk/PaperRiskGovernor.cs\n",
     expected_success: false
