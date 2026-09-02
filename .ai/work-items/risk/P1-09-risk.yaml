@@ -4,11 +4,11 @@ branch: parallel/risk
 agent_slot: agent-risk
 owner_role: module-agent
 base_sha: 9ee91496e9e606a050de14142cf225640a94406c
-accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
 dependencies:
   - portfolio
 dependency_heads:
-  portfolio: null
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
 allowed_paths:
   - src/Klyvesta.Domain/Risk/**
   - src/Klyvesta.Application/Risk/**
@@ -17,14 +17,17 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
-status: BLOCKED
-blockers:
-  - EXISTING_DRAFT_PR_75_RECONCILIATION_REQUIRED
-  - PORTFOLIO_NOT_INTEGRATED
+status: INTEGRATED
+blockers: []
 acceptance_evidence:
   required:
     - reconcile-existing-pr-75
     - accepted-portfolio-head
-instruction_drift_check: pending
+  satisfied:
+    - selective-module-delta-integrated
+    - portfolio-dependency-integrated
+    - exact-head-regression-green
+instruction_drift_check: completed
 submission_pr: 75
-integration_baseline_sha: null
+integration_baseline_sha: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+production_authority: false

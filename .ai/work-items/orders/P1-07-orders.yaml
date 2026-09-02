@@ -4,11 +4,11 @@ branch: parallel/orders
 agent_slot: agent-orders
 owner_role: module-agent
 base_sha: 9ee91496e9e606a050de14142cf225640a94406c
-accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 494345de9541c41a73bb6a7f9583e1c547ea2db8
 dependencies:
   - brokerage
 dependency_heads:
-  brokerage: null
+  brokerage: 494345de9541c41a73bb6a7f9583e1c547ea2db8
 allowed_paths:
   - src/Klyvesta.Domain/Orders/**
   - src/Klyvesta.Application/Orders/**
@@ -17,14 +17,17 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
-status: BLOCKED
-blockers:
-  - EXISTING_DRAFT_PR_71_RECONCILIATION_REQUIRED
-  - BROKERAGE_NOT_INTEGRATED
+status: INTEGRATED
+blockers: []
 acceptance_evidence:
   required:
     - reconcile-existing-pr-71
     - accepted-brokerage-head
-instruction_drift_check: pending
+  satisfied:
+    - selective-module-delta-integrated
+    - brokerage-dependency-integrated
+    - exact-head-regression-green
+instruction_drift_check: completed
 submission_pr: 71
-integration_baseline_sha: null
+integration_baseline_sha: 9d017ba3b63773d27fb22b5063ac46b2bd46158b
+production_authority: false

@@ -7,5 +7,7 @@ integration_mode: selective-module-delta
 excluded_shared_paths:
   - .github/workflows/dotnet-foundation.yml
 exclusion_reason: current integration baseline uses convention-based automatic verifier discovery; legacy manual verifier registration is superseded
-status: INTEGRATING
+status: INTEGRATED
+integration_baseline_sha: 494345de9541c41a73bb6a7f9583e1c547ea2db8
+verification: [exact-head-regression-green, ownership-green, auto-discovery-green]
 production_authority: false

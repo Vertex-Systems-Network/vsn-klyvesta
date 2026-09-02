@@ -4,15 +4,15 @@ branch: parallel/ai-shadow
 agent_slot: agent-ai-shadow
 owner_role: module-agent
 base_sha: 9ee91496e9e606a050de14142cf225640a94406c
-accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 986368c02dddb83ac03cdbde77bcbd219daa6f4a
 dependencies:
   - portfolio
   - risk
   - compliance
 dependency_heads:
-  portfolio: null
-  risk: null
-  compliance: null
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+  risk: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+  compliance: 986368c02dddb83ac03cdbde77bcbd219daa6f4a
 allowed_paths:
   - src/Klyvesta.Domain/AiShadow/**
   - src/Klyvesta.Application/AiShadow/**
@@ -22,14 +22,18 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
-status: BLOCKED
-blockers:
-  - EXISTING_DRAFT_PR_79_RECONCILIATION_REQUIRED
-  - COMPLIANCE_NOT_INTEGRATED
+status: INTEGRATED
+blockers: []
 acceptance_evidence:
   required:
     - reconcile-existing-pr-79
     - accepted-compliance-head
-instruction_drift_check: pending
+  satisfied:
+    - selective-module-delta-integrated
+    - portfolio-risk-compliance-dependencies-integrated
+    - exact-head-regression-green
+    - zero-unresolved-review-threads
+instruction_drift_check: completed
 submission_pr: 79
-integration_baseline_sha: null
+integration_baseline_sha: 14cd1ad83075abb1132dfa544fe3c2ad7193e586
+production_authority: false

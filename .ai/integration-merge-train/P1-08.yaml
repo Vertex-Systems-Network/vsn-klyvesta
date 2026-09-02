@@ -16,5 +16,7 @@ included_paths:
 excluded_shared_paths:
   - .github/workflows/dotnet-foundation.yml
 exclusion_reason: integration staging already uses convention-based automatic verifier discovery
-status: INTEGRATING
+status: INTEGRATED
+integration_baseline_sha: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+verification: [exact-head-regression-green, dependency-order-green, ownership-green]
 production_authority: false

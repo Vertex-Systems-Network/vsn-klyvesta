@@ -1,8 +1,8 @@
 version: 1
 baseline_branch: parallel/integration-staging
 main_anchor_sha: 9ee91496e9e606a050de14142cf225640a94406c
-last_verified_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
-generation: 0
+last_verified_baseline_sha: 14cd1ad83075abb1132dfa544fe3c2ad7193e586
+generation: 6
 promotion_target: main
 promotion_state: BLOCKED_MAIN_PROTECTION
 coordination_issue: 82
@@ -17,8 +17,10 @@ merge_train:
   migration_integration_check_required: true
   instruction_drift_evidence_required: true
 last_integration:
-  work_item: null
-  source_pr: null
-  source_branch: null
-  source_head_sha: null
-  integrated_at: null
+  work_item: P1-11
+  source_pr: 79
+  source_branch: agent/20260902-vsn-klyvesta-p1-11-ai-shadow
+  source_head_sha: 807a469eacdcba636774a99978de4f3f1d9831c6
+  integration_baseline_sha: 14cd1ad83075abb1132dfa544fe3c2ad7193e586
+  integrated_at: 2026-09-01T22:56:23Z
+  production_authority: false

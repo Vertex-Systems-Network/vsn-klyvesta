@@ -15,12 +15,15 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
-status: BLOCKED
-blockers:
-  - EXISTING_DRAFT_PR_68_RECONCILIATION_REQUIRED
+status: INTEGRATED
+blockers: []
 acceptance_evidence:
   required:
     - reconcile-existing-pr-68
-instruction_drift_check: pending
+  satisfied:
+    - selective-module-delta-integrated
+    - exact-head-regression-green
+instruction_drift_check: completed
 submission_pr: 68
-integration_baseline_sha: null
+integration_baseline_sha: 494345de9541c41a73bb6a7f9583e1c547ea2db8
+production_authority: false
