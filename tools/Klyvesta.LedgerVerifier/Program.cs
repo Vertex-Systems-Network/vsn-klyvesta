@@ -286,7 +286,12 @@ static Task VerifyStoreContractHasNoDestructiveMutationAsync()
 
 static Task VerifyCurrencyValidationAsync()
 {
-    RequireThrows<ArgumentException>(() => new LedgerPosting(AccountA(), LedgerSide.Debit, 1m, "PK-R"), "invalid currency must fail");
+    RequireThrows<ArgumentException>(
+        () =>
+        {
+            _ = new LedgerPosting(AccountA(), LedgerSide.Debit, 1m, "PK-R");
+        },
+        "invalid currency must fail");
     var valid = new LedgerPosting(AccountA(), LedgerSide.Debit, 1m, "pkr");
     Require(valid.Currency == "PKR", "currency normalization must be deterministic");
     return Task.CompletedTask;
