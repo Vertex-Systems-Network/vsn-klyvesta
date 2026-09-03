@@ -4,7 +4,7 @@ branch: parallel/notifications
 agent_slot: agent-notifications
 owner_role: module-agent
 assigned_agent: ChatGPT-Notifications-01
-start_status: ASSIGNED
+start_status: SUBMITTED
 started_at: "2026-09-03T13:28:40Z"
 base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
 accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
@@ -20,7 +20,7 @@ allowed_paths:
 shared_or_forbidden_paths:
   - .github/workflows/**
   - src/Klyvesta.Api/**
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 acceptance_evidence:
   required:
@@ -28,6 +28,6 @@ acceptance_evidence:
     - idempotent-delivery
     - retry-failure-semantics
     - notifications-verifier
-instruction_drift_check: pending
-submission_pr: null
+instruction_drift_check: completed-no-canonical-instruction-change
+submission_pr: 87
 integration_baseline_sha: null
