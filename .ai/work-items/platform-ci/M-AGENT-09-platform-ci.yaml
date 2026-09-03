@@ -4,7 +4,7 @@ branch: parallel/platform-ci
 agent_slot: agent-platform-ci
 owner_role: platform-agent
 assigned_agent: ChatGPT-Platform-01
-start_status: ASSIGNED
+start_status: SUBMITTED
 started_at: "2026-09-03T17:12:00Z"
 base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
 accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
@@ -25,7 +25,7 @@ shared_or_forbidden_paths:
   - contracts/**
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 acceptance_evidence:
   required:
@@ -34,5 +34,5 @@ acceptance_evidence:
     - shared-path-write-boundary-audit
     - platform-verifier
 instruction_drift_check: completed-registration-required-for-canonical-platform-lane
-submission_pr: null
+submission_pr: 89
 integration_baseline_sha: null
