@@ -70,6 +70,7 @@ public sealed record OperationalEvent
             throw new ArgumentOutOfRangeException(nameof(level));
         }
 
+        Level = level;
         Correlation = correlation ?? throw new ArgumentNullException(nameof(correlation));
         OccurredAt = occurredAt;
         Fields = fields ?? throw new ArgumentNullException(nameof(fields));
