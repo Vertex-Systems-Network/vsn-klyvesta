@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.NotificationsVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.NotificationsVerifier</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Klyvesta.Domain/Klyvesta.Domain.csproj" />
+    <ProjectReference Include="../../src/Klyvesta.Application/Klyvesta.Application.csproj" />
+    <ProjectReference Include="../../src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
