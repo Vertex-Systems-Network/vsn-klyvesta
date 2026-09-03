@@ -51,9 +51,38 @@ Console.WriteLine("PROVIDER_NEUTRAL: application contracts depend on channel/res
 Console.WriteLine("IDEMPOTENT: source + idempotency key binds to a canonical payload hash and terminal retries do not resend.");
 Console.WriteLine("RETRY_SEMANTICS: only explicit retryable failures retry; permanent failure and exhaustion are terminal.");
 Console.WriteLine("SANITIZED_BOUNDARY: transports receive rendered content plus opaque recipient reference, not raw business objects or template variables.");
-Console.WriteLine("NOT_LIVE: verifier transports are scripted in-memory fakes; no email/SMS/push/WhatsApp provider credential or production recipient is used.");
-
+Console.WriteLine("NOT_LIVE: verifier transports are scripted in-memory fakes; no provider credential or production recipient is used.");
 return failures.Count == 0 ? 0 : 1;
+
+static NotificationTransportResult Delivered(string? providerReference = "provider-message") =>
+    new(NotificationAttemptOutcome.Delivered, "PROVIDER_ACCEPTED", providerReference);
+static NotificationTransportResult Retryable() =>
+    new(NotificationAttemptOutcome.RetryableFailure, "PROVIDER_TEMPORARY_FAILURE");
+static NotificationTransportResult Permanent() =>
+    new(NotificationAttemptOutcome.PermanentFailure, "PROVIDER_PERMANENT_FAILURE");
+static DateTimeOffset Now() => new(2026, 9, 3, 13, 30, 0, TimeSpan.Zero);
+
+static NotificationDispatchCommand Command(
+    string sourceReference = "notification-service",
+    string idempotencyKey = "notify-1",
+    NotificationChannel channel = NotificationChannel.Email,
+    string templateKey = "security-alert-v1",
+    int maximumAttempts = 3) =>
+    new(
+        SourceReference: sourceReference,
+        IdempotencyKey: idempotencyKey,
+        RecipientReference: "recipient-ref-123",
+        Channel: channel,
+        TemplateKey: templateKey,
+        TemplateValues: [new("display-name", "Customer")],
+        MaximumAttempts: maximumAttempts);
+
+static (NotificationDispatcher Dispatcher, InMemoryNotificationDeliveryStore Store, RecordingRenderer Renderer) CreateDispatcher(INotificationTransport transport)
+{
+    var store = new InMemoryNotificationDeliveryStore();
+    var renderer = new RecordingRenderer();
+    return (new NotificationDispatcher(renderer, store, [transport], new FixedTimeProvider(Now())), store, renderer);
+}
 
 static async Task VerifyDeliveredAsync()
 {
@@ -100,12 +129,9 @@ static async Task VerifyIdempotentDeliveredRetryAsync()
     var (dispatcher, store, renderer) = CreateDispatcher(transport);
     var first = await dispatcher.DispatchAsync(Command(idempotencyKey: "same-key"));
     var second = await dispatcher.DispatchAsync(Command(idempotencyKey: "same-key"));
-    Require(!first.WasExisting, "first dispatch must be new");
-    Require(second.WasExisting, "second dispatch must resolve existing terminal delivery");
+    Require(!first.WasExisting && second.WasExisting, "retry must resolve existing terminal delivery");
     Require(second.Delivery.DeliveryId == first.Delivery.DeliveryId, "retry must return same delivery");
-    Require(transport.Requests.Count == 1, "terminal retry must not resend");
-    Require(renderer.RenderCount == 1, "terminal retry must not rerender");
-    Require(store.Count == 1, "terminal retry must not duplicate storage");
+    Require(transport.Requests.Count == 1 && renderer.RenderCount == 1 && store.Count == 1, "terminal retry must not duplicate work");
 }
 
 static async Task VerifyIdempotencyConflictAsync()
@@ -125,41 +151,27 @@ static async Task VerifySourceScopedIdempotencyAsync()
     var (dispatcher, store, _) = CreateDispatcher(transport);
     var first = await dispatcher.DispatchAsync(Command(sourceReference: "service-a", idempotencyKey: "same"));
     var second = await dispatcher.DispatchAsync(Command(sourceReference: "service-b", idempotencyKey: "same"));
-    Require(first.Delivery.DeliveryId != second.Delivery.DeliveryId, "different sources must have independent idempotency scopes");
-    Require(store.Count == 2, "two source scopes must persist independently");
+    Require(first.Delivery.DeliveryId != second.Delivery.DeliveryId && store.Count == 2, "different source scopes must remain independent");
 }
 
 static async Task VerifyCanonicalValueOrderAsync()
 {
     var transport = new ScriptedTransport(NotificationChannel.Email, Delivered());
     var (dispatcher, _, _) = CreateDispatcher(transport);
-    var original = Command(idempotencyKey: "ordered") with
-    {
-        TemplateValues = [new("name", "A"), new("event", "B")],
-    };
-    var reordered = original with
-    {
-        TemplateValues = [new("event", "B"), new("name", "A")],
-    };
+    var original = Command(idempotencyKey: "ordered") with { TemplateValues = [new("name", "A"), new("event", "B")] };
+    var reordered = original with { TemplateValues = [new("event", "B"), new("name", "A")] };
     var first = await dispatcher.DispatchAsync(original);
     var second = await dispatcher.DispatchAsync(reordered);
-    Require(second.WasExisting, "template value ordering must not change request identity");
-    Require(second.Delivery.DeliveryId == first.Delivery.DeliveryId, "reordered retry must resolve original delivery");
+    Require(second.WasExisting && second.Delivery.DeliveryId == first.Delivery.DeliveryId, "value ordering must not change identity");
 }
 
 static async Task VerifyChangedValueConflictAsync()
 {
     var transport = new ScriptedTransport(NotificationChannel.Email, Delivered());
     var (dispatcher, _, _) = CreateDispatcher(transport);
-    await dispatcher.DispatchAsync(Command(idempotencyKey: "changed-value") with
-    {
-        TemplateValues = [new("name", "A")],
-    });
+    await dispatcher.DispatchAsync(Command(idempotencyKey: "changed-value") with { TemplateValues = [new("name", "A")] });
     await RequireThrowsMessageAsync(
-        () => dispatcher.DispatchAsync(Command(idempotencyKey: "changed-value") with
-        {
-            TemplateValues = [new("name", "B")],
-        }).AsTask(),
+        () => dispatcher.DispatchAsync(Command(idempotencyKey: "changed-value") with { TemplateValues = [new("name", "B")] }).AsTask(),
         "NOTIFICATION_IDEMPOTENCY_KEY_REUSED_WITH_DIFFERENT_PAYLOAD");
 }
 
@@ -169,7 +181,7 @@ static async Task VerifyStableProviderTokenAsync()
     var (dispatcher, _, _) = CreateDispatcher(transport);
     await dispatcher.DispatchAsync(Command());
     Require(transport.Requests.Count == 2, "two requests expected");
-    Require(transport.Requests[0].ProviderIdempotencyKey == transport.Requests[1].ProviderIdempotencyKey, "provider idempotency token must be stable across attempts");
+    Require(transport.Requests[0].ProviderIdempotencyKey == transport.Requests[1].ProviderIdempotencyKey, "provider token must be stable");
     Require(transport.Requests[0].ProviderIdempotencyKey.Length == 64, "provider token must be opaque SHA-256 hex");
 }
 
@@ -196,31 +208,25 @@ static async Task VerifyTerminalFailureRetryAsync()
     var first = await dispatcher.DispatchAsync(Command(idempotencyKey: "permanent"));
     var second = await dispatcher.DispatchAsync(Command(idempotencyKey: "permanent"));
     Require(first.Delivery.State == NotificationDeliveryState.PermanentFailure, "first delivery must fail permanently");
-    Require(second.WasExisting, "terminal failure retry must resolve stored state");
-    Require(transport.Requests.Count == 1, "terminal permanent failure must not resend");
+    Require(second.WasExisting && transport.Requests.Count == 1, "terminal permanent failure must not resend");
 }
 
 static async Task VerifyMissingTransportAsync()
 {
     var store = new InMemoryNotificationDeliveryStore();
     var dispatcher = new NotificationDispatcher(new RecordingRenderer(), store, [], new FixedTimeProvider(Now()));
-    await RequireThrowsMessageAsync(
-        () => dispatcher.DispatchAsync(Command(channel: NotificationChannel.Push)).AsTask(),
-        "NOTIFICATION_TRANSPORT_NOT_CONFIGURED");
+    await RequireThrowsMessageAsync(() => dispatcher.DispatchAsync(Command(channel: NotificationChannel.Push)).AsTask(), "NOTIFICATION_TRANSPORT_NOT_CONFIGURED");
     Require(store.Count == 0, "missing transport must fail before reservation");
 }
 
 static Task VerifyDuplicateTransportRegistrationAsync()
 {
     RequireThrows<ArgumentException>(
-        () =>
-        {
-            _ = new NotificationDispatcher(
-                new RecordingRenderer(),
-                new InMemoryNotificationDeliveryStore(),
-                [new ScriptedTransport(NotificationChannel.Email, Delivered()), new ScriptedTransport(NotificationChannel.Email, Delivered())],
-                new FixedTimeProvider(Now()));
-        },
+        () => _ = new NotificationDispatcher(
+            new RecordingRenderer(),
+            new InMemoryNotificationDeliveryStore(),
+            [new ScriptedTransport(NotificationChannel.Email, Delivered()), new ScriptedTransport(NotificationChannel.Email, Delivered())],
+            new FixedTimeProvider(Now())),
         "duplicate channel transports must be rejected");
     return Task.CompletedTask;
 }
@@ -228,40 +234,29 @@ static Task VerifyDuplicateTransportRegistrationAsync()
 static async Task VerifyUnknownChannelAsync()
 {
     var (dispatcher, store, _) = CreateDispatcher(new ScriptedTransport(NotificationChannel.Email, Delivered()));
-    await RequireThrowsAsync<ArgumentException>(
-        () => dispatcher.DispatchAsync(Command(channel: NotificationChannel.Unknown)).AsTask(),
-        "unknown channel must fail");
-    Require(store.Count == 0, "invalid channel must not reserve a delivery");
+    await RequireThrowsAsync<ArgumentException>(() => dispatcher.DispatchAsync(Command(channel: NotificationChannel.Unknown)).AsTask(), "unknown channel must fail");
+    Require(store.Count == 0, "invalid channel must not reserve");
 }
 
 static async Task VerifyLowRetryLimitAsync()
 {
     var (dispatcher, store, _) = CreateDispatcher(new ScriptedTransport(NotificationChannel.Email, Delivered()));
-    await RequireThrowsAsync<ArgumentOutOfRangeException>(
-        () => dispatcher.DispatchAsync(Command(maximumAttempts: 0)).AsTask(),
-        "zero retry limit must fail");
+    await RequireThrowsAsync<ArgumentOutOfRangeException>(() => dispatcher.DispatchAsync(Command(maximumAttempts: 0)).AsTask(), "zero retry limit must fail");
     Require(store.Count == 0, "invalid retry policy must not reserve");
 }
 
 static async Task VerifyHighRetryLimitAsync()
 {
     var (dispatcher, store, _) = CreateDispatcher(new ScriptedTransport(NotificationChannel.Email, Delivered()));
-    await RequireThrowsAsync<ArgumentOutOfRangeException>(
-        () => dispatcher.DispatchAsync(Command(maximumAttempts: 6)).AsTask(),
-        "retry limit above five must fail");
+    await RequireThrowsAsync<ArgumentOutOfRangeException>(() => dispatcher.DispatchAsync(Command(maximumAttempts: 6)).AsTask(), "retry limit above five must fail");
     Require(store.Count == 0, "invalid retry policy must not reserve");
 }
 
 static async Task VerifyDuplicateTemplateKeysAsync()
 {
     var (dispatcher, store, _) = CreateDispatcher(new ScriptedTransport(NotificationChannel.Email, Delivered()));
-    var command = Command() with
-    {
-        TemplateValues = [new("name", "A"), new("name", "B")],
-    };
-    await RequireThrowsAsync<ArgumentException>(
-        () => dispatcher.DispatchAsync(command).AsTask(),
-        "duplicate template keys must fail");
+    var command = Command() with { TemplateValues = [new("name", "A"), new("name", "B")] };
+    await RequireThrowsAsync<ArgumentException>(() => dispatcher.DispatchAsync(command).AsTask(), "duplicate template keys must fail");
     Require(store.Count == 0, "invalid template data must not reserve");
 }
 
@@ -271,8 +266,7 @@ static async Task VerifyRenderedBoundaryAsync()
     var transport = new ScriptedTransport(NotificationChannel.Email, Delivered());
     var store = new InMemoryNotificationDeliveryStore();
     var dispatcher = new NotificationDispatcher(renderer, store, [transport], new FixedTimeProvider(Now()));
-    var command = Command() with { TemplateValues = [new("private-template-value", "sanitized-before-transport")] };
-    await dispatcher.DispatchAsync(command);
+    await dispatcher.DispatchAsync(Command() with { TemplateValues = [new("private-template-value", "sanitized-before-transport")] });
     var request = transport.Requests.Single();
     Require(request.Message.Body == "rendered:security-alert-v1:1", "transport must receive renderer output");
     Require(request.GetType().GetProperty("TemplateValues") is null, "transport request must not expose raw template variables");
@@ -282,17 +276,13 @@ static async Task VerifyExceptionResumeAsync()
 {
     var transport = new ThrowsOnceTransport(NotificationChannel.Email);
     var (dispatcher, store, _) = CreateDispatcher(transport);
-    await RequireThrowsAsync<InvalidOperationException>(
-        () => dispatcher.DispatchAsync(Command(idempotencyKey: "resume")).AsTask(),
-        "opaque provider exception must propagate");
-    Require(store.Count == 1, "reservation must persist for safe same-key resume");
-
+    await RequireThrowsAsync<InvalidOperationException>(() => dispatcher.DispatchAsync(Command(idempotencyKey: "resume")).AsTask(), "opaque provider exception must propagate");
+    Require(store.Count == 1, "reservation must persist for safe resume");
     var result = await dispatcher.DispatchAsync(Command(idempotencyKey: "resume"));
-    Require(result.WasExisting, "resume must reuse existing delivery reservation");
-    Require(result.Delivery.State == NotificationDeliveryState.Delivered, "second dispatch must complete the original delivery");
+    Require(result.WasExisting && result.Delivery.State == NotificationDeliveryState.Delivered, "resume must complete existing delivery");
     Require(transport.Requests[0].DeliveryId == transport.Requests[1].DeliveryId, "resume must retain delivery ID");
-    Require(transport.Requests[0].ProviderIdempotencyKey == transport.Requests[1].ProviderIdempotencyKey, "resume must retain provider idempotency token");
-    Require(transport.Requests[1].AttemptNumber == 1, "unrecorded ambiguous exception must retry with same attempt ordinal and provider token");
+    Require(transport.Requests[0].ProviderIdempotencyKey == transport.Requests[1].ProviderIdempotencyKey, "resume must retain provider token");
+    Require(transport.Requests[1].AttemptNumber == 1, "ambiguous exception must retry same attempt ordinal");
 }
 
 static async Task VerifyCancellationAsync()
@@ -301,11 +291,8 @@ static async Task VerifyCancellationAsync()
     var (dispatcher, store, _) = CreateDispatcher(transport);
     using var source = new CancellationTokenSource();
     source.Cancel();
-    await RequireThrowsAsync<OperationCanceledException>(
-        () => dispatcher.DispatchAsync(Command(), source.Token).AsTask(),
-        "cancelled dispatch must fail");
-    Require(store.Count == 0, "pre-cancelled dispatch must not reserve");
-    Require(transport.Requests.Count == 0, "pre-cancelled dispatch must not call transport");
+    await RequireThrowsAsync<OperationCanceledException>(() => dispatcher.DispatchAsync(Command(), source.Token).AsTask(), "cancelled dispatch must fail");
+    Require(store.Count == 0 && transport.Requests.Count == 0, "pre-cancelled dispatch must not reserve or send");
 }
 
 static Task VerifyStoreContractAsync()
@@ -315,115 +302,48 @@ static Task VerifyStoreContractAsync()
             || method.Name.Contains("Remove", StringComparison.OrdinalIgnoreCase))
         .Select(method => method.Name)
         .ToArray();
-    Require(destructive.Length == 0, "delivery store contract must not expose destructive delete/remove methods");
+    Require(destructive.Length == 0, "delivery store contract must not expose destructive methods");
     return Task.CompletedTask;
 }
 
 static async Task VerifyEvidenceRetentionAsync()
 {
-    var transport = new ScriptedTransport(
-        NotificationChannel.Email,
-        new NotificationTransportResult(NotificationAttemptOutcome.Delivered, "PROVIDER_ACCEPTED", "provider-message-42"));
+    var transport = new ScriptedTransport(NotificationChannel.Email, new NotificationTransportResult(NotificationAttemptOutcome.Delivered, "PROVIDER_ACCEPTED", "provider-message-42"));
     var (dispatcher, _, _) = CreateDispatcher(transport);
-    var result = await dispatcher.DispatchAsync(Command());
-    var attempt = result.Delivery.Attempts.Single();
-    Require(attempt.ReasonCode == "PROVIDER_ACCEPTED", "reason code must be retained");
-    Require(attempt.ProviderReference == "provider-message-42", "provider reference must be retained");
+    var attempt = (await dispatcher.DispatchAsync(Command())).Delivery.Attempts.Single();
+    Require(attempt.ReasonCode == "PROVIDER_ACCEPTED" && attempt.ProviderReference == "provider-message-42", "provider evidence must be retained");
 }
 
-static (NotificationDispatcher Dispatcher, InMemoryNotificationDeliveryStore Store, RecordingRenderer Renderer) CreateDispatcher(INotificationTransport transport)
+static async Task RequireThrowsAsync<TException>(Func<Task> action, string message) where TException : Exception
 {
-    var store = new InMemoryNotificationDeliveryStore();
-    var renderer = new RecordingRenderer();
-    return (new NotificationDispatcher(renderer, store, [transport], new FixedTimeProvider(Now())), store, renderer);
-}
-
-static NotificationDispatchCommand Command(
-    string sourceReference = "notification-service",
-    string idempotencyKey = "notify-1",
-    NotificationChannel channel = NotificationChannel.Email,
-    string templateKey = "security-alert-v1",
-    int maximumAttempts = 3) =>
-    new(
-        SourceReference: sourceReference,
-        IdempotencyKey: idempotencyKey,
-        RecipientReference: "recipient-ref-123",
-        Channel: channel,
-        TemplateKey: templateKey,
-        TemplateValues: [new("display-name", "Customer")],
-        MaximumAttempts: maximumAttempts);
-
-static NotificationTransportResult Delivered(string? providerReference = "provider-message") =>
-    new(NotificationAttemptOutcome.Delivered, "PROVIDER_ACCEPTED", providerReference);
-
-static NotificationTransportResult Retryable() =>
-    new(NotificationAttemptOutcome.RetryableFailure, "PROVIDER_TEMPORARY_FAILURE");
-
-static NotificationTransportResult Permanent() =>
-    new(NotificationAttemptOutcome.PermanentFailure, "PROVIDER_PERMANENT_FAILURE");
-
-static DateTimeOffset Now() => new(2026, 9, 3, 13, 30, 0, TimeSpan.Zero);
-
-static async Task RequireThrowsAsync<TException>(Func<Task> action, string message)
-    where TException : Exception
-{
-    try
-    {
-        await action();
-    }
-    catch (TException)
-    {
-        return;
-    }
-
+    try { await action(); }
+    catch (TException) { return; }
     throw new InvalidOperationException(message);
 }
 
 static async Task RequireThrowsMessageAsync(Func<Task> action, string expectedMessage)
 {
-    try
-    {
-        await action();
-    }
-    catch (InvalidOperationException exception) when (exception.Message == expectedMessage)
-    {
-        return;
-    }
-
+    try { await action(); }
+    catch (InvalidOperationException exception) when (exception.Message == expectedMessage) { return; }
     throw new InvalidOperationException($"Expected failure {expectedMessage}.");
 }
 
-static void RequireThrows<TException>(Action action, string message)
-    where TException : Exception
+static void RequireThrows<TException>(Action action, string message) where TException : Exception
 {
-    try
-    {
-        action();
-    }
-    catch (TException)
-    {
-        return;
-    }
-
+    try { action(); }
+    catch (TException) { return; }
     throw new InvalidOperationException(message);
 }
 
 static void Require(bool condition, string message)
 {
-    if (!condition)
-    {
-        throw new InvalidOperationException(message);
-    }
+    if (!condition) { throw new InvalidOperationException(message); }
 }
 
 sealed class RecordingRenderer : INotificationTemplateRenderer
 {
     public int RenderCount { get; private set; }
-
-    public RenderedNotification Render(
-        string templateKey,
-        IReadOnlyCollection<NotificationTemplateValue> values,
-        NotificationChannel channel)
+    public RenderedNotification Render(string templateKey, IReadOnlyCollection<NotificationTemplateValue> values, NotificationChannel channel)
     {
         RenderCount++;
         return new RenderedNotification("text/plain", $"rendered:{templateKey}:{values.Count}", $"subject:{channel}");
@@ -433,28 +353,18 @@ sealed class RecordingRenderer : INotificationTemplateRenderer
 sealed class ScriptedTransport : INotificationTransport
 {
     private readonly Queue<NotificationTransportResult> _results;
-
     public ScriptedTransport(NotificationChannel channel, params NotificationTransportResult[] results)
     {
         Channel = channel;
         _results = new Queue<NotificationTransportResult>(results);
     }
-
     public NotificationChannel Channel { get; }
-
     public List<NotificationTransportRequest> Requests { get; } = [];
-
-    public ValueTask<NotificationTransportResult> SendAsync(
-        NotificationTransportRequest request,
-        CancellationToken cancellationToken = default)
+    public ValueTask<NotificationTransportResult> SendAsync(NotificationTransportRequest request, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Requests.Add(request);
-        if (_results.Count == 0)
-        {
-            throw new InvalidOperationException("SCRIPTED_TRANSPORT_RESULT_MISSING");
-        }
-
+        if (_results.Count == 0) { throw new InvalidOperationException("SCRIPTED_TRANSPORT_RESULT_MISSING"); }
         return ValueTask.FromResult(_results.Dequeue());
     }
 }
@@ -462,14 +372,9 @@ sealed class ScriptedTransport : INotificationTransport
 sealed class ThrowsOnceTransport(NotificationChannel channel) : INotificationTransport
 {
     private bool _hasThrown;
-
     public NotificationChannel Channel { get; } = channel;
-
     public List<NotificationTransportRequest> Requests { get; } = [];
-
-    public ValueTask<NotificationTransportResult> SendAsync(
-        NotificationTransportRequest request,
-        CancellationToken cancellationToken = default)
+    public ValueTask<NotificationTransportResult> SendAsync(NotificationTransportRequest request, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Requests.Add(request);
@@ -478,7 +383,11 @@ sealed class ThrowsOnceTransport(NotificationChannel channel) : INotificationTra
             _hasThrown = true;
             throw new InvalidOperationException("PROVIDER_UNKNOWN_DELIVERY_STATE");
         }
-
-        return ValueTask.FromResult(Delivered("provider-after-resume"));
+        return ValueTask.FromResult(new NotificationTransportResult(NotificationAttemptOutcome.Delivered, "PROVIDER_ACCEPTED", "provider-after-resume"));
     }
+}
+
+sealed class FixedTimeProvider(DateTimeOffset utcNow) : TimeProvider
+{
+    public override DateTimeOffset GetUtcNow() => utcNow;
 }
