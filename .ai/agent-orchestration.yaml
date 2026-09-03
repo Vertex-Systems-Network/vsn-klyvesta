@@ -202,6 +202,10 @@ modules:
     owner_role: database-integration-agent
     canonical_branch: parallel/database-integration
     allowed_paths: ['**/Migrations/**', '**/*ModelSnapshot.cs', docs/DOMAIN_DATABASE_MODEL_V1.md]
+  platform-ci:
+    owner_role: platform-agent
+    canonical_branch: parallel/platform-ci
+    allowed_paths: [.ai/agent-orchestration.yaml, .ai/parallel-branch-registry.yaml, tools/Klyvesta.PlatformVerifier/**, docs/PLATFORM_CI_AUDIT.md]
 
 instruction_drift:
   required_every_task_start: true
