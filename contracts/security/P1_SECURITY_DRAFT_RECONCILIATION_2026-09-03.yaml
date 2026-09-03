@@ -1,0 +1,92 @@
+version: 1
+project: klyvesta
+scope: p1-security-draft-reconciliation
+status: verification_only
+accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+live_money_authorized: false
+main_promotion_authorized: false
+
+policy:
+  legacy_security_drafts_are_inputs_not_baseline: true
+  copy_legacy_src_into_acceptance_lane: false
+  security_acceptance_may_modify_src: false
+  direct_legacy_migration_integration: false
+  final_migration_owner: database-integration
+  independent_review_required: true
+  staging_integration_only_until_main_governance_permits: true
+
+legacy_stack:
+  - slice: F3
+    pr: 13
+    branch: security/f3-auth-withdrawal-baseline
+    validated_head: b5e59f93948975cad8e065ff8c813386dabe58d1
+    technical_status: technically_accepted_legacy_draft
+    disposition: do_not_merge_directly
+    notes:
+      - authorization semantics overlap later identity-authorization work and must not create a second authority path
+      - treat the draft as adversarial/security evidence only until Supervisor reconciliation
+
+  - slice: F4
+    pr: 15
+    branch: security/f4-session-device-state
+    validated_head: 050a3a0d6e731da466f3faa2713698773203ee06
+    technical_status: technically_accepted_legacy_draft
+    disposition: do_not_merge_directly
+    notes:
+      - authoritative session/device concepts remain security evidence
+      - no production IdP or live session authority is granted
+
+  - slice: F5
+    pr: 17
+    branch: security/f5-session-device-persistence
+    validated_head: e8043c10e9b93049d9bd5124d74a64ab487f4c29
+    technical_status: technically_accepted_legacy_draft
+    disposition: do_not_merge_directly
+    notes:
+      - legacy EF migration and model-snapshot changes cannot bypass database-integration ownership
+      - persistence evidence may inform a future integrated schema change only after accepted model changes
+
+  - slice: F6
+    pr: 19
+    branch: security/f6-beneficiary-withdrawal-lifecycle
+    validated_head: 10feb9ab43929cbac1e8fc31c0642a6197db3ef4
+    technical_status: technically_accepted_legacy_draft
+    disposition: do_not_merge_directly
+    notes:
+      - withdrawal lifecycle is not live funds movement authority
+      - legacy migration changes cannot bypass database-integration ownership
+
+current_parallel_boundaries:
+  identity_authorization:
+    pr: 84
+    branch: parallel/identity-authorization
+    rule: identity_allow_is_not_final_transaction_authority
+  ledger:
+    pr: 85
+    branch: parallel/ledger
+    rule: financial_integrity_still_requires_independent_security_acceptance
+  notifications:
+    pr: 87
+    branch: parallel/notifications
+    rule: notification_delivery_never_grants_financial_authority
+  observability:
+    pr: 88
+    branch: parallel/observability
+    rule: secret_safe_telemetry_required
+  performance_resilience:
+    pr: 86
+    branch: parallel/performance-resilience
+    rule: resilience_evidence_never_overrides_security_denial
+  platform_ci:
+    pr: 89
+    branch: parallel/platform-ci
+    rule: platform_controls_never_grant_product_or_live_authority
+
+remaining_release_security_gates:
+  - independent_review_of_each_submitted_exact_head
+  - zero_unresolved_security_review_threads
+  - supervisor_ownership_and_dependency_freshness
+  - canonical_security_acceptance_catalogue_evidence
+  - database_migration_integration_for_any_accepted_schema_change
+  - protected_main_or_explicit_governance_permission_before_main_promotion
+  - no_live_money_or_production_authority_from_p1_paper_shadow_acceptance
