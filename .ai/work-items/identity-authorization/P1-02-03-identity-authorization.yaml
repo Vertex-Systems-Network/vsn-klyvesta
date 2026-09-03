@@ -3,11 +3,8 @@ module: identity-authorization
 branch: parallel/identity-authorization
 agent_slot: agent-identity-authorization
 owner_role: module-agent
-assigned_agent: ChatGPT-Identity-01
-start_status: ASSIGNED
-started_at: "2026-09-03T00:16:49Z"
-base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
-accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -20,7 +17,7 @@ allowed_paths:
 shared_or_forbidden_paths:
   - .github/workflows/**
   - src/Klyvesta.Api/**
-status: ACTIVE
+status: READY
 blockers: []
 acceptance_evidence:
   required:
@@ -28,6 +25,6 @@ acceptance_evidence:
     - authorization-deny-tests
     - privilege-boundary-tests
     - security-review
-instruction_drift_check: performed-no-canonical-instruction-change-required
+instruction_drift_check: pending
 submission_pr: null
 integration_baseline_sha: null
