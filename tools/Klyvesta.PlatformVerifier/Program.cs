@@ -9,7 +9,7 @@ Check("PLAT-001", "dotnet verifier auto-discovery exists", () =>
     var workflow = Read(".github/workflows/dotnet-foundation.yml");
     Require(workflow.Contains("find tools -type f -name '*Verifier.csproj'", StringComparison.Ordinal),
         "dotnet-foundation must discover verifier projects by convention");
-    Require(Regex.Matches(workflow, "find tools -type f -name '\\*Verifier\\.csproj'").Count >= 4,
+    Require(Regex.Count(workflow, "find tools -type f -name '\\*Verifier\\.csproj'") >= 4,
         "restore/format/build/run stages must all use verifier discovery rather than a hard-coded project list");
 });
 
@@ -87,20 +87,13 @@ Check("PLAT-005", "pull_request_target is not used", () =>
 Check("PLAT-006", "shared engineering paths remain centrally owned", () =>
 {
     var manifest = Read(".ai/agent-orchestration.yaml");
-    foreach (var required in new[]
-             {
-                 ".github/workflows/**",
-                 "Directory.Build.props",
-                 "Directory.Packages.props",
-                 ".ai/agent-orchestration.yaml",
-                 ".ai/parallel-branch-registry.yaml",
-                 ".ai/integration-baseline.yaml",
-                 "contracts/**"
-             })
-    {
-        Require(manifest.Contains(required, StringComparison.Ordinal),
-            $"shared-path ownership is missing {required}");
-    }
+    Require(manifest.Contains(".github/workflows/**", StringComparison.Ordinal), "shared-path ownership is missing .github/workflows/**");
+    Require(manifest.Contains("Directory.Build.props", StringComparison.Ordinal), "shared-path ownership is missing Directory.Build.props");
+    Require(manifest.Contains("Directory.Packages.props", StringComparison.Ordinal), "shared-path ownership is missing Directory.Packages.props");
+    Require(manifest.Contains(".ai/agent-orchestration.yaml", StringComparison.Ordinal), "shared-path ownership is missing .ai/agent-orchestration.yaml");
+    Require(manifest.Contains(".ai/parallel-branch-registry.yaml", StringComparison.Ordinal), "shared-path ownership is missing .ai/parallel-branch-registry.yaml");
+    Require(manifest.Contains(".ai/integration-baseline.yaml", StringComparison.Ordinal), "shared-path ownership is missing .ai/integration-baseline.yaml");
+    Require(manifest.Contains("contracts/**", StringComparison.Ordinal), "shared-path ownership is missing contracts/**");
 });
 
 Check("PLAT-007", "platform lane is explicitly registered", () =>
@@ -117,11 +110,10 @@ Check("PLAT-007", "platform lane is explicitly registered", () =>
 Check("PLAT-008", "platform work item forbids product-source and migration writes", () =>
 {
     var workItem = Read(".ai/work-items/platform-ci/M-AGENT-09-platform-ci.yaml");
-    foreach (var forbidden in new[] { "src/**", "**/Migrations/**", "**/*ModelSnapshot.cs", "contracts/**" })
-    {
-        Require(workItem.Contains(forbidden, StringComparison.Ordinal),
-            $"platform work item must explicitly forbid {forbidden}");
-    }
+    Require(workItem.Contains("src/**", StringComparison.Ordinal), "platform work item must explicitly forbid src/**");
+    Require(workItem.Contains("**/Migrations/**", StringComparison.Ordinal), "platform work item must explicitly forbid **/Migrations/**");
+    Require(workItem.Contains("**/*ModelSnapshot.cs", StringComparison.Ordinal), "platform work item must explicitly forbid **/*ModelSnapshot.cs");
+    Require(workItem.Contains("contracts/**", StringComparison.Ordinal), "platform work item must explicitly forbid contracts/**");
 });
 
 Check("PLAT-009", "parallel capacity policy is not weakened", () =>
