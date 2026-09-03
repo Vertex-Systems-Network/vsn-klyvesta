@@ -61,7 +61,7 @@ public sealed record OperationalEvent
         OperationalEventLevel level,
         CorrelationContext correlation,
         DateTimeOffset occurredAt,
-        ReadOnlyDictionary<string, string> fields)
+        IReadOnlyDictionary<string, string> fields)
     {
         Name = ValidateLabel(name, nameof(name));
         Category = ValidateLabel(category, nameof(category));
@@ -85,7 +85,7 @@ public sealed record OperationalEvent
 
     public DateTimeOffset OccurredAt { get; }
 
-    public ReadOnlyDictionary<string, string> Fields { get; }
+    public IReadOnlyDictionary<string, string> Fields { get; }
 
     private static string ValidateLabel(string value, string parameterName)
     {
