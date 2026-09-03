@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
@@ -76,7 +77,7 @@ public sealed class NotificationDispatcher
 {
     private readonly INotificationTemplateRenderer _renderer;
     private readonly INotificationDeliveryStore _store;
-    private readonly IReadOnlyDictionary<NotificationChannel, INotificationTransport> _transports;
+    private readonly Dictionary<NotificationChannel, INotificationTransport> _transports;
     private readonly TimeProvider _timeProvider;
 
     public NotificationDispatcher(
@@ -190,7 +191,7 @@ public sealed class NotificationDispatcher
         throw new InvalidOperationException("NOTIFICATION_RETRY_STATE_INVALID");
     }
 
-    private static IReadOnlyCollection<NotificationTemplateValue> ValidateAndNormalize(NotificationDispatchCommand command)
+    private static ReadOnlyCollection<NotificationTemplateValue> ValidateAndNormalize(NotificationDispatchCommand command)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(command.SourceReference);
         ArgumentException.ThrowIfNullOrWhiteSpace(command.IdempotencyKey);
