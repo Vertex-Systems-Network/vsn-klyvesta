@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "status": "initial-contract-not-production-measurement",
+  "latencyTargetsMilliseconds": {
+    "authApiReadP95": 300,
+    "portfolioCachedReadP95": 500,
+    "orderIntentValidationP95": 150,
+    "deterministicRiskGateP95": 50,
+    "internalEventPropagationP95": 500,
+    "liveMarketUiUpdate": 2000,
+    "streamReconnectRecovery": 5000,
+    "aiExplanation": 5000
+  },
+  "availabilityTargetsPercent": {
+    "readDashboard": 99.95,
+    "tradingCommand": 99.9
+  },
+  "measurementRules": {
+    "externalBrokerLatencyExcludedUnlessExplicit": true,
+    "llmMustNotBlockExecutionStateCorrectness": true,
+    "financialTruthMustFailClosedUnderDependencyFailure": true,
+    "productionReadinessRequiresRealEnvironmentEvidence": true
+  }
+}

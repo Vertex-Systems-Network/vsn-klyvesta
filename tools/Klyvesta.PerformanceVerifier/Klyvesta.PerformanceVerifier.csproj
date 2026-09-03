@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.PerformanceVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.PerformanceVerifier</AssemblyName>
+  </PropertyGroup>
+</Project>
