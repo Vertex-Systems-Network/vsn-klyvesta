@@ -3,8 +3,11 @@ module: security-acceptance
 branch: parallel/security-acceptance
 agent_slot: agent-security-acceptance
 owner_role: verification-security-agent
-base_sha: 9ee91496e9e606a050de14142cf225640a94406c
-accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+assigned_agent: ChatGPT-Security-01
+start_status: ASSIGNED
+started_at: "2026-09-03T17:35:00Z"
+base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -16,14 +19,14 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - src/**
-status: BLOCKED
-blockers:
-  - EXISTING_SECURITY_DRAFTS_RECONCILIATION_REQUIRED
-  - MAIN_PROTECTION_GOVERNANCE_UNRESOLVED
+status: ACTIVE
+blockers: []
 acceptance_evidence:
   required:
     - reconcile-existing-security-prs
     - governance-decision
-instruction_drift_check: pending
+    - independent-security-verifier
+    - no-src-write-evidence
+instruction_drift_check: completed-existing-f3-f6-drafts-are-implementation-inputs-only-main-protection-remains-promotion-gate
 submission_pr: null
 integration_baseline_sha: null
