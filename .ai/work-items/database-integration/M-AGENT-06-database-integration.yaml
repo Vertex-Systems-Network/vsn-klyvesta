@@ -4,7 +4,7 @@ branch: parallel/database-integration
 agent_slot: agent-database-integration
 owner_role: database-integration-agent
 assigned_agent: ChatGPT-Database-01
-start_status: ASSIGNED
+start_status: WAITING_ON_INTEGRATION
 started_at: "2026-09-03T14:57:00Z"
 base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
 accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
@@ -18,7 +18,7 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - module-source-without-explicit-grant
-status: ACTIVE
+status: RESERVED
 blockers:
   - wait-for-accepted-integrated-model-change-before-generating-next-migration
 acceptance_evidence:
