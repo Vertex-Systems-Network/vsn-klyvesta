@@ -125,15 +125,15 @@ public sealed class DeterministicIdentityAuthorizationEvaluator : IIdentityAutho
             return Deny(request, principal.PrincipalId, "RESOURCE_NOT_FOUND_OR_FORBIDDEN");
         }
 
+        if (rule.RequiresNormalRecovery && context.RecoveryState != RecoveryState.Normal)
+        {
+            return Deny(request, principal.PrincipalId, "SECURITY_HOLD");
+        }
+
         if (rule.RequiresNormalAccount &&
             context.EffectiveAccountSecurityState != AccountSecurityState.Normal)
         {
             return Deny(request, principal.PrincipalId, "ACCOUNT_RESTRICTED");
-        }
-
-        if (rule.RequiresNormalRecovery && context.RecoveryState != RecoveryState.Normal)
-        {
-            return Deny(request, principal.PrincipalId, "SECURITY_HOLD");
         }
 
         if (!DeviceRequirementSatisfied(rule.DeviceRequirement, context.DeviceTrustState))
