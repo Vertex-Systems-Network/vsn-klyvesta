@@ -3,8 +3,11 @@ module: ledger
 branch: parallel/ledger
 agent_slot: agent-ledger
 owner_role: module-agent
-base_sha: 9ee91496e9e606a050de14142cf225640a94406c
-accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+assigned_agent: ChatGPT-Ledger-01
+start_status: ASSIGNED
+started_at: "2026-09-03T13:08:00Z"
+base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -19,7 +22,7 @@ shared_or_forbidden_paths:
   - src/Klyvesta.Api/**
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
-status: READY
+status: ACTIVE
 blockers: []
 acceptance_evidence:
   required:
