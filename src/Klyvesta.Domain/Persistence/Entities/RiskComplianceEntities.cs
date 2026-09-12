@@ -79,6 +79,10 @@ public class RiskPolicyEntity : IObserved
     /// </summary>
     public string CreatedBy { get; set; } = "system";
     public string UpdatedBy { get; set; } = "system";
+
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
@@ -153,6 +157,9 @@ public class RiskDecisionEntity : IObserved
 /// </summary>
 public class CompliancePolicyEntity : IObserved
 {
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
@@ -204,6 +211,10 @@ public class CompliancePolicyEntity : IObserved
     
     public string CreatedBy { get; set; } = "system";
     public string UpdatedBy { get; set; } = "system";
+
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
@@ -215,6 +226,9 @@ public class CompliancePolicyEntity : IObserved
 /// </summary>
 public class MandateEntity : IObserved
 {
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
@@ -317,6 +331,9 @@ public class MandateEntity : IObserved
 /// </summary>
 public class ComplianceDecisionEntity : IObserved
 {
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>

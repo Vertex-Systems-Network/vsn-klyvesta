@@ -427,6 +427,3 @@ public interface IPortfolioService
         decimal? price,
         CancellationToken cancellationToken = default);
 }
-
-// Re-export sector/industry types from Risk namespace for convenience
-using Klyvesta.Domain.Risk;

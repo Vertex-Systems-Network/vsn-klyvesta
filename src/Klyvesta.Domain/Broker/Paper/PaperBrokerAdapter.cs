@@ -1,5 +1,6 @@
 namespace Klyvesta.Domain.Broker.Paper;
 
+using System.Collections.Concurrent;
 using Klyvesta.Domain.Common;
 
 /// <summary>
