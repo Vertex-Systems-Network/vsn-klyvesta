@@ -10,63 +10,33 @@ build/
 *.pdb
 *.so
 *.dylib
-*.class
+*.nupkg
 
 # Dependencies
 packages/
 node_modules/
-.nuget/
-.nyc_output/
-coverage/
+vendor/
 
 # IDE files
 .vs/
+.vscode/
 .idea/
 *.userprefs
-*.suo
-*.user
-*.aps
-*.pch
-*.vspscc
-*.vssscc
-*_i.c
-*_p.c
-*.ncb
-*.opendb
-*.opensdf
-*.sdf
-*.cachefile
-*.VC.db
-*.VC.VC.opendb
-
-# Logs
-*.log
-*.csproj.user
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Environment specific
-.env
-.env.local
-*.env.*
-
-# Test coverage
-coverage/
-*.cover
-*.gcda
-*.gcno
-htmlcov/
 
 # Temporary files
 *.tmp
 *.temp
-*.bak
-*.backup
+*.log
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Checkpoints
+.ai/checkpoints/
 ```
