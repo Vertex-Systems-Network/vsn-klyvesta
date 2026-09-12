@@ -1,0 +1,4 @@
+/workspace/src/Klyvesta.Domain/obj/Debug/net8.0/Klyvesta.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/Klyvesta.Domain/obj/Debug/net8.0/Klyvesta.Domain.AssemblyInfoInputs.cache
+/workspace/src/Klyvesta.Domain/obj/Debug/net8.0/Klyvesta.Domain.AssemblyInfo.cs
+/workspace/src/Klyvesta.Domain/obj/Debug/net8.0/Klyvesta.Domain.csproj.CoreCompileInputs.cache

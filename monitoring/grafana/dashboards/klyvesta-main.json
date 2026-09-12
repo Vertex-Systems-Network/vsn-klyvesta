@@ -1,0 +1,88 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "klyvesta-main",
+    "title": "Klyvesta Trading Platform - Main Dashboard",
+    "tags": ["klyvesta", "trading"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "stat",
+        "title": "System Status",
+        "targets": [
+          {
+            "expr": "up{job=\"klyvesta-api\"}",
+            "legendFormat": "API Status"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"options": {"0": {"text": "DOWN"}, "1": {"text": "UP"}}, "type": "value"}
+            ],
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "green", "value": 1}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "graph",
+        "title": "Request Rate (req/sec)",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"klyvesta-api\"}[1m])",
+            "legendFormat": "{{method}} {{endpoint}}"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "type": "graph",
+        "title": "Order Submission Rate",
+        "targets": [
+          {
+            "expr": "rate(klyvesta_orders_submitted_total[1m])",
+            "legendFormat": "Orders/sec"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "type": "graph",
+        "title": "Risk Rejections",
+        "targets": [
+          {
+            "expr": "rate(klyvesta_risk_rejections_total[1m])",
+            "legendFormat": "Rejections/sec"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
+        "type": "table",
+        "title": "Active Alerts",
+        "targets": [
+          {
+            "expr": "ALERTS{alertstate=\"firing\"}",
+            "format": "table"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}
