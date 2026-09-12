@@ -1,96 +1,64 @@
 ```
-# Build artifacts
+# Build outputs
 bin/
 obj/
 out/
-dist/
-build/
+
+# Dependencies
+packages/
+node_modules/
+vendor/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test and coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compiled files
 *.dll
 *.exe
 *.pdb
 *.so
 *.dylib
-*.jar
-*.war
 *.class
+*.pyc
 
-# Dependencies
-node_modules/
-packages/
-vendor/
+# Distribution / packaging
+dist/
+build/
+*.msi
+*.deb
+*.rpm
 
-# IDE
-.vscode/
-.idea/
-*.sln
-*.csproj.user
-*.userprefs
-*.pidb
-*.user
-*.aps
-*.ncb
-*.opendb
-*.opensdf
-*.sdf
-*.cachefile
-*.VC.db
-*.VC.VC.opendb
+# Compression
+*.zip
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.7z
+*.rar
+*.gz
 
-# OS
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Icon?
-desktop.ini
-
-# Logs
-*.log
-**/logs/
-
-# Environment
-.env
-.env.local
-.env.*
-!.env.example
-
-# Test coverage
-coverage/
-*.gcov
-*.lcov
-*.profdata
-
-# Package manager
+# Cache
+__pycache__/
+*.cache
 .nuget/
-packages/
-**/package-lock.json
-**/yarn.lock
-**/pnpm-lock.yaml
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Local configuration
-local.properties
-appsettings.Local.json
-config/local.json
-
-# Temporary folders
-temp/
-tmp/
-**/temp/
-**/tmp/
-
-# User-specific files
-*.user
-*.userosscache
-*.suo
-*.userprefs
-*.useroptions
-
-# Generated files
-Generated/
-**/Generated/
 ```

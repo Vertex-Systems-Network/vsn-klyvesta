@@ -4,7 +4,7 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
 
 ## Completed
 
-### Domain Foundation (Klyvesta.Domain) - 12 files, ~3000 lines
+### Domain Foundation (Klyvesta.Domain) - 17 files, ~4500 lines
 
 #### Common Types (`Common/`)
 - ✅ `DomainTypes.cs` - Core enums and interfaces
@@ -144,16 +144,65 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
   - `InsufficientCashException` for cash constraint violations
   - **Key feature**: Projection from ledger + executions, not authoritative truth
 
+#### Persistence Layer (`Persistence/`) - NEW
+- ✅ `KlyvestaDbContext.cs` - EF Core DbContext with financial precision requirements
+  - UUID primary keys (UUIDv7 compatible)
+  - Exact numeric/decimal fields for money (no floating point)
+  - UTC timestamps only (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+  - Optimistic concurrency via RowVersion
+  - Append-only patterns for ledger entities
+  - Automatic timestamp updates on SaveChanges
+  
+- ✅ `Entities/LedgerEntities.cs` - PostgreSQL entities for double-entry ledger
+  - `LedgerAccountEntity` with AccountType enum (Asset, Liability, Equity, Revenue, Expense)
+  - `JournalEntity` with JournalState (Draft → Committed → Reversed)
+  - `PostingEntity` with EntryType (Debit/Credit)
+  - Check constraint: debits must equal credits
+  - Soft delete pattern with DeletedAtUtc
+  - Hierarchical chart of accounts (self-referencing)
+  
+- ✅ `Entities/OrderEntities.cs` - PostgreSQL entities for order management
+  - `OrderIntentEntity` with full lifecycle state tracking
+  - Risk/compliance check flags with policy version references
+  - Fill tracking (quantity, average price, executed value)
+  - Idempotency key and correlation ID support
+  - `OrderExecutionEntity` for individual fill records
+  - Settlement date tracking (T+2)
+  - Ledger posting reference for audit linkage
+  
+- ✅ `Entities/RiskComplianceEntities.cs` - PostgreSQL entities for risk/compliance
+  - `RiskPolicyEntity` with versioned thresholds (basis points for percentages)
+    - Concentration limits, liquidity requirements, order limits
+    - Prohibited behaviors (leverage, margin, shorting, derivatives)
+    - Kill switch control
+  - `RiskDecisionEntity` for audit trail (every decision persisted)
+  - `CompliancePolicyEntity` with regulatory feature gates
+  - `MandateEntity` for customer auto-trading authorization
+    - Acceptance tracking (method, IP, device fingerprint)
+    - Allowed/prohibited instruments and sectors
+    - Risk parameters and drawdown response policy
+  - `ComplianceDecisionEntity` with manual review workflow
+
+- ✅ `EntityConfigurations/LedgerEntityTypeConfigurations.cs` - EF Core model configurations
+  - Schema separation (ledger.*)
+  - Unique indexes on identifiers
+  - Check constraints for financial invariants
+  - Optimistic concurrency configuration
+  - Composite indexes for query performance
+  - Cascade/restrict delete behavior rules
+
 ## Remaining Work (P1 Backlog)
 
-### Epic P1-01 — PostgreSQL / persistence baseline
+### Epic P1-01 — PostgreSQL / persistence baseline ⭐ PARTIALLY COMPLETE
+- [x] EF Core entities for ledger, orders, risk/compliance
+- [x] DbContext with financial precision configuration
+- [x] Entity configurations with indexes and constraints
+- [x] Package references (Npgsql.EntityFrameworkCore.PostgreSQL)
 - [ ] PostgreSQL 18 development/test setup
-- [ ] Schema/migration tooling
-- [ ] UUIDv7 identifier generation
-- [ ] Decimal/numeric field mappings
-- [ ] UTC timestamp handling
-- [ ] Optimistic concurrency controls
+- [ ] Schema/migration tooling (EF Core Migrations or DbUp)
+- [ ] UUIDv7 identifier generation (database-side or application-side)
 - [ ] Migration rollback procedures
+- [ ] Integration tests with test database isolation
 
 ### Epic P1-02 — Identity/security abstraction
 - [ ] Provider-neutral identity boundary
@@ -170,9 +219,12 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
 - [ ] Package tier vs security role separation
 - [ ] Staff privilege negative tests
 
-### Epic P1-04 — Immutable double-entry ledger (implementation)
-- [ ] Entity Framework entities for accounts/journals/postings
-- [ ] Reservation/hold system
+### Epic P1-04 — Immutable double-entry ledger (implementation) ⭐ PARTIALLY COMPLETE
+- [x] Domain model with Journal commit validation
+- [x] EF Core entities for accounts/journals/postings
+- [x] Check constraint: debits == credits
+- [x] Entity configurations with proper indexes
+- [ ] Reservation/hold system implementation
 - [ ] Reversal/compensating entry logic
 - [ ] Idempotent command processing
 - [ ] Property-based invariant tests
@@ -199,11 +251,15 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
 - [x] Kill switch implementation
 - [x] Idempotency handling
 
-### Epic P1-07 — OMS state machine (implementation)
-- [ ] OrderIntent persistence layer
+### Epic P1-07 — OMS state machine (implementation) ⭐ PARTIALLY COMPLETE
+- [x] OrderIntent entity with full lifecycle tracking
+- [x] OrderExecution entity for fill records
+- [x] Risk/compliance check flags with policy versions
+- [x] Idempotency key and correlation ID support
+- [ ] OrderIntent service implementation
 - [ ] Approval/rejection workflow
 - [ ] Broker-order state synchronization
-- [ ] Execution/fill de-duplication
+- [ ] Execution/fill de-duplication logic
 - [ ] Cash/securities reservation system
 - [ ] Cancel race handling
 - [ ] UNKNOWN recovery workflow
@@ -217,22 +273,30 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
 - [ ] Mismatch classification (critical/warning/info)
 - [ ] Freeze/escalation behavior on critical mismatch
 
-### Epic P1-09 — Deterministic Risk Governor (implementation)
-- [ ] Risk policy storage/versioning
+### Epic P1-09 — Deterministic Risk Governor (implementation) ⭐ PARTIALLY COMPLETE
+- [x] RiskPolicy entity with versioned thresholds
+- [x] RiskDecision entity for audit trail
+- [x] Domain model with concentration/liquidity/order limits
+- [x] Prohibited behaviors (leverage, margin, shorting, derivatives)
+- [x] Kill switch flag in policy
+- [ ] RiskGovernor service implementation
 - [ ] Concentration check implementations
 - [ ] Liquidity eligibility checks
 - [ ] Stale-data rejection logic
-- [ ] Order value/quantity limit checks
 - [ ] Portfolio exposure calculations
 - [ ] Turnover/order rate tracking
-- [ ] Kill switch implementation
 - [ ] Policy version persistence with decisions
 
-### Epic P1-10 — Compliance Gate (implementation)
-- [ ] Compliance policy storage/versioning
+### Epic P1-10 — Compliance Gate (implementation) ⭐ PARTIALLY COMPLETE
+- [x] CompliancePolicy entity with regulatory feature gates
+- [x] MandateEntity for customer auto-trading authorization
+- [x] ComplianceDecision entity with audit trail
+- [x] Acceptance tracking (method, IP, device fingerprint)
+- [x] Allowed/prohibited instruments and sectors
+- [x] Manual review workflow fields
+- [ ] ComplianceGate service implementation
 - [ ] Account status checks
 - [ ] Regulatory feature gate evaluation
-- [ ] Restricted/suspended state handling
 - [ ] Mandate requirement enforcement
 - [ ] Instrument restriction checks
 - [ ] Manual hold/review state management
@@ -297,12 +361,14 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
 
 Immediate priorities for continuation:
 
-1. **Persistence Layer** - Implement PostgreSQL/Entity Framework baseline (Epic P1-01)
-2. **Ledger Implementation** - Entity Framework entities with property-based invariant tests (Epic P1-04)
-3. **OMS State Machine** - OrderIntent persistence and state synchronization (Epic P1-07)
+1. **Database Migration Tooling** - Set up EF Core Migrations or DbUp for schema deployment (Epic P1-01)
+2. **Ledger Service Implementation** - ILedgerService with commit/reversal logic (Epic P1-04)
+3. **OrderIntent Service** - State machine implementation with broker sync (Epic P1-07)
 4. **Authorization Engine** - Decision engine with BOLA/BFLA tests (Epic P1-03)
-5. **Risk Governor Implementation** - Policy storage and deterministic checks (Epic P1-09)
-6. **Compliance Gate Implementation** - Mandate enforcement and regulatory gates (Epic P1-10)
+5. **Risk Governor Service** - Deterministic policy evaluation (Epic P1-09)
+6. **Compliance Gate Service** - Mandate enforcement and regulatory gates (Epic P1-10)
+7. **Integration Tests** - Test database isolation, migration rollback testing
+8. **Property-Based Testing** - FsCheck tests for financial invariants (ledger balance, idempotency)
 
 ## Architecture Notes
 

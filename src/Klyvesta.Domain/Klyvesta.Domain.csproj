@@ -3,4 +3,10 @@
     <RootNamespace>Klyvesta.Domain</RootNamespace>
     <AssemblyName>Klyvesta.Domain</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Entity Framework / PostgreSQL -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+  </ItemGroup>
 </Project>
