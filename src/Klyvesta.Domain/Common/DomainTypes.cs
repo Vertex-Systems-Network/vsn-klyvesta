@@ -5,8 +5,15 @@ namespace Klyvesta.Domain.Common;
 /// </summary>
 public interface IEntity
 {
-    Guid Id { get; }
     DateTime CreatedAtUtc { get; }
+}
+
+/// <summary>
+/// Generic interface for domain entities with strongly-typed IDs.
+/// </summary>
+public interface IEntity<TId> : IEntity
+{
+    TId Id { get; }
 }
 
 /// <summary>

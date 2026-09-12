@@ -66,6 +66,8 @@ public class LedgerAccountEntity : IObserved
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
     
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     /// <summary>
     /// Navigation: historical journal entries
     /// </summary>
