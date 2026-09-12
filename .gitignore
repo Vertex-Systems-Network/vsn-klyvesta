@@ -1,17 +1,16 @@
-```
-# Build artifacts
-bin/
-obj/
-*.dll
-*.exe
-*.pdb
-*.so
-*.dylib
-*.jar
+```gitignore
+# Checkpoints and test artifacts
+.ai/checkpoints/
+
+# Build outputs
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
 
 # Dependencies
-node_modules/
 packages/
+node_modules/
 
 # Logs
 *.log
@@ -24,21 +23,36 @@ packages/
 # Editors
 .vscode/
 .idea/
-*.swp
-*.swo
+*.userprefs
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
 
-# Test and coverage
+# Testing
+**/TestResults/
+*.testsettings
+*.trx
+*.coverage
 coverage/
 htmlcov/
-*.coverage
-.test*
+.nyc_output/
+istanbul/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
 
-# Distribution / packaging
-dist/
+# Build tools
+**/target/
+.gradle/
 build/
-*.egg-info/
+dist/
+out/
 ```
