@@ -24,7 +24,7 @@ public sealed class OrderIntent : IEntity
     /// Reference to AI proposal if this was AI-generated (Guarded Auto or Assisted mode).
     /// Null for manual orders.
     /// </summary>
-    public ProposalId? AiProposalId { get; init; }
+    public AiProposalId? AiAiProposalId { get; init; }
     
     /// <summary>
     /// Reference to mandate if this is a Guarded Auto order.

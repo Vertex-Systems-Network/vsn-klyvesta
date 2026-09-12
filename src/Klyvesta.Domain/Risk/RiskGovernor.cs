@@ -105,7 +105,7 @@ public readonly record struct RiskEvaluationContext(
     MarketDataSnapshot? MarketData,
     InvestmentMode InvestmentMode,
     MandateId? MandateId,
-    ProposalId? AiProposalId
+    AiProposalId? AiAiProposalId
 );
 
 /// <summary>

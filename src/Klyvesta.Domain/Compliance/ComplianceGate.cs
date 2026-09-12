@@ -94,7 +94,7 @@ public readonly record struct ComplianceEvaluationContext(
     ComplianceStatus AccountComplianceStatus,
     InvestmentMode InvestmentMode,
     MandateId? MandateId,
-    ProposalId? AiProposalId,
+    AiProposalId? AiAiProposalId,
     bool IsFirstOrder,
     DateTime? LastOrderDateUtc,
     string? InstrumentCategory

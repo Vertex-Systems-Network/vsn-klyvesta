@@ -8,7 +8,7 @@ using Klyvesta.Domain.Common;
 /// </summary>
 public sealed class AiProposal : IEntity
 {
-    public ProposalId Id { get; init; } = ProposalId.New();
+    public AiProposalId Id { get; init; } = AiProposalId.New();
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     /// <summary>
@@ -212,7 +212,7 @@ public interface IAiProposalService
     /// <summary>
     /// Gets proposal by ID.
     /// </summary>
-    Task<AiProposal?> GetProposalAsync(ProposalId proposalId, CancellationToken cancellationToken = default);
+    Task<AiProposal?> GetProposalAsync(AiProposalId proposalId, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Validates proposal schema without creating it.
@@ -222,7 +222,7 @@ public interface IAiProposalService
     /// <summary>
     /// Records customer/investor decision on a proposal.
     /// </summary>
-    Task RecordDecisionAsync(ProposalId proposalId, bool accepted, string? reason, CancellationToken cancellationToken = default);
+    Task RecordDecisionAsync(AiProposalId proposalId, bool accepted, string? reason, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

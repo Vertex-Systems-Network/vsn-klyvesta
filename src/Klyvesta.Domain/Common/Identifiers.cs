@@ -93,9 +93,27 @@ public readonly record struct MandateId(Guid Value)
 /// <summary>
 /// Strongly-typed identifier for AI proposals/recommendations.
 /// </summary>
-public readonly record struct ProposalId(Guid Value)
+public readonly record struct AiProposalId(Guid Value)
 {
-    public static ProposalId New() => new(Guid.NewGuid());
+    public static AiProposalId New() => new(Guid.NewGuid());
+    public override string ToString() => Value.ToString("N");
+}
+
+/// <summary>
+/// Strongly-typed identifier for risk decisions.
+/// </summary>
+public readonly record struct RiskDecisionId(Guid Value)
+{
+    public static RiskDecisionId New() => new(Guid.NewGuid());
+    public override string ToString() => Value.ToString("N");
+}
+
+/// <summary>
+/// Strongly-typed identifier for compliance decisions.
+/// </summary>
+public readonly record struct ComplianceDecisionId(Guid Value)
+{
+    public static ComplianceDecisionId New() => new(Guid.NewGuid());
     public override string ToString() => Value.ToString("N");
 }
 

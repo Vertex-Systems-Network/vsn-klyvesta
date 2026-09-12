@@ -112,3 +112,56 @@ public enum InvestmentMode
     AiAssisted = 1,
     GuardedAuto = 2
 }
+
+/// <summary>
+/// Risk decision outcome from the Risk Governor.
+/// </summary>
+public enum RiskDecisionType
+{
+    Pass = 0,
+    Fail = 1,
+    Deny = 2
+}
+
+/// <summary>
+/// Compliance decision outcome from the Compliance Gate.
+/// </summary>
+public enum ComplianceDecisionType
+{
+    Pass = 0,
+    ReviewRequired = 1,
+    Deny = 2
+}
+
+/// <summary>
+/// Order type for execution instructions.
+/// </summary>
+public enum OrderType
+{
+    Market = 0,
+    Limit = 1,
+    StopLoss = 2,
+    StopLimit = 3
+}
+
+/// <summary>
+/// Risk level classification for policies and decisions.
+/// </summary>
+public enum RiskLevel
+{
+    Low = 0,
+    Moderate = 1,
+    High = 2,
+    Critical = 3
+}
+
+/// <summary>
+/// Policy for responding to drawdown events.
+/// </summary>
+public enum DrawdownResponsePolicy
+{
+    NotifyOnly = 0,
+    ReducePositions = 1,
+    HaltTrading = 2,
+    LiquidateAll = 3
+}
