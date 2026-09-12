@@ -1,31 +1,17 @@
 ```
 # Build artifacts
-**/bin/
-**/obj/
+bin/
+obj/
+*.dll
+*.pdb
 
 # Dependencies
 packages/
-**/*.nupkg
-**/*.snupkg
 
 # Logs
 *.log
 
-# Environment
-.env
-.env.local
-*.env.*
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Test results
-**/TestResults/
+# Temporary files
+*.tmp
+*.temp
 ```
