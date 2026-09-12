@@ -14,23 +14,7 @@ obj/
 # Dependencies
 packages/
 node_modules/
-.nuget/
-packages/
-
-# IDE files
-.vs/
-.idea/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# OS files
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Icon?
-desktop.ini
+vendor/
 
 # Logs
 *.log
@@ -40,11 +24,65 @@ desktop.ini
 .env.local
 *.env.*
 
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
 # Test and coverage
 coverage/
-*.coverage
 htmlcov/
-.coverage.*
-.nyc_output
-istanbul/
+.coverage
+*.gcda
+*.gcno
+
+# Distribution / packaging
+dist/
+build/
+*.msi
+*.deb
+*.rpm
+
+# Compiled Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Java
+target/
+.gradle/
+*.class
+*.jar
+*.war
+
+# C#
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.userprefs
+
+# Temporary folders
+tmp/
+temp/
+*.tmp
+
+# Cache
+.cache/
+.mypy_cache/
+.pytest_cache/
+.npm
+.yarn/cache
+
+# Local configuration
+local.properties
+.settings/
 ```

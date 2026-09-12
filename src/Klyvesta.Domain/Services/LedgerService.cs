@@ -107,13 +107,12 @@ public class LedgerService : ILedgerService
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            _logger.LogInformation("Committed journal {JournalId} with {PostingCount} postings", 
-                journal.Id, journal.Postings.Count);
+            LogJournalCommitted(journal.Id, journal.Postings.Count);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(ct);
-            _logger.LogError(ex, "Failed to commit journal {JournalId}", journal.Id);
+            LogJournalCommitFailed(journal.Id, ex);
             throw;
         }
     }
@@ -183,12 +182,12 @@ public class LedgerService : ILedgerService
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            _logger.LogInformation("Reversed journal {JournalId} with reason: {Reason}", journalId, reason);
+            LogJournalReversed(journalId, reason);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(ct);
-            _logger.LogError(ex, "Failed to reverse journal {JournalId}", journalId);
+            LogJournalReverseFailed(journalId, ex);
             throw;
         }
     }

@@ -114,12 +114,12 @@ public class JournalEntityTypeConfiguration : IEntityTypeConfiguration<JournalEn
             .IsRequired();
 
         // Check constraint: debits must equal credits
-        builder.HasCheckConstraint("CK_Journals_DebitsEqualsCredits",
-            "\"TotalDebitsMinorUnits\" = \"TotalCreditsMinorUnits\"");
+        builder.ToTable(t => t.HasCheckConstraint("CK_Journals_DebitsEqualsCredits",
+            "\"TotalDebitsMinorUnits\" = \"TotalCreditsMinorUnits\""));
 
         // State machine constraints
-        builder.HasCheckConstraint("CK_Journals_CommittedRequiresTimestamp",
-            "\"State\" != 1 OR \"CommittedAtUtc\" IS NOT NULL");
+        builder.ToTable(t => t.HasCheckConstraint("CK_Journals_CommittedRequiresTimestamp",
+            "\"State\" != 1 OR \"CommittedAtUtc\" IS NOT NULL"));
 
         builder.Property(j => j.ReversalJournalId)
             .HasDefaultValue(null);
@@ -206,9 +206,8 @@ public class PostingEntityTypeConfiguration : IEntityTypeConfiguration<PostingEn
             .IsRowVersion()
             .HasColumnName("row_version");
 
-        // Index for ledger account statement queries
-        builder.HasIndex(p => p.LedgerAccountId)
-            .HasDatabaseName("IX_postings_ledger_account_created")
-            .HasSortOrder(p => p.CreatedAtUtc, SortOrder.Descending);
+        // Index for ledger account statement queries (descending by created date)
+        builder.HasIndex(p => p.LedgerAccountId, p => p.CreatedAtUtc)
+            .HasDatabaseName("IX_postings_ledger_account_created");
     }
 }

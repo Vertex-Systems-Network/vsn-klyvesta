@@ -57,17 +57,17 @@ public class RiskPolicyEntity : IObserved
     public int MaxTurnoverAnnualBps { get; set; } = 30000; // 300% annual turnover
     
     // Prohibited behaviors (boolean flags)
-    public bool AllowLeverage { get; set; } = false;
-    public bool AllowMargin { get; set; } = false;
-    public bool AllowShorting { get; set; } = false;
-    public bool AllowDerivatives { get; set; } = false;
-    public bool AllowPennyStocks { get; set; } = false;
+    public bool AllowLeverage { get; set; }
+    public bool AllowMargin { get; set; }
+    public bool AllowShorting { get; set; }
+    public bool AllowDerivatives { get; set; }
+    public bool AllowPennyStocks { get; set; }
     
     // Market data freshness (seconds)
     public int MaxDataAgeSeconds { get; set; } = 300; // 5 minutes
     
     // Kill switch
-    public bool KillSwitchEnabled { get; set; } = false;
+    public bool KillSwitchEnabled { get; set; }
     
     /// <summary>
     /// JSON blob for complex rules not covered by scalar fields
@@ -185,10 +185,10 @@ public class CompliancePolicyEntity : IObserved
     public DateTime? EffectiveToUtc { get; set; }
     
     // Regulatory feature gates
-    public bool AllowAutoTrading { get; set; } = false;
+    public bool AllowAutoTrading { get; set; }
     public bool AllowMarketDataAccess { get; set; } = true;
-    public bool AllowOptionsTrading { get; set; } = false;
-    public bool AllowCryptoTrading { get; set; } = false;
+    public bool AllowOptionsTrading { get; set; }
+    public bool AllowCryptoTrading { get; set; }
     
     // Account state requirements
     public bool RequireVerifiedIdentity { get; set; } = true;
@@ -202,7 +202,7 @@ public class CompliancePolicyEntity : IObserved
     public string? ProhibitedSectors { get; set; }
     
     // Manual review settings
-    public bool ManualReviewRequired { get; set; } = false;
+    public bool ManualReviewRequired { get; set; }
     public int? ManualReviewThresholdMinorUnits { get; set; }
     
     /// <summary>

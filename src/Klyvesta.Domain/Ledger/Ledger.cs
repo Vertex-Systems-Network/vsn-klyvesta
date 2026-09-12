@@ -67,10 +67,26 @@ public sealed class Journal : IEntity
     /// </summary>
     public required string IdempotencyKey { get; init; }
     
+    /// <summary>
+    /// Optional external reference for cross-system correlation.
+    /// </summary>
+    public string? ExternalReference { get; init; }
+    
+    /// <summary>
+    /// Currency of this journal (must match all postings).
+    /// </summary>
+    public required string Currency { get; init; }
+    
     private readonly List<Posting> _postings = new();
     public IReadOnlyList<Posting> Postings => _postings.AsReadOnly();
     
     public bool IsCommitted { get; private set; }
+    
+    /// <summary>
+    /// Cached totals computed on commit.
+    /// </summary>
+    public decimal TotalDebits { get; private set; }
+    public decimal TotalCredits { get; private set; }
     
     public void AddPosting(Posting posting)
     {
@@ -85,12 +101,12 @@ public sealed class Journal : IEntity
             throw new InvalidOperationException($"Journal {Id} is already committed");
         
         // Validate balance: sum of debits must equal sum of credits
-        var totalDebits = _postings.Where(p => p.IsDebit).Sum(p => p.Amount.Amount);
-        var totalCredits = _postings.Where(p => p.IsCredit).Sum(p => p.Amount.Amount);
+        TotalDebits = _postings.Where(p => p.IsDebit).Sum(p => p.Amount.Amount);
+        TotalCredits = _postings.Where(p => p.IsCredit).Sum(p => p.Amount.Amount);
         
-        if (totalDebits != totalCredits)
+        if (TotalDebits != TotalCredits)
             throw new InvalidOperationException(
-                $"Journal {Id} is not balanced. Debits: {totalDebits}, Credits: {totalCredits}");
+                $"Journal {Id} is not balanced. Debits: {TotalDebits}, Credits: {TotalCredits}");
         
         if (_postings.Count == 0)
             throw new InvalidOperationException($"Journal {Id} has no postings");
@@ -102,8 +118,9 @@ public sealed class Journal : IEntity
 /// <summary>
 /// A single debit or credit posting within a journal.
 /// </summary>
-public sealed class Posting
+public sealed class Posting : IEntity<Guid>
 {
+    public Guid Id { get; init; } = Guid.NewGuid();
     public required LedgerAccountId AccountId { get; init; }
     public required Money Amount { get; init; }
     public required bool IsDebit { get; init; }
@@ -117,6 +134,21 @@ public sealed class Posting
     /// </summary>
     public Guid? SubLedgerReferenceId { get; init; }
     public string? SubLedgerType { get; init; }
+    
+    /// <summary>
+    /// Entry type (debit/credit) for clarity.
+    /// </summary>
+    public string EntryType => IsDebit ? "Debit" : "Credit";
+    
+    /// <summary>
+    /// Currency of the posting amount.
+    /// </summary>
+    public string Currency => Amount.Currency;
+    
+    /// <summary>
+    /// Timestamp when this posting was created.
+    /// </summary>
+    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
 }
 
 /// <summary>

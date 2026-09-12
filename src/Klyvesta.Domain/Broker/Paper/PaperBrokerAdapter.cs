@@ -107,11 +107,14 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
     private readonly ConcurrentQueue<(DateTime Utc, string Event)> _eventLog = new();
     private readonly SemaphoreSlim _lock = new(1, 1);
     private bool _disposed;
-    private int _requestCounter;
     
     // Scenario control flags (can be modified during testing)
-    public bool KillSwitch { get; set; } = false;
-    public bool ForceReconciliationMismatch { get; set; } = false;
+    public bool KillSwitch { get; set; }
+    public bool ForceReconciliationMismatch { get; set; }
+    
+    // Static readonly arrays for CA1861 compliance
+    private static readonly string[] SupportedOrderTypesArray = ["MARKET", "LIMIT"];
+    private static readonly string[] SupportedTimeInForceArray = ["DAY", "GTC", "IOC"];
     
     public PaperBrokerAdapter(PaperBrokerConfig? config = null)
     {
@@ -150,8 +153,8 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
             BrokerCode: _config.BrokerCode,
             BrokerVersion: _config.BrokerVersion,
             SupportsAccountOpening: false,
-            SupportedOrderTypes: new[] { "MARKET", "LIMIT" },
-            SupportedTimeInForce: new[] { "DAY", "GTC", "IOC" },
+            SupportedOrderTypes: SupportedOrderTypesArray,
+            SupportedTimeInForce: SupportedTimeInForceArray,
             SupportsModifyOrder: false,
             SupportsCancelOrder: true,
             SupportsIdempotencyKey: true,
@@ -853,10 +856,7 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
     
     private void ThrowIfDisposed()
     {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(nameof(PaperBrokerAdapter));
-        }
+        ObjectDisposedException.ThrowIf(_disposed, nameof(PaperBrokerAdapter));
     }
     
     #endregion

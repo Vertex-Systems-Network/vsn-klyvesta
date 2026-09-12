@@ -52,10 +52,10 @@ public readonly record struct Money(decimal Amount, string Currency)
 /// <summary>
 /// Quantity of shares/units. Uses decimal to support fractional shares where permitted.
 /// </summary>
-public readonly record struct Quantity(decimal Value)
+public readonly record struct Quantity(decimal Value, string Currency = "PKR")
 {
-    public static Quantity Zero => new(0m);
-    public static Quantity One => new(1m);
+    public static Quantity Zero(string currency = "PKR") => new(0m, currency);
+    public static Quantity One(string currency = "PKR") => new(1m, currency);
     
     public bool IsPositive => Value > 0;
     public bool IsNegative => Value < 0;
@@ -89,7 +89,7 @@ public readonly record struct Price(decimal Value, string Currency)
     
     public Money ToMoney(Quantity quantity)
     {
-        if (Currency != quantity.IsZero ? "PKR" : Currency) // Simplified - real impl needs currency awareness
+        if (!string.Equals(Currency, quantity.Currency, StringComparison.Ordinal))
             throw new InvalidOperationException("Currency mismatch in price-to-money conversion");
         return new Money(Value * quantity.Value, Currency);
     }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Klyvesta.Domain.Persistence.Entities;
+using Klyvesta.Domain.Common;
 
 namespace Klyvesta.Domain.Persistence;
 

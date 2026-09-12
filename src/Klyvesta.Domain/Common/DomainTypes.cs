@@ -30,6 +30,16 @@ public interface IObserved
     /// When Klyvesta observed/recorded this event.
     /// </summary>
     DateTime ObservedAtUtc { get; }
+    
+    /// <summary>
+    /// When this entity was created (for Added entities).
+    /// </summary>
+    DateTime CreatedAtUtc { get; }
+    
+    /// <summary>
+    /// When this entity was last updated (for Modified entities).
+    /// </summary>
+    DateTime UpdatedAtUtc { get; set; }
 }
 
 /// <summary>
