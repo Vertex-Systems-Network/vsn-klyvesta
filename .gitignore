@@ -1,47 +1,96 @@
 ```
-# Compiled and build artifacts
-*.dll
-*.exe
-*.pdb
-*.obj
-*.lib
-*.so
-*.dylib
-*.class
-*.pyc
-__pycache__/
-
-# Dependencies
-node_modules/
-venv/
-.venv/
-.env
-.env.local
-.env.*
-
-# Build outputs
+# Build artifacts
 bin/
 obj/
 out/
-target/
 dist/
 build/
+*.dll
+*.exe
+*.pdb
+*.so
+*.dylib
+*.jar
+*.war
+*.class
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
+# Dependencies
+node_modules/
+packages/
+vendor/
 
-# Editors
+# IDE
 .vscode/
 .idea/
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
+*.sln
+*.csproj.user
+*.userprefs
+*.pidb
+*.user
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
 
 # OS
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# Logs
+*.log
+**/logs/
+
+# Environment
+.env
+.env.local
+.env.*
+!.env.example
+
+# Test coverage
+coverage/
+*.gcov
+*.lcov
+*.profdata
+
+# Package manager
+.nuget/
+packages/
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Local configuration
+local.properties
+appsettings.Local.json
+config/local.json
+
+# Temporary folders
+temp/
+tmp/
+**/temp/
+**/tmp/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.useroptions
+
+# Generated files
+Generated/
+**/Generated/
 ```
