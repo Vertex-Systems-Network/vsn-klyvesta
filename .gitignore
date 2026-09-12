@@ -1,40 +1,38 @@
-# .NET
+```
+# Build artifacts
 bin/
 obj/
-artifacts/
-TestResults/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-.vs/
+*.dll
+*.exe
+*.pdb
+*.so
+*.dylib
+*.nupkg
 
-# IDE/editor
-.idea/
-.vscode/
-*.swp
-*.tmp
+# Dependencies
+packages/
+node_modules/
+vendor/
 
-# OS
+# Logs
+*.log
+
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Local configuration and secrets
-.env
-.env.*
-!.env.example
-appsettings.Local.json
-appsettings.*.Local.json
-secrets.json
-*.pfx
-*.p12
-*.pem
-*.key
-*.crt
-*.cer
-*.jks
-*.keystore
+# IDE
+.vs/
+.idea/
+*.userprefs
 
-# Logs/dumps
-*.log
-*.dmp
+# Test results
+TestResults/
+
+# User-specific files
+*.user
+*.suo
+
+# Configuration
+appsettings.*.json
+```

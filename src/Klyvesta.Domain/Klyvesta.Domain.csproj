@@ -2,5 +2,8 @@
   <PropertyGroup>
     <RootNamespace>Klyvesta.Domain</RootNamespace>
     <AssemblyName>Klyvesta.Domain</AssemblyName>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 </Project>
