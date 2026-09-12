@@ -9,7 +9,7 @@ using Klyvesta.Domain.Common;
 public sealed class Position : IEntity
 {
     public PositionId Id { get; init; } = PositionId.New();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public required AccountId AccountId { get; init; }
     public required InstrumentId InstrumentId { get; init; }
@@ -179,7 +179,7 @@ public sealed class Position : IEntity
 public sealed class CashAccount : IEntity
 {
     public Guid Id { get; init; } = Guid.NewGuid();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public required AccountId AccountId { get; init; }
     public required string Currency { get; init; }

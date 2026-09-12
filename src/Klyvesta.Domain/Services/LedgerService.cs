@@ -56,7 +56,7 @@ public class LedgerService : ILedgerService
         try
         {
             // Validate journal balance
-            if (journal.TotalDebits.Amount != journal.TotalCredits.Amount)
+            if (journal.TotalDebits != journal.TotalCredits)
             {
                 throw new InvalidOperationException(
                     $"Journal imbalance: Debits={journal.TotalDebits}, Credits={journal.TotalCredits}");
@@ -70,8 +70,8 @@ public class LedgerService : ILedgerService
                 ExternalReference = journal.ExternalReference,
                 IdempotencyKey = journal.IdempotencyKey,
                 Description = journal.Description,
-                TotalDebitsMinorUnits = (long)journal.TotalDebits.Amount.MinorUnits,
-                TotalCreditsMinorUnits = (long)journal.TotalCredits.Amount.MinorUnits,
+                TotalDebitsMinorUnits = (long)(journal.TotalDebits * 100),
+                TotalCreditsMinorUnits = (long)(journal.TotalCredits * 100),
                 Currency = journal.Currency,
                 State = JournalState.Committed,
                 CommittedAtUtc = DateTime.UtcNow,
@@ -89,11 +89,11 @@ public class LedgerService : ILedgerService
                 var postingEntity = new PostingEntity
                 {
                     Id = Guid.NewGuid(),
-                    PostingId = posting.Id.Value.ToString("D"),
+                    PostingId = posting.Id.ToString("D"),
                     JournalId = entity.Id,
-                    LedgerAccountId = posting.LedgerAccountId.Value,
-                    EntryType = posting.EntryType == EntryType.Debit ? EntryType.Debit : EntryType.Credit,
-                    AmountMinorUnits = (long)posting.Amount.MinorUnits,
+                    LedgerAccountId = Guid.Parse(posting.AccountId.Value.ToString("D")),
+                    EntryType = posting.IsDebit ? EntryType.Debit : EntryType.Credit,
+                    AmountMinorUnits = (long)(posting.Amount.Amount * 100),
                     Currency = posting.Currency,
                     Description = posting.Description,
                     CreatedAtUtc = DateTime.UtcNow,
@@ -107,12 +107,13 @@ public class LedgerService : ILedgerService
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            LogJournalCommitted(journal.Id, journal.Postings.Count);
+            _logger.LogInformation("Journal {JournalId} committed with {PostingCount} postings", 
+                journal.Id, journal.Postings.Count);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(ct);
-            LogJournalCommitFailed(journal.Id, ex);
+            _logger.LogError(ex, "Failed to commit journal {JournalId}", journal.Id);
             throw;
         }
     }
@@ -182,12 +183,12 @@ public class LedgerService : ILedgerService
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            LogJournalReversed(journalId, reason);
+            _logger.LogInformation("Journal {JournalId} reversed: {Reason}", journalId, reason);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(ct);
-            LogJournalReverseFailed(journalId, ex);
+            _logger.LogError(ex, "Failed to reverse journal {JournalId}", journalId);
             throw;
         }
     }
@@ -198,7 +199,7 @@ public class LedgerService : ILedgerService
             .FirstOrDefaultAsync(a => a.LedgerAccountId == accountId.Value.ToString("D") && a.Currency == currency, ct);
 
         if (accountEntity == null)
-            return new Money(0, currency);
+            return new Money(0m, currency);
 
         // Calculate balance from postings
         var debitTotal = await _dbContext.Postings
@@ -216,7 +217,7 @@ public class LedgerService : ILedgerService
             _ => debitTotal - creditTotal
         };
 
-        return new Money((decimal)netMinorUnits, currency);
+        return new Money(netMinorUnits / 100m, currency);
     }
 
     public async Task<Journal?> GetJournalByIdAsync(JournalId journalId, CancellationToken ct = default)
@@ -228,14 +229,41 @@ public class LedgerService : ILedgerService
         if (entity == null)
             return null;
 
-        // Map back to domain model
-        return new Journal(
-            new JournalId(Guid.Parse(entity.JournalId)),
-            entity.Description,
-            entity.Currency,
-            entity.ExternalReference,
-            entity.IdempotencyKey,
-            entity.CreatedAtUtc
-        );
+        // Map back to domain model - note: this is a simplified reconstruction
+        // A full implementation would reconstruct the complete Journal with postings
+        var journal = new Journal
+        {
+            Id = journalId,
+            Description = entity.Description,
+            EffectiveDateUtc = entity.CreatedAtUtc,
+            SourceType = "LedgerService",
+            SourceId = entity.Id,
+            IdempotencyKey = entity.IdempotencyKey,
+            ExternalReference = entity.ExternalReference,
+            Currency = entity.Currency
+        };
+
+        // Reconstruct postings
+        foreach (var postingEntity in entity.Postings)
+        {
+            var posting = new Posting
+            {
+                Id = Guid.Parse(postingEntity.PostingId),
+                AccountId = new LedgerAccountId(Guid.Parse(postingEntity.LedgerAccountId.ToString("D"))),
+                Amount = new Money(postingEntity.AmountMinorUnits / 100m, postingEntity.Currency),
+                IsDebit = postingEntity.EntryType == EntryType.Debit,
+                Description = postingEntity.Description,
+                CreatedAtUtc = postingEntity.CreatedAtUtc
+            };
+            journal.AddPosting(posting);
+        }
+
+        // Mark as committed if applicable
+        if (entity.State == JournalState.Committed)
+        {
+            journal.Commit();
+        }
+
+        return journal;
     }
 }

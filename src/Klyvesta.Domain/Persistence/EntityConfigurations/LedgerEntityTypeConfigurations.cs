@@ -206,8 +206,8 @@ public class PostingEntityTypeConfiguration : IEntityTypeConfiguration<PostingEn
             .IsRowVersion()
             .HasColumnName("row_version");
 
-        // Index for ledger account statement queries (descending by created date)
-        builder.HasIndex(p => p.LedgerAccountId, p => p.CreatedAtUtc)
+        // Index for ledger account statement queries (by account and date)
+        builder.HasIndex(p => new { p.LedgerAccountId, p.CreatedAtUtc })
             .HasDatabaseName("IX_postings_ledger_account_created");
     }
 }

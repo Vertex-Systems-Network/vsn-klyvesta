@@ -10,79 +10,76 @@ obj/
 *.jar
 *.war
 *.class
+*.o
+*.obj
+*.out
 
 # Dependencies
 packages/
 node_modules/
-vendor/
+.nuget/
+.npm/
+.yarn/
 
 # Logs
 *.log
 
-# Environment
+# Environment specific
 .env
 .env.local
 *.env.*
-
-# Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
 
 # OS generated files
 .DS_Store
 Thumbs.db
 
+# IDE specific
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
 # Test and coverage
 coverage/
 htmlcov/
 .coverage
-*.gcda
-*.gcno
+*.cover
+coverage.xml
 
 # Distribution / packaging
 dist/
 build/
-*.msi
-*.deb
-*.rpm
+*.zip
+*.tar.gz
+*.dmg
+*.nupkg
 
-# Compiled Python
-__pycache__/
+# Compiled source
 *.pyc
 *.pyo
-*.pyd
-
-# Java
-target/
-.gradle/
+__pycache__/
 *.class
-*.jar
-*.war
-
-# C#
-bin/
-obj/
+*.o
+*.so
 *.dll
 *.exe
 *.pdb
-*.userprefs
 
-# Temporary folders
-tmp/
-temp/
+# Configuration specific to runtime
+appsettings.Production.json
+appsettings.Development.json
+
+# Temporary files
 *.tmp
+*.temp
+*.bak
+*.backup
 
-# Cache
+# Cache directories
 .cache/
 .mypy_cache/
 .pytest_cache/
-.npm
-.yarn/cache
-
-# Local configuration
-local.properties
-.settings/
+.gradle/
+target/
 ```

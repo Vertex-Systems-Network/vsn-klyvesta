@@ -21,7 +21,7 @@ public enum LedgerAccountType
 public sealed class LedgerAccount : IEntity
 {
     public LedgerAccountId Id { get; init; } = LedgerAccountId.New();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public required string AccountCode { get; init; }
     public required string Name { get; init; }
@@ -51,7 +51,7 @@ public sealed class LedgerAccount : IEntity
 public sealed class Journal : IEntity
 {
     public JournalId Id { get; init; } = JournalId.New();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public required string Description { get; init; }
     public DateTime EffectiveDateUtc { get; init; }
@@ -148,7 +148,7 @@ public sealed class Posting : IEntity<Guid>
     /// <summary>
     /// Timestamp when this posting was created.
     /// </summary>
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 }
 
 /// <summary>

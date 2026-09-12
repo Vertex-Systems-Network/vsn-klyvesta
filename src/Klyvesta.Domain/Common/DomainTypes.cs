@@ -5,7 +5,7 @@ namespace Klyvesta.Domain.Common;
 /// </summary>
 public interface IEntity
 {
-    DateTime CreatedAtUtc { get; }
+    DateTime CreatedAtUtc { get; set; }
 }
 
 /// <summary>
@@ -34,7 +34,7 @@ public interface IObserved
     /// <summary>
     /// When this entity was created (for Added entities).
     /// </summary>
-    DateTime CreatedAtUtc { get; }
+    DateTime CreatedAtUtc { get; set; }
     
     /// <summary>
     /// When this entity was last updated (for Modified entities).

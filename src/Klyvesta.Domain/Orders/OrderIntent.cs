@@ -10,7 +10,7 @@ using Klyvesta.Domain.Common;
 public sealed class OrderIntent : IEntity
 {
     public OrderIntentId Id { get; init; } = OrderIntentId.New();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public required AccountId AccountId { get; init; }
     public required InstrumentId InstrumentId { get; init; }

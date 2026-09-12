@@ -9,7 +9,7 @@ using Klyvesta.Domain.Common;
 public sealed class AiProposal : IEntity
 {
     public ProposalId Id { get; init; } = ProposalId.New();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     /// <summary>
     /// Reference to the customer/account this proposal is for.

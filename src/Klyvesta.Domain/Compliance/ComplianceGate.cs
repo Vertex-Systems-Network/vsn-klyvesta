@@ -107,7 +107,7 @@ public readonly record struct ComplianceEvaluationContext(
 public sealed class Mandate : IEntity
 {
     public MandateId Id { get; init; } = MandateId.New();
-    public DateTime CreatedAtUtc { get; init; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     
     public required AccountId AccountId { get; init; }
     public required CustomerId CustomerId { get; init; }
