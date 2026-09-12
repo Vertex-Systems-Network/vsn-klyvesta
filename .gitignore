@@ -5,14 +5,32 @@ obj/
 *.dll
 *.exe
 *.pdb
-*.nupkg
-**/Debug/
-**/Release/
+*.so
+*.dylib
+*.jar
+*.war
+*.class
 
 # Dependencies
 packages/
 node_modules/
-*.userprefs
+.nuget/
+packages/
+
+# IDE files
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
 
 # Logs
 *.log
@@ -22,18 +40,11 @@ node_modules/
 .env.local
 *.env.*
 
-# Editors
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Test coverage
+# Test and coverage
 coverage/
 *.coverage
 htmlcov/
+.coverage.*
+.nyc_output
+istanbul/
 ```

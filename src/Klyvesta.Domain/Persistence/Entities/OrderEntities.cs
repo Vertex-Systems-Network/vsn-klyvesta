@@ -161,6 +161,9 @@ public class OrderIntentEntity : IObserved
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
     
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
+    
     /// <summary>
     /// Navigation: execution records (fills)
     /// </summary>
@@ -249,4 +252,7 @@ public class OrderExecutionEntity : IObserved
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
+    
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
 }

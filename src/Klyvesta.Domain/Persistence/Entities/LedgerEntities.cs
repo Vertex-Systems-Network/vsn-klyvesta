@@ -141,6 +141,9 @@ public class JournalEntity : IObserved
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
     
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
+    
     /// <summary>
     /// Foreign key to ledger account (optional, for categorization)
     /// </summary>
@@ -201,6 +204,9 @@ public class PostingEntity : IObserved
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
+    
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
 }
 
 /// <summary>

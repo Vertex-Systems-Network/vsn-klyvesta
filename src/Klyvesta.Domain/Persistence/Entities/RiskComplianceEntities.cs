@@ -80,13 +80,13 @@ public class RiskPolicyEntity : IObserved
     public string CreatedBy { get; set; } = "system";
     public string UpdatedBy { get; set; } = "system";
 
-    // IObserved implementation
-    public DateTime? ExternalTimestampUtc { get; set; }
-    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
-    
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
+    
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
 }
 
 /// <summary>
@@ -150,6 +150,10 @@ public class RiskDecisionEntity : IObserved
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
+    
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
 }
 
 /// <summary>
@@ -157,9 +161,6 @@ public class RiskDecisionEntity : IObserved
 /// </summary>
 public class CompliancePolicyEntity : IObserved
 {
-    // IObserved implementation
-    public DateTime? ExternalTimestampUtc { get; set; }
-    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
@@ -226,9 +227,6 @@ public class CompliancePolicyEntity : IObserved
 /// </summary>
 public class MandateEntity : IObserved
 {
-    // IObserved implementation
-    public DateTime? ExternalTimestampUtc { get; set; }
-    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
@@ -320,6 +318,10 @@ public class MandateEntity : IObserved
     public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
     public DateTime? DeletedAtUtc { get; set; }
     
+    // IObserved implementation
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
+    
     /// <summary>
     /// Navigation: compliance decisions referencing this mandate
     /// </summary>
@@ -329,11 +331,8 @@ public class MandateEntity : IObserved
 /// <summary>
 /// PostgreSQL entity for ComplianceDecision audit trail.
 /// </summary>
-public class ComplianceDecisionEntity : IObserved
+public partial class ComplianceDecisionEntity : IObserved
 {
-    // IObserved implementation
-    public DateTime? ExternalTimestampUtc { get; set; }
-    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
     public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
@@ -412,4 +411,11 @@ public class ComplianceDecisionEntity : IObserved
     /// Navigation: back to mandate
     /// </summary>
     public virtual MandateEntity? Mandate { get; set; }
+}
+
+// IObserved implementation for ComplianceDecisionEntity (added post-hoc)
+public partial class ComplianceDecisionEntity
+{
+    public DateTime? ExternalTimestampUtc { get; set; }
+    public DateTime ObservedAtUtc { get; set; } = DateTime.UtcNow;
 }

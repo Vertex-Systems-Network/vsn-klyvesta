@@ -1,3 +1,4 @@
+using Klyvesta.Domain.Common;
 using Klyvesta.Domain.Ledger;
 using Klyvesta.Domain.Persistence;
 using Klyvesta.Domain.Persistence.Entities;
@@ -30,13 +31,13 @@ public interface ILedgerService
     Task<Money> GetAccountBalanceAsync(LedgerAccountId accountId, string currency, CancellationToken ct = default);
 
     /// <summary>
-    /// Retrieves a journal by ID including its postings.
+    /// Gets a journal by its ID.
     /// </summary>
     Task<Journal?> GetJournalByIdAsync(JournalId journalId, CancellationToken ct = default);
 }
 
 /// <summary>
-/// Concrete implementation of ILedgerService using Entity Framework Core.
+/// EF Core implementation of ILedgerService.
 /// </summary>
 public class LedgerService : ILedgerService
 {
@@ -51,53 +52,63 @@ public class LedgerService : ILedgerService
 
     public async Task CommitJournalAsync(Journal journal, CancellationToken ct = default)
     {
-        // Invariant Check: Debits must equal Credits
-        if (!journal.IsCommitted)
-        {
-            journal.Commit(); // This validates balance internally
-        }
-
         await using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
         try
         {
-            // Calculate totals in minor units (cents)
-            var totalDebits = journal.Postings.Where(p => p.IsDebit).Sum(p => p.Amount.Amount);
-            var totalCredits = journal.Postings.Where(p => !p.IsDebit).Sum(p => p.Amount.Amount);
-            var currency = journal.Postings.First().Amount.Currency;
+            // Validate journal balance
+            if (journal.TotalDebits.Amount != journal.TotalCredits.Amount)
+            {
+                throw new InvalidOperationException(
+                    $"Journal imbalance: Debits={journal.TotalDebits}, Credits={journal.TotalCredits}");
+            }
 
-            // Map Domain Journal to EF Entity
-            var journalEntity = new JournalEntity
+            // Create entity
+            var entity = new JournalEntity
             {
                 Id = Guid.NewGuid(),
-                JournalId = journal.Id.ToString(),
-                Description = journal.Description,
+                JournalId = journal.Id.Value.ToString("D"),
+                ExternalReference = journal.ExternalReference,
                 IdempotencyKey = journal.IdempotencyKey,
-                ExternalReference = journal.SourceType,
-                TotalDebitsMinorUnits = (long)(totalDebits * 100), // Convert to cents
-                TotalCreditsMinorUnits = (long)(totalCredits * 100),
-                Currency = currency,
+                Description = journal.Description,
+                TotalDebitsMinorUnits = (long)journal.TotalDebits.Amount.MinorUnits,
+                TotalCreditsMinorUnits = (long)journal.TotalCredits.Amount.MinorUnits,
+                Currency = journal.Currency,
                 State = JournalState.Committed,
                 CommittedAtUtc = DateTime.UtcNow,
                 CreatedAtUtc = DateTime.UtcNow,
-                Postings = journal.Postings.Select(p => new PostingEntity
-                {
-                    Id = Guid.NewGuid(),
-                    PostingId = Guid.NewGuid().ToString(),
-                    JournalId = Guid.Empty, // Will be set by EF relationship
-                    LedgerAccountId = Guid.Empty, // TODO: Map from AccountId
-                    EntryType = p.IsDebit ? EntryType.Debit : EntryType.Credit,
-                    AmountMinorUnits = (long)(p.Amount.Amount * 100), // Convert to cents
-                    Currency = p.Amount.Currency,
-                    Description = p.Description,
-                    CreatedAtUtc = DateTime.UtcNow
-                }).ToList()
+                UpdatedAtUtc = DateTime.UtcNow,
+                ExternalTimestampUtc = journal.CreatedAtUtc,
+                ObservedAtUtc = DateTime.UtcNow
             };
 
-            _dbContext.Journals.Add(journalEntity);
+            _dbContext.Journals.Add(entity);
+
+            // Add postings
+            foreach (var posting in journal.Postings)
+            {
+                var postingEntity = new PostingEntity
+                {
+                    Id = Guid.NewGuid(),
+                    PostingId = posting.Id.Value.ToString("D"),
+                    JournalId = entity.Id,
+                    LedgerAccountId = posting.LedgerAccountId.Value,
+                    EntryType = posting.EntryType == EntryType.Debit ? EntryType.Debit : EntryType.Credit,
+                    AmountMinorUnits = (long)posting.Amount.MinorUnits,
+                    Currency = posting.Currency,
+                    Description = posting.Description,
+                    CreatedAtUtc = DateTime.UtcNow,
+                    UpdatedAtUtc = DateTime.UtcNow,
+                    ExternalTimestampUtc = posting.CreatedAtUtc,
+                    ObservedAtUtc = DateTime.UtcNow
+                };
+                _dbContext.Postings.Add(postingEntity);
+            }
+
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            _logger.LogInformation("Committed journal {JournalId} with {PostingCount} postings", journal.Id, journal.Postings.Count);
+            _logger.LogInformation("Committed journal {JournalId} with {PostingCount} postings", 
+                journal.Id, journal.Postings.Count);
         }
         catch (Exception ex)
         {
@@ -109,90 +120,123 @@ public class LedgerService : ILedgerService
 
     public async Task ReverseJournalAsync(JournalId journalId, string reason, CancellationToken ct = default)
     {
-        var originalJournal = await GetJournalByIdAsync(journalId, ct)
-            ?? throw new NotFoundException($"Journal {journalId} not found");
-
-        if (!originalJournal.IsCommitted)
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
+        try
         {
-            throw new InvalidOperationException($"Cannot reverse journal {journalId} that is not committed.");
-        }
+            var originalEntity = await _dbContext.Journals
+                .FirstOrDefaultAsync(j => j.JournalId == journalId.Value.ToString("D"), ct);
 
-        var reversalPostings = originalJournal.Postings.Select(p => 
-            new Posting
+            if (originalEntity == null)
+                throw new KeyNotFoundException($"Journal {journalId} not found");
+
+            if (originalEntity.State != JournalState.Committed)
+                throw new InvalidOperationException($"Cannot reverse journal in state {originalEntity.State}");
+
+            // Create reversal journal
+            var reversalEntity = new JournalEntity
             {
-                AccountId = p.AccountId,
-                Amount = p.Amount, // Same magnitude
-                IsDebit = !p.IsDebit, // Swap side
-                Description = $"Reversal: {p.Description}",
-                SubLedgerReferenceId = p.SubLedgerReferenceId,
-                SubLedgerType = p.SubLedgerType
+                Id = Guid.NewGuid(),
+                JournalId = Guid.NewGuid().ToString("D"),
+                ExternalReference = $"Reversal of {originalEntity.JournalId}: {reason}",
+                IdempotencyKey = $"REV-{originalEntity.IdempotencyKey}",
+                Description = $"Reversal: {originalEntity.Description}",
+                TotalDebitsMinorUnits = originalEntity.TotalCreditsMinorUnits,
+                TotalCreditsMinorUnits = originalEntity.TotalDebitsMinorUnits,
+                Currency = originalEntity.Currency,
+                State = JournalState.Committed,
+                CommittedAtUtc = DateTime.UtcNow,
+                ReversesJournalId = originalEntity.Id,
+                CreatedAtUtc = DateTime.UtcNow,
+                UpdatedAtUtc = DateTime.UtcNow,
+                ExternalTimestampUtc = DateTime.UtcNow,
+                ObservedAtUtc = DateTime.UtcNow
+            };
+
+            _dbContext.Journals.Add(reversalEntity);
+
+            // Create reversed postings
+            foreach (var originalPosting in _dbContext.Postings.Where(p => p.JournalId == originalEntity.Id))
+            {
+                var reversedPosting = new PostingEntity
+                {
+                    Id = Guid.NewGuid(),
+                    PostingId = Guid.NewGuid().ToString("D"),
+                    JournalId = reversalEntity.Id,
+                    LedgerAccountId = originalPosting.LedgerAccountId,
+                    EntryType = originalPosting.EntryType == EntryType.Debit ? EntryType.Credit : EntryType.Debit,
+                    AmountMinorUnits = originalPosting.AmountMinorUnits,
+                    Currency = originalPosting.Currency,
+                    Description = $"Reversal of {originalPosting.PostingId}",
+                    CreatedAtUtc = DateTime.UtcNow,
+                    UpdatedAtUtc = DateTime.UtcNow,
+                    ExternalTimestampUtc = DateTime.UtcNow,
+                    ObservedAtUtc = DateTime.UtcNow
+                };
+                _dbContext.Postings.Add(reversedPosting);
             }
-        ).ToList();
 
-        var reversalJournal = new Journal
+            // Mark original as reversed
+            originalEntity.State = JournalState.Reversed;
+            originalEntity.ReversalJournalId = reversalEntity.Id;
+            originalEntity.UpdatedAtUtc = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+
+            _logger.LogInformation("Reversed journal {JournalId} with reason: {Reason}", journalId, reason);
+        }
+        catch (Exception ex)
         {
-            Id = JournalId.New(),
-            Description = $"Reversal of {journalId}: {reason}",
-            EffectiveDateUtc = DateTime.UtcNow,
-            SourceType = "Reversal",
-            SourceId = Guid.NewGuid(),
-            IdempotencyKey = $"REV-{journalId}-{Guid.NewGuid()}",
-            Postings = reversalPostings
-        };
-
-        reversalJournal.Commit();
-        await CommitJournalAsync(reversalJournal, ct);
+            await transaction.RollbackAsync(ct);
+            _logger.LogError(ex, "Failed to reverse journal {JournalId}", journalId);
+            throw;
+        }
     }
 
     public async Task<Money> GetAccountBalanceAsync(LedgerAccountId accountId, string currency, CancellationToken ct = default)
     {
         var accountEntity = await _dbContext.LedgerAccounts
-            .FirstOrDefaultAsync(a => a.LedgerAccountId == accountId.ToString() && a.Currency == currency, ct)
-            ?? throw new NotFoundException($"Account {accountId} not found");
+            .FirstOrDefaultAsync(a => a.LedgerAccountId == accountId.Value.ToString("D") && a.Currency == currency, ct);
+
+        if (accountEntity == null)
+            return new Money(0, currency);
 
         // Calculate balance from postings
-        var balance = await _dbContext.Postings
-            .Where(p => p.LedgerAccountId == accountEntity.Id && p.Currency == currency)
-            .SumAsync(p => p.EntryType == EntryType.Debit ? p.AmountMinorUnits : -p.AmountMinorUnits, ct);
+        var debitTotal = await _dbContext.Postings
+            .Where(p => p.LedgerAccountId == accountEntity.Id && p.EntryType == EntryType.Debit)
+            .SumAsync(p => p.AmountMinorUnits, ct);
 
-        return new Money(balance / 100m, currency); // Convert from cents
+        var creditTotal = await _dbContext.Postings
+            .Where(p => p.LedgerAccountId == accountEntity.Id && p.EntryType == EntryType.Credit)
+            .SumAsync(p => p.AmountMinorUnits, ct);
+
+        var netMinorUnits = accountEntity.Type switch
+        {
+            AccountType.Asset or AccountType.Expense => debitTotal - creditTotal,
+            AccountType.Liability or AccountType.Equity or AccountType.Revenue => creditTotal - debitTotal,
+            _ => debitTotal - creditTotal
+        };
+
+        return new Money((decimal)netMinorUnits, currency);
     }
 
     public async Task<Journal?> GetJournalByIdAsync(JournalId journalId, CancellationToken ct = default)
     {
         var entity = await _dbContext.Journals
             .Include(j => j.Postings)
-            .ThenInclude(p => p.LedgerAccount)
-            .FirstOrDefaultAsync(j => j.JournalId == journalId.ToString(), ct);
+            .FirstOrDefaultAsync(j => j.JournalId == journalId.Value.ToString("D"), ct);
 
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
 
-        // Note: This is a simplified reconstruction. Full implementation would need proper AccountId mapping.
-        var postings = entity.Postings.Select(p => new Posting
-        {
-            AccountId = new LedgerAccountId(Guid.Parse(p.LedgerAccountId)), // Simplified mapping
-            Amount = new Money(p.AmountMinorUnits / 100m, p.Currency),
-            IsDebit = p.EntryType == EntryType.Debit,
-            Description = p.Description
-        }).ToList();
-
-        var journal = new Journal
-        {
-            Id = journalId,
-            Description = entity.Description,
-            EffectiveDateUtc = entity.CommittedAtUtc ?? entity.CreatedAtUtc,
-            SourceType = entity.ExternalReference ?? "Unknown",
-            SourceId = entity.Id,
-            IdempotencyKey = entity.IdempotencyKey,
-            Postings = postings
-        };
-
-        // Manually mark as committed since domain object doesn't have setter
-        if (entity.State == JournalState.Committed)
-        {
-            journal.Commit();
-        }
-
-        return journal;
+        // Map back to domain model
+        return new Journal(
+            new JournalId(Guid.Parse(entity.JournalId)),
+            entity.Description,
+            entity.Currency,
+            entity.ExternalReference,
+            entity.IdempotencyKey,
+            entity.CreatedAtUtc
+        );
     }
 }
