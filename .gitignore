@@ -1,16 +1,12 @@
 ```
-# Build artifacts
-src/Klyvesta.Domain/bin/
-src/Klyvesta.Domain/obj/
-*.dll
-*.pdb
-*.exe
-*.so
-*.a
+# Compiled and build artifacts
 *.o
 *.obj
+*.exe
+*.dll
+*.so
+*.a
 *.out
-*.class
 *.pyc
 __pycache__/
 
@@ -22,24 +18,32 @@ venv/
 .env.local
 .env.*
 
+# Build directories
+dist/
+build/
+target/
+.gradle/
+
 # Logs and temp files
 *.log
 *.tmp
 *.swp
-*.swo
 
 # Editors
 .vscode/
 .idea/
 
-# Coverage and testing
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
-.mypy_cache/
-.pytest_cache/
 
 # OS specific
 .DS_Store
 Thumbs.db
+
+# MyPy cache
+.mypy_cache/
+# Pytest cache
+.pytest_cache/
 ```
