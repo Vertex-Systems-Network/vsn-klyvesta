@@ -1,10 +1,10 @@
 # P1 Implementation Progress
 
-Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, test suites pending.
+Status: **In Progress** - Core domain models + PaperBrokerAdapter + tests completed. All 10 PaperBrokerAdapter tests passing.
 
 ## Completed
 
-### Domain Foundation (Klyvesta.Domain) - 17 files, ~4500 lines
+### Domain Foundation (Klyvesta.Domain) - 24 files, ~5000 lines
 
 #### Common Types (`Common/`)
 - ✅ `DomainTypes.cs` - Core enums and interfaces
@@ -36,7 +36,7 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
   - Exception hierarchy: `BrokerRejectedException`, `BrokerRetryableException`, `BrokerAmbiguousException`
   - **Key safety feature**: UNKNOWN state forces reconciliation, not blind retry
 
-- ✅ `Paper/PaperBrokerAdapter.cs` - Deterministic paper broker implementation (875 lines)
+- ✅ `Paper/PaperBrokerAdapter.cs` - Deterministic paper broker implementation (900+ lines)
   - Implements all 20 scenarios from PAPER_BROKER_SCENARIOS_V1.yaml
   - `PaperBrokerConfig` for scenario control (full/partial/rejected fills, timeouts, duplicates, etc.)
   - `PaperOrderState` internal state machine for order lifecycle
@@ -55,6 +55,21 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
   - Portfolio/position updates on fills
   - Cash balance tracking
   - T+2 settlement simulation
+  - **Fixed**: Process*FillAsync methods now return updated PaperOrderState for proper state propagation
+
+#### Test Infrastructure (`tests/Klyvesta.Domain.Tests/`)
+- ✅ xUnit + FsCheck property-based testing setup
+- ✅ `Broker/PaperBrokerAdapterTests.cs` - 10 scenario tests (ALL PASSING)
+  - PB-005: Idempotency/duplicate command handling
+  - Financial invariants: FilledQuantity_NeverExceedsOrderQuantity
+  - Financial invariants: AverageFillPrice_RespectsLimitPrice
+  - PB-012: Stale market data prevention
+  - PB-013: Market closed rejection
+  - PB-014: Broker unavailable ambiguous exception
+  - PB-007: Ambiguous timeout UNKNOWN state
+  - PB-008: Cancel before fill releases reservation
+  - Kill switch rejection behavior
+  - PB-001: Full fill scenario validation
 
 #### Ledger System (`Ledger/`)
 - ✅ `Ledger.cs` - Immutable double-entry ledger
@@ -250,6 +265,7 @@ Status: **In Progress** - Core domain models + PaperBrokerAdapter implemented, t
 - [x] Property-based tests for financial invariants
 - [x] Kill switch implementation
 - [x] Idempotency handling
+- [x] **All 10 unit tests passing** - scenario coverage + invariant validation
 
 ### Epic P1-07 — OMS state machine (implementation) ⭐ PARTIALLY COMPLETE
 - [x] OrderIntent entity with full lifecycle tracking

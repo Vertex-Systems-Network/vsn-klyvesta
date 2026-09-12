@@ -344,17 +344,17 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
             {
                 case FillScenario.FullFill:
                     // PB-001: Full fill
-                    await ProcessFullFillAsync(orderState, requestId, now, cancellationToken);
+                    orderState = await ProcessFullFillAsync(orderState, requestId, now, cancellationToken);
                     break;
                     
                 case FillScenario.PartialFill:
                     // PB-003: Partial fill
-                    await ProcessPartialFillAsync(orderState, requestId, now, cancellationToken);
+                    orderState = await ProcessPartialFillAsync(orderState, requestId, now, cancellationToken);
                     break;
                     
                 case FillScenario.MultipleFills:
                     // PB-004: Multiple fills
-                    await ProcessMultipleFillsAsync(orderState, requestId, now, cancellationToken);
+                    orderState = await ProcessMultipleFillsAsync(orderState, requestId, now, cancellationToken);
                     break;
                     
                 case FillScenario.Rejected:
@@ -413,6 +413,12 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
     
     private FillScenario DetermineFillScenario(BrokerOrderRequest request)
     {
+        // Check explicit full fill scenario first
+        if (_config.SimulateFullFills && !_config.SimulatePartialFills && !_config.SimulateRejections && !_config.SimulateAmbiguousTimeouts)
+        {
+            return FillScenario.FullFill;
+        }
+        
         if (_config.SimulateRejections)
         {
             return FillScenario.Rejected;
@@ -433,10 +439,11 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
             return FillScenario.MultipleFills;
         }
         
+        // Default to full fill if no simulation flags are set
         return FillScenario.FullFill;
     }
     
-    private async Task ProcessFullFillAsync(PaperOrderState orderState, Guid requestId, DateTime now, CancellationToken ct)
+    private async Task<PaperOrderState> ProcessFullFillAsync(PaperOrderState orderState, Guid requestId, DateTime now, CancellationToken ct)
     {
         // Simulate immediate full fill at a reasonable price
         var fillPrice = orderState.LimitPrice ?? 100.00m;
@@ -468,9 +475,11 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
         await UpdatePortfolioAsync(orderState.AccountId, execution, ct);
         
         LogEvent(now, $"FULL_FILL: {orderState.OrderId} qty={orderState.Quantity} @ {fillPrice}");
+        
+        return orderState;
     }
     
-    private async Task ProcessPartialFillAsync(PaperOrderState orderState, Guid requestId, DateTime now, CancellationToken ct)
+    private async Task<PaperOrderState> ProcessPartialFillAsync(PaperOrderState orderState, Guid requestId, DateTime now, CancellationToken ct)
     {
         // Fill 50% of the order
         var fillQuantity = orderState.Quantity / 2;
@@ -503,9 +512,11 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
         await UpdatePortfolioAsync(orderState.AccountId, execution, ct);
         
         LogEvent(now, $"PARTIAL_FILL: {orderState.OrderId} qty={fillQuantity}/{orderState.Quantity} @ {fillPrice}");
+        
+        return orderState;
     }
     
-    private async Task ProcessMultipleFillsAsync(PaperOrderState orderState, Guid requestId, DateTime now, CancellationToken ct)
+    private async Task<PaperOrderState> ProcessMultipleFillsAsync(PaperOrderState orderState, Guid requestId, DateTime now, CancellationToken ct)
     {
         // Simulate 3 fills adding up to total quantity
         var executions = new List<PaperExecution>();
@@ -551,6 +562,8 @@ public sealed class PaperBrokerAdapter : IBrokerAdapter, IDisposable
         };
         
         LogEvent(now, $"MULTIPLE_FILLS: {orderState.OrderId} {executions.Count} fills, total qty={totalQty}");
+        
+        return orderState;
     }
     
     private Task UpdatePortfolioAsync(AccountId accountId, PaperExecution execution, CancellationToken ct)
