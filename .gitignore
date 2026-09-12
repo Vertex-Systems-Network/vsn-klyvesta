@@ -1,1 +1,18 @@
-(src/Klyvesta.Domain/Services/LedgerService.cs)
+```
+# Build results
+bin/
+obj/
+
+# Dependencies
+packages/
+
+# Logs
+*.log
+
+# User-specific files
+.vs/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+```
