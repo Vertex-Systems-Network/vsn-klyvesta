@@ -44,6 +44,30 @@ public class LedgerService : ILedgerService
     private readonly KlyvestaDbContext _dbContext;
     private readonly ILogger<LedgerService> _logger;
 
+    private static readonly Action<ILogger, string, int, Exception?> _journalCommittedLog =
+        LoggerMessage.Define<string, int>(
+            LogLevel.Information,
+            new EventId(1, "JournalCommitted"),
+            "Journal {JournalId} committed with {PostingCount} postings");
+
+    private static readonly Action<ILogger, string, Exception?> _journalCommitFailedLog =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(2, "JournalCommitFailed"),
+            "Failed to commit journal {JournalId}");
+
+    private static readonly Action<ILogger, string, string, Exception?> _journalReversedLog =
+        LoggerMessage.Define<string, string>(
+            LogLevel.Information,
+            new EventId(3, "JournalReversed"),
+            "Journal {JournalId} reversed: {Reason}");
+
+    private static readonly Action<ILogger, string, Exception?> _journalReverseFailedLog =
+        LoggerMessage.Define<string>(
+            LogLevel.Error,
+            new EventId(4, "JournalReverseFailed"),
+            "Failed to reverse journal {JournalId}");
+
     public LedgerService(KlyvestaDbContext dbContext, ILogger<LedgerService> logger)
     {
         _dbContext = dbContext;
@@ -107,13 +131,12 @@ public class LedgerService : ILedgerService
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            _logger.LogInformation("Journal {JournalId} committed with {PostingCount} postings", 
-                journal.Id, journal.Postings.Count);
+            _journalCommittedLog(_logger, journal.Id.Value.ToString("D"), journal.Postings.Count, null);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(ct);
-            _logger.LogError(ex, "Failed to commit journal {JournalId}", journal.Id);
+            _journalCommitFailedLog(_logger, journal.Id.Value.ToString("D"), ex);
             throw;
         }
     }
@@ -183,12 +206,12 @@ public class LedgerService : ILedgerService
             await _dbContext.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
 
-            _logger.LogInformation("Journal {JournalId} reversed: {Reason}", journalId, reason);
+            _journalReversedLog(_logger, journalId.Value.ToString("D"), reason, null);
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync(ct);
-            _logger.LogError(ex, "Failed to reverse journal {JournalId}", journalId);
+            _journalReverseFailedLog(_logger, journalId.Value.ToString("D"), ex);
             throw;
         }
     }

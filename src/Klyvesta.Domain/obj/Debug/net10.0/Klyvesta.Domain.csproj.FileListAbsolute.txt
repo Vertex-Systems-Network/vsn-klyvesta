@@ -1,0 +1,12 @@
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.csproj.AssemblyReference.cache
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.AssemblyInfoInputs.cache
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.AssemblyInfo.cs
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.csproj.CoreCompileInputs.cache
+/workspace/src/Klyvesta.Domain/bin/Debug/net10.0/Klyvesta.Domain.deps.json
+/workspace/src/Klyvesta.Domain/bin/Debug/net10.0/Klyvesta.Domain.dll
+/workspace/src/Klyvesta.Domain/bin/Debug/net10.0/Klyvesta.Domain.pdb
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.dll
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/refint/Klyvesta.Domain.dll
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/Klyvesta.Domain.pdb
+/workspace/src/Klyvesta.Domain/obj/Debug/net10.0/ref/Klyvesta.Domain.dll
