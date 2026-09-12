@@ -1,24 +1,31 @@
 ```
-# Build artifacts
-obj/
-bin/
-*.dll
+# AI checkpoints
+.ai/
+
+# Compiled and build artifacts
+*.o
+*.obj
 *.exe
-*.pdb
-*.config
-*.csproj.user
-*.userosscache
-*.sln.docstates
+*.dll
+*.so
+*.a
+*.out
 
 # Dependencies
-packages/
 node_modules/
-.nuget/
-.nuget.packages/
+venv/
+.venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+target/
+.gradle/
 
-# Logs
+# Logs and temp files
 *.log
-logs/
+*.tmp
+*.swp
+*.swo
 
 # Environment
 .env
@@ -28,13 +35,15 @@ logs/
 # Editors
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS generated files
+# Build outputs
+dist/
+build/
+coverage/
+htmlcov/
+.coverage
+
+# System files
 .DS_Store
 Thumbs.db
-
-# Test results
-TestResults/
 ```
