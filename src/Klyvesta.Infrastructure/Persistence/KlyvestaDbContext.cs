@@ -6,6 +6,9 @@ namespace Klyvesta.Infrastructure.Persistence;
 public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> options) : DbContext(options)
 {
     internal DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
+    
+    // Alias for backward compatibility
+    internal DbSet<IdempotencyRecord> IdempotencyKeys => IdempotencyRecords;
 
     internal DbSet<InboxMessage> InboxMessages => Set<InboxMessage>();
 

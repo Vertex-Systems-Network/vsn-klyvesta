@@ -1,31 +1,20 @@
 ```
-# AI checkpoints
-.ai/
-
-# Compiled and build artifacts
-*.o
-*.obj
-*.exe
+# Build artifacts
+bin/
+obj/
 *.dll
+*.exe
+*.pdb
 *.so
-*.a
-*.out
+*.dylib
+*.jar
 
 # Dependencies
 node_modules/
-venv/
-.venv/
-__pycache__/
-.mypy_cache/
-.pytest_cache/
-target/
-.gradle/
+packages/
 
-# Logs and temp files
+# Logs
 *.log
-*.tmp
-*.swp
-*.swo
 
 # Environment
 .env
@@ -35,15 +24,21 @@ target/
 # Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Build outputs
-dist/
-build/
-coverage/
-htmlcov/
-.coverage
-
-# System files
+# OS
 .DS_Store
 Thumbs.db
+
+# Test and coverage
+coverage/
+htmlcov/
+*.coverage
+.test*
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
 ```
