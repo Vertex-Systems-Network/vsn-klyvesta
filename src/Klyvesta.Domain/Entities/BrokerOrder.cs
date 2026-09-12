@@ -24,16 +24,16 @@ public sealed class BrokerOrder
     public string? RejectionDetails { get; private set; }
     public DateTime SubmittedAtUtc { get; private set; }
     public DateTime? UpdatedAtUtc { get; private set; }
-    
+
     private readonly List<Execution> _executions = new();
     public IReadOnlyList<Execution> Executions => _executions.AsReadOnly();
-    
+
     public Quantity FilledQuantity => _executions.Sum(e => e.Quantity);
     public Quantity RemainingQuantity => Quantity - FilledQuantity;
-    
-    public bool IsTerminalState => 
+
+    public bool IsTerminalState =>
         Status is OrderStatus.Filled or OrderStatus.Cancelled or OrderStatus.Rejected;
-    
+
     public BrokerOrder(
         Guid id,
         Guid orderIntentId,
@@ -43,7 +43,8 @@ public sealed class BrokerOrder
         OrderType type,
         Quantity quantity,
         Money? limitPrice,
-        TimeInForce timeInForce)
+        TimeInForce timeInForce,
+        string? idempotencyKey = null)
     {
         Id = id;
         OrderIntentId = orderIntentId;
@@ -55,58 +56,73 @@ public sealed class BrokerOrder
         LimitPrice = limitPrice;
         TimeInForce = timeInForce;
         Status = OrderStatus.Pending;
+        IdempotencyKey = idempotencyKey;
     }
-    
+
+    public string? IdempotencyKey { get; private set; }
+
+    public void SubmitToBroker()
+    {
+        if (Status != OrderStatus.Pending)
+            throw new InvalidOperationException($"Cannot submit order in {Status} state");
+
+        // Generate broker-assigned order ID
+        BrokerOrderId = Guid.CreateVersion7().ToString("N");
+        Status = OrderStatus.Submitted;
+        SubmittedAtUtc = DateTime.UtcNow;
+        UpdatedAtUtc = SubmittedAtUtc;
+    }
+
     public void MarkSubmitted(string brokerOrderId)
     {
         if (Status != OrderStatus.Pending)
             throw new InvalidOperationException($"Cannot submit order in {Status} state");
-        
+
         BrokerOrderId = brokerOrderId ?? throw new ArgumentNullException(nameof(brokerOrderId));
         Status = OrderStatus.Submitted;
         SubmittedAtUtc = DateTime.UtcNow;
         UpdatedAtUtc = SubmittedAtUtc;
     }
-    
+
     public void AddExecution(Execution execution)
     {
         if (IsTerminalState)
             throw new InvalidOperationException($"Cannot add execution to terminal order: {Status}");
-        
+
         _executions.Add(execution);
         UpdateStatusFromExecutions();
         UpdatedAtUtc = DateTime.UtcNow;
     }
-    
+
     public void Cancel()
     {
         if (IsTerminalState)
             throw new InvalidOperationException($"Cannot cancel terminal order: {Status}");
-        
+
         Status = OrderStatus.Cancelled;
         UpdatedAtUtc = DateTime.UtcNow;
     }
-    
+
     public void Reject(RejectionReason reason, string? details = null)
     {
         if (IsTerminalState)
             throw new InvalidOperationException($"Cannot reject terminal order: {Status}");
-        
+
         Status = OrderStatus.Rejected;
         RejectionReason = reason;
         RejectionDetails = details;
         UpdatedAtUtc = DateTime.UtcNow;
     }
-    
+
     public void MarkUnknown()
     {
         if (IsTerminalState)
             throw new InvalidOperationException($"Cannot mark terminal order as unknown: {Status}");
-        
+
         Status = OrderStatus.Unknown;
         UpdatedAtUtc = DateTime.UtcNow;
     }
-    
+
     private void UpdateStatusFromExecutions()
     {
         if (FilledQuantity == Quantity)
