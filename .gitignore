@@ -1,40 +1,47 @@
-# .NET
+```
+# Compiled and build artifacts
+*.dll
+*.exe
+*.pdb
+*.obj
+*.lib
+*.so
+*.dylib
+*.class
+*.pyc
+__pycache__/
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+.env
+.env.local
+.env.*
+
+# Build outputs
 bin/
 obj/
-artifacts/
-TestResults/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-.vs/
+out/
+target/
+dist/
+build/
 
-# IDE/editor
-.idea/
-.vscode/
-*.swp
+# Logs and temp files
+*.log
 *.tmp
+*.swp
+
+# Editors
+.vscode/
+.idea/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Local configuration and secrets
-.env
-.env.*
-!.env.example
-appsettings.Local.json
-appsettings.*.Local.json
-secrets.json
-*.pfx
-*.p12
-*.pem
-*.key
-*.crt
-*.cer
-*.jks
-*.keystore
-
-# Logs/dumps
-*.log
-*.dmp
+```
