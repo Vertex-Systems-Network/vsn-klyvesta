@@ -2,9 +2,6 @@
 # Build artifacts
 bin/
 obj/
-out/
-dist/
-build/
 *.dll
 *.exe
 *.pdb
@@ -15,28 +12,44 @@ build/
 # Dependencies
 packages/
 node_modules/
-vendor/
+venv/
+.venv/
+__pycache__/
+*.egg-info/
 
 # IDE files
 .vs/
-.vscode/
 .idea/
 *.userprefs
-
-# Temporary files
-*.tmp
-*.temp
-*.log
-
-# Environment
-.env
-.env.local
-*.env.*
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
 
 # OS generated files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
 
-# Checkpoints
-.ai/checkpoints/
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+*.env.*
+
+# Test and coverage
+coverage/
+*.cover
+*.gcda
+*.gcno
+
+# Distribution / packaging
+*.tar.gz
+*.whl
+dist/
+build/
 ```

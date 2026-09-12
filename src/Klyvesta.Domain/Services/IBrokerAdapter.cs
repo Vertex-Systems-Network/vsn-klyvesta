@@ -1,4 +1,6 @@
 using Klyvesta.Domain.Entities;
+using Klyvesta.Domain.ValueObjects;
+using Klyvesta.Domain.Enums;
 
 namespace Klyvesta.Domain.Services;
 
