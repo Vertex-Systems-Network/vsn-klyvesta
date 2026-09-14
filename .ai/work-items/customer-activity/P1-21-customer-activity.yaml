@@ -1,0 +1,39 @@
+id: P1-21
+module: customer-activity
+branch: parallel/customer-activity
+agent_slot: agent-customer-activity
+owner_role: module-agent
+base_sha: d903860e7fad015e73b7dfff950ee827f0f25534
+accepted_baseline_sha: d903860e7fad015e73b7dfff950ee827f0f25534
+dependencies:
+  - orders
+  - ledger
+dependency_heads:
+  orders: 9d017ba3b63773d27fb22b5063ac46b2bd46158b
+  ledger: e18dc07e6f4af7afcaac2179ac0b5503ba8df8b6
+allowed_paths:
+  - src/Klyvesta.Domain/Activity/**
+  - src/Klyvesta.Application/Activity/**
+  - tools/Klyvesta.CustomerActivityVerifier/**
+  - .ai/work-items/customer-activity/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-customer-scoped-activity-ordering
+    - order-and-ledger-input-boundary-validation
+    - no-restricted-pii-output
+    - no-live-provider-or-trading-authority
+    - customer-activity-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
