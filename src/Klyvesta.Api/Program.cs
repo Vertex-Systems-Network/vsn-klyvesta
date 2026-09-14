@@ -134,13 +134,7 @@ if (demoEnabled)
                 message = "Synthetic preview: technology exposure is elevated versus the sample target. Review diversification before taking any action.",
                 confidence = "Demo only — not investment advice",
             },
-            safeguards = new[]
-            {
-                "No database connection",
-                "No pyPSX credentials or network calls",
-                "No real orders or funds",
-                "Synthetic market and portfolio data only",
-            },
+            safeguards = DemoPreviewData.Safeguards,
         });
     });
 }
@@ -164,3 +158,14 @@ app.MapHealthChecks("/health/ready");
 app.Run();
 
 internal sealed record DemoLoginRequest(string? Email, string? Password);
+
+internal static class DemoPreviewData
+{
+    internal static readonly string[] Safeguards =
+    [
+        "No database connection",
+        "No pyPSX credentials or network calls",
+        "No real orders or funds",
+        "Synthetic market and portfolio data only",
+    ];
+}
