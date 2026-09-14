@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-internal sealed class DemoUserDataStore
+internal sealed class DemoUserDataStore : IDisposable
 {
     private const int MaxActivityEvents = 100;
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
@@ -11,6 +11,7 @@ internal sealed class DemoUserDataStore
     private readonly string _dataFilePath;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private DemoUserState? _cachedState;
+    private bool _disposed;
 
     public DemoUserDataStore(IWebHostEnvironment environment, IConfiguration configuration)
     {
@@ -110,6 +111,7 @@ internal sealed class DemoUserDataStore
 
     public async Task<DemoUserState> ResetAsync(CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         await _gate.WaitAsync(cancellationToken);
         try
         {
@@ -123,12 +125,24 @@ internal sealed class DemoUserDataStore
         }
     }
 
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _gate.Dispose();
+        _disposed = true;
+    }
+
     private async Task<DemoUserState> MutateAsync(
         Func<DemoUserState, DemoUserState> mutation,
         bool persist,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(mutation);
+        ThrowIfDisposed();
 
         await _gate.WaitAsync(cancellationToken);
         try
@@ -194,7 +208,12 @@ internal sealed class DemoUserDataStore
         File.Move(temporaryPath, _dataFilePath, overwrite: true);
     }
 
-    private static IReadOnlyList<DemoActivityEvent> AppendActivity(
+    private void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+    }
+
+    private static DemoActivityEvent[] AppendActivity(
         IReadOnlyList<DemoActivityEvent> existing,
         string code,
         string message)
