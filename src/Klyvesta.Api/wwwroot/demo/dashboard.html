@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Klyvesta Demo Dashboard</title>
+  <link rel="stylesheet" href="/demo/app.css">
+</head>
+<body class="dashboard-body">
+  <div class="demo-banner">DEMO PREVIEW — SYNTHETIC DATA ONLY — NO DATABASE — NO pyPSX — NO REAL MONEY</div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><span class="brand-mark small">K</span><strong>Klyvesta</strong></div>
+      <nav class="nav-list" aria-label="Primary">
+        <a class="active" href="#overview">Overview</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#orders">Orders</a>
+        <a href="#watchlist">Watchlist</a>
+        <a href="#ai">AI Intelligence</a>
+      </nav>
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <div><strong>Paper mode</strong><small>Broker disconnected</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">INVESTOR WORKSPACE</p>
+          <h1 id="welcome-title">Welcome back</h1>
+        </div>
+        <div class="topbar-actions">
+          <span id="account-mode" class="mode-badge">Loading…</span>
+          <button id="logout-button" class="secondary-button" type="button">Sign out</button>
+        </div>
+      </header>
+
+      <section id="overview" class="metric-grid" aria-label="Portfolio summary">
+        <article class="metric-card"><span>Portfolio value</span><strong id="portfolio-value">—</strong><small>Demo valuation</small></article>
+        <article class="metric-card"><span>Available cash</span><strong id="cash-value">—</strong><small>Synthetic balance</small></article>
+        <article class="metric-card"><span>Today</span><strong id="day-change">—</strong><small id="day-change-pct">—</small></article>
+        <article class="metric-card"><span>Environment</span><strong>Paper</strong><small>Zero live execution</small></article>
+      </section>
+
+      <section class="content-grid two-one">
+        <article id="portfolio" class="panel wide-panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">PORTFOLIO</p><h2>Holdings</h2></div>
+            <span class="subtle-badge">PKR</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Symbol</th><th>Company</th><th>Qty</th><th>Price</th><th>Value</th><th>Day</th></tr></thead>
+              <tbody id="holdings-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article id="ai" class="panel ai-panel">
+          <div class="panel-heading"><div><p class="eyebrow">AI INTELLIGENCE</p><h2 id="ai-title">Loading insight</h2></div></div>
+          <p id="ai-message" class="ai-message">Preparing synthetic analysis…</p>
+          <div id="ai-confidence" class="ai-confidence"></div>
+          <div class="ai-actions">
+            <button class="primary-button" type="button" disabled>Review recommendation</button>
+            <small>Disabled in demo preview</small>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-grid equal">
+        <article id="orders" class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">ORDER ACTIVITY</p><h2>Paper orders</h2></div></div>
+          <div id="orders-list" class="stack-list"></div>
+        </article>
+
+        <article id="watchlist" class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">MARKET WATCH</p><h2>Watchlist</h2></div><span class="subtle-badge">Synthetic</span></div>
+          <div id="watchlist-list" class="stack-list"></div>
+        </article>
+      </section>
+
+      <section class="panel safeguards-panel">
+        <div class="panel-heading"><div><p class="eyebrow">DEMO SAFETY</p><h2>What is intentionally disabled</h2></div></div>
+        <div id="safeguards" class="safeguard-grid"></div>
+      </section>
+
+      <footer class="page-footer">Klyvesta demo preview. Values shown here are fictional and must not be treated as market data or investment advice.</footer>
+    </main>
+  </div>
+  <script src="/demo/dashboard.js" defer></script>
+</body>
+</html>
