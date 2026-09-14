@@ -28,7 +28,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -39,6 +39,12 @@ acceptance_evidence:
     - no-advice-no-trading-authority
     - customer-planning-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-15-customer-planning-baseline-refresh
-submission_pr: null
+  satisfied:
+    - deterministic-goal-projection
+    - contribution-gap-calculation
+    - risk-band-input-boundary
+    - no-advice-no-trading-authority
+    - customer-planning-verifier
+instruction_drift_check: completed-2026-09-15-customer-planning-submission
+submission_pr: 117
 integration_baseline_sha: null
