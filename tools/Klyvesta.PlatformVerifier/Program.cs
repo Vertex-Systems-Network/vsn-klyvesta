@@ -133,6 +133,29 @@ Check("PLAT-010", "no-slot and refresh safety signals are preserved", () =>
         "refresh safety alert drifted");
 });
 
+Check("PLAT-011", "P1-21 closeout and P1-22 handoff are durable", () =>
+{
+    var registry = Read(".ai/parallel-branch-registry.yaml");
+    var activity = Read(".ai/work-items/customer-activity/P1-21-customer-activity.yaml");
+    var dashboard = Read(".ai/work-items/customer-dashboard/P1-22-customer-dashboard.yaml");
+
+    Require(registry.Contains("module: customer-activity, branch: parallel/customer-activity, agent_slot: agent-customer-activity, status: INTEGRATED", StringComparison.Ordinal),
+        "customer-activity must be integrated in the registry");
+    Require(registry.Contains("integrated_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80", StringComparison.Ordinal),
+        "customer-activity integration SHA must match the accepted merge");
+    Require(activity.Contains("start_status: COMPLETE", StringComparison.Ordinal) && activity.Contains("status: INTEGRATED", StringComparison.Ordinal),
+        "P1-21 work item must be durably complete and integrated");
+    Require(activity.Contains("integration_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80", StringComparison.Ordinal),
+        "P1-21 integration baseline must match accepted staging");
+
+    Require(registry.Contains("module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerDashboard-01", StringComparison.Ordinal),
+        "customer-dashboard must be the active assigned customer lane");
+    Require(dashboard.Contains("assigned_agent: ChatGPT-CustomerDashboard-01", StringComparison.Ordinal) && dashboard.Contains("status: ACTIVE", StringComparison.Ordinal),
+        "P1-22 work item must be assigned and active");
+    Require(dashboard.Contains("accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80", StringComparison.Ordinal),
+        "P1-22 accepted baseline must match the P1-21 staging merge");
+});
+
 if (failures.Count > 0)
 {
     Console.Error.WriteLine($"Platform CI verification FAILED ({failures.Count}):");
@@ -144,7 +167,7 @@ if (failures.Count > 0)
     return 1;
 }
 
-Console.WriteLine($"Platform CI verification PASS ({passes}/10 checks). No product source, API composition, migration, or workflow mutation was required.");
+Console.WriteLine($"Platform CI verification PASS ({passes}/11 checks). No product source, API composition, migration, or workflow mutation was required.");
 return 0;
 
 void Check(string id, string description, Action assertion)

@@ -1,0 +1,38 @@
+id: P1-25
+module: customer-security-center
+branch: parallel/customer-security-center
+agent_slot: agent-customer-security-center
+owner_role: module-agent
+base_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
+accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
+dependencies:
+  - identity-authorization
+dependency_heads:
+  identity-authorization: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+allowed_paths:
+  - src/Klyvesta.Domain/SecurityCenter/**
+  - src/Klyvesta.Application/SecurityCenter/**
+  - tools/Klyvesta.CustomerSecurityCenterVerifier/**
+  - .ai/work-items/customer-security-center/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-read-only-security-center-projection
+    - customer-session-and-device-scope-validation
+    - identity-security-state-authority-propagation
+    - no-secret-token-or-restricted-pii-output
+    - no-revocation-provider-or-live-authority
+    - customer-security-center-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

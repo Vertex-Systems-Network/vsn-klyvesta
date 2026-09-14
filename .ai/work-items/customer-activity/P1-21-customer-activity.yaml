@@ -4,7 +4,7 @@ branch: parallel/customer-activity
 agent_slot: agent-customer-activity
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerActivity-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-14T20:56:00Z"
 base_sha: f5424c7e1d53c592cca83a9cbbc72dc5d2085672
 accepted_baseline_sha: f5424c7e1d53c592cca83a9cbbc72dc5d2085672
@@ -26,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: SUBMITTED
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -37,6 +37,13 @@ acceptance_evidence:
     - no-live-provider-or-trading-authority
     - customer-activity-verifier
     - exact-head-ci
+  satisfied:
+    - deterministic-customer-scoped-activity-ordering
+    - order-and-ledger-input-boundary-validation
+    - no-restricted-pii-output
+    - no-live-provider-or-trading-authority
+    - customer-activity-verifier
+    - exact-head-ci
 instruction_drift_check: completed-2026-09-15-after-f5424c7e-baseline-refresh-no-canonical-instruction-change-required
 submission_pr: 119
-integration_baseline_sha: null
+integration_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
