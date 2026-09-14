@@ -15,6 +15,9 @@ allowed_paths:
   - .ai/parallel-branch-registry.yaml
   - .ai/work-items/platform-ci/**
   - .ai/work-items/customer-data/**
+  - .ai/work-items/customer-insights/**
+  - .ai/work-items/customer-reporting/**
+  - .ai/work-items/customer-preferences/**
   - scripts/**
   - tools/Klyvesta.PlatformVerifier/**
   - docs/PLATFORM_CI_AUDIT.md
@@ -36,6 +39,7 @@ acceptance_evidence:
     - shared-path-write-boundary-audit
     - platform-verifier
     - ownership-self-tests
-instruction_drift_check: completed-customer-data-lane-registration-2026-09-14
+    - concurrency-capacity
+instruction_drift_check: completed-api-independent-customer-roadmap-registration-2026-09-14
 submission_pr: 107
 integration_baseline_sha: null
