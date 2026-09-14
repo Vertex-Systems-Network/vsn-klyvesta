@@ -12,6 +12,10 @@ internal static class Program
     private static readonly Guid CustomerId = Guid.Parse("11111111-1111-1111-1111-111111111111");
     private static readonly Guid OtherCustomerId = Guid.Parse("22222222-2222-2222-2222-222222222222");
     private static readonly DateTimeOffset AsOf = new(2026, 9, 15, 2, 0, 0, TimeSpan.Zero);
+    private static readonly string[] ForbiddenConstructorFragments =
+    [
+        "Broker", "Provider", "Database", "DbContext", "Notification", "Order", "Execution", "HttpClient",
+    ];
     private const string AccountReference = "paper-account-001";
 
     public static int Main()
@@ -246,13 +250,12 @@ internal static class Program
 
         Check("DASH-032", "builder has no provider database notification or execution constructor dependency", () =>
         {
-            var forbiddenFragments = new[] { "Broker", "Provider", "Database", "DbContext", "Notification", "Order", "Execution", "HttpClient" };
             foreach (var constructor in typeof(DeterministicCustomerDashboardBuilder).GetConstructors())
             {
                 foreach (var parameter in constructor.GetParameters())
                 {
                     var name = parameter.ParameterType.FullName ?? parameter.ParameterType.Name;
-                    Require(!forbiddenFragments.Any(fragment => name.Contains(fragment, StringComparison.OrdinalIgnoreCase)),
+                    Require(!ForbiddenConstructorFragments.Any(fragment => name.Contains(fragment, StringComparison.OrdinalIgnoreCase)),
                         $"builder constructor gained forbidden dependency {name}");
                 }
             }
