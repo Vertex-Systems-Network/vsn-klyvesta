@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerDashboard-01
 start_status: ASSIGNED
 started_at: "2026-09-14T21:59:00Z"
-base_sha: 67134fe83f516c5018fd8d9f5a41e70bb687fbaa
-accepted_baseline_sha: 67134fe83f516c5018fd8d9f5a41e70bb687fbaa
+base_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
+accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
 dependencies:
   - customer-reporting
   - customer-insights
@@ -38,6 +38,6 @@ acceptance_evidence:
     - no-live-market-provider-or-trading-authority
     - customer-dashboard-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-15-after-67134fe8-baseline-refresh-no-canonical-instruction-change-required
+instruction_drift_check: completed-2026-09-15-branch-refreshed-through-67134fe8-while-preserving-original-assignment-baseline-549e8aff
 submission_pr: null
 integration_baseline_sha: null
