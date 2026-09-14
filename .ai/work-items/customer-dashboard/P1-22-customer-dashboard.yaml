@@ -1,0 +1,40 @@
+id: P1-22
+module: customer-dashboard
+branch: parallel/customer-dashboard
+agent_slot: agent-customer-dashboard
+owner_role: module-agent
+base_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
+accepted_baseline_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
+dependencies:
+  - customer-reporting
+  - customer-insights
+dependency_heads:
+  customer-reporting: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
+  customer-insights: d903860e7fad015e73b7dfff950ee827f0f25534
+allowed_paths:
+  - src/Klyvesta.Domain/Dashboard/**
+  - src/Klyvesta.Application/Dashboard/**
+  - tools/Klyvesta.CustomerDashboardVerifier/**
+  - .ai/work-items/customer-dashboard/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-read-only-dashboard-composition
+    - customer-and-account-scope-validation
+    - reporting-and-insight-authority-propagation
+    - no-restricted-pii-output
+    - no-live-market-provider-or-trading-authority
+    - customer-dashboard-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
