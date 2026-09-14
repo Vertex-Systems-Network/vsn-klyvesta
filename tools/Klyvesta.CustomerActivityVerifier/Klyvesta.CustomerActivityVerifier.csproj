@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.CustomerActivityVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.CustomerActivityVerifier</AssemblyName>
+    <Description>P1-21 customer-activity acceptance verifier.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Klyvesta.Domain/Klyvesta.Domain.csproj" />
+    <ProjectReference Include="../../src/Klyvesta.Application/Klyvesta.Application.csproj" />
+  </ItemGroup>
+</Project>
