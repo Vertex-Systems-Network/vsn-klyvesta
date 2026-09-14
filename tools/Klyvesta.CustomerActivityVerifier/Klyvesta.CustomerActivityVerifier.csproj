@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Klyvesta.CustomerActivityVerifier</RootNamespace>
     <AssemblyName>Klyvesta.CustomerActivityVerifier</AssemblyName>
-    <Description>P1-21 customer-activity acceptance verifier.</Description>
+    <Description>P1-21 deterministic customer-activity acceptance verifier.</Description>
   </PropertyGroup>
 
   <ItemGroup>
