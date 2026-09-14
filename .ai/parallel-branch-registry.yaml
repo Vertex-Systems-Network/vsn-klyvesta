@@ -1,4 +1,4 @@
-version: 13
+version: 14
 created_by_role: supervisor
 created_from_ref: parallel/integration-staging
 created_from_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
@@ -39,6 +39,7 @@ branches:
   - {module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerDashboard-01, start_status: ASSIGNED, started_at: "2026-09-14T21:59:00Z", accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80, reason: api-independent-read-only-customer-dashboard-composition, merge_order_group: 80}
   - {module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: api-independent-customer-scoped-alert-rule-configuration-without-dispatch-authority, merge_order_group: 81}
   - {module: customer-scenarios, branch: parallel/customer-scenarios, agent_slot: agent-customer-scenarios, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: deterministic-paper-scenario-and-risk-view-without-advice-or-execution-authority, merge_order_group: 82}
+  - {module: customer-security-center, branch: parallel/customer-security-center, agent_slot: agent-customer-security-center, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: read-only-customer-scoped-session-device-and-security-state-projection, merge_order_group: 83}
   - {module: ledger, branch: parallel/ledger, agent_slot: agent-ledger, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: e18dc07e6f4af7afcaac2179ac0b5503ba8df8b6, merge_order_group: 10}
   - {module: identity-authorization, branch: parallel/identity-authorization, agent_slot: agent-identity-authorization, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f, merge_order_group: 10}
   - {module: notifications, branch: parallel/notifications, agent_slot: agent-notifications, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 7627c66d346bd68dcfe88839a7e35a86422825bc, merge_order_group: 10}
@@ -50,7 +51,7 @@ branches:
   - {module: supervisor-platform, branch: parallel/supervisor-platform, agent_slot: supervisor, status: ACTIVE, occupancy: OCCUPIED, agent_name: Supervisor, start_status: ACTIVE, merge_order_group: 5}
 
 merge_strategy:
-  independent_ready_modules: [customer-alert-rules, customer-scenarios, database-integration, supervisor-platform, platform-ci]
+  independent_ready_modules: [customer-alert-rules, customer-scenarios, customer-security-center, database-integration, supervisor-platform, platform-ci]
   integrated_dependency_chain: [orders, portfolio, risk, compliance, ai-shadow]
   integration_only_after: [exact-head-ci-green, zero-unresolved-review-threads, ownership-check-green, dependency-head-fresh, instruction-drift-check-recorded, security-review-complete]
   protected_main_rule: promote to main only when repository governance permits it; otherwise integrate only on parallel/integration-staging and record the blocked promotion
