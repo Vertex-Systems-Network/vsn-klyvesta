@@ -165,3 +165,26 @@ Must test:
 
 Safe degradation:
 AI failure must not corrupt portfolio/accounting state. Trading can fall back to manual or pause; financial truth must remain intact.
+
+## Executable performance contract
+
+The `parallel/performance-resilience` lane owns a **non-live performance contract**, not production performance claims.
+
+Machine-readable evidence lives under `perf/`:
+- `load-profile.json` defines deterministic warm-up, MVP steady-state, market-open burst, reconnect-storm and scale-gate inputs;
+- `failure-injection.json` defines dependency failures and the required fail-safe behavior;
+- `performance-baseline.json` mirrors the initial SLO/availability contract and explicitly marks it as **not a production measurement**.
+
+`tools/Klyvesta.PerformanceVerifier` validates these files in canonical CI. It does not generate traffic, call a broker, contact a production endpoint, access customer data or claim measured latency/availability.
+
+Promotion from this contract to real performance acceptance requires separately captured environment evidence with:
+- exact source SHA and deployment identity;
+- runner/load-generator identity;
+- start/end time and workload profile hash;
+- p50/p95/p99 latency plus error rate;
+- saturation/resource telemetry;
+- injected fault and recovery evidence;
+- broker/external-provider latency reported separately;
+- explicit statement of whether financial command paths remained fail-closed.
+
+A green contract verifier means the test plan and thresholds are reproducible. It does **not** mean the product has achieved those SLOs in production.

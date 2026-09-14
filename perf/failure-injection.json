@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "broker-timeout",
+      "component": "broker-adapter",
+      "fault": "timeout",
+      "expected": "command-path-pauses-or-fails-closed-without-fabricated-fill"
+    },
+    {
+      "id": "broker-500",
+      "component": "broker-adapter",
+      "fault": "http-500",
+      "expected": "retry-policy-bounded-and-no-duplicate-economic-intent"
+    },
+    {
+      "id": "duplicate-webhook",
+      "component": "execution-events",
+      "fault": "duplicate-delivery",
+      "expected": "idempotent-consumption-no-double-accounting"
+    },
+    {
+      "id": "out-of-order-webhook",
+      "component": "execution-events",
+      "fault": "reordered-delivery",
+      "expected": "state-machine-rejects-or-reconciles-invalid-sequence"
+    },
+    {
+      "id": "websocket-loss",
+      "component": "market-data",
+      "fault": "connection-drop",
+      "expected": "stale-state-marked-and-reconnect-bounded"
+    },
+    {
+      "id": "redis-unavailable",
+      "component": "cache",
+      "fault": "unavailable",
+      "expected": "financial-truth-never-derived-from-missing-cache"
+    },
+    {
+      "id": "ai-provider-timeout",
+      "component": "ai",
+      "fault": "timeout",
+      "expected": "execution-state-correctness-remains-independent-of-llm"
+    },
+    {
+      "id": "database-partial-failover",
+      "component": "database",
+      "fault": "partial-failover",
+      "expected": "writes-fail-closed-or-reconcile-before-authoritative-state-change"
+    },
+    {
+      "id": "reconciliation-mismatch",
+      "component": "ledger-reconciliation",
+      "fault": "mismatch",
+      "expected": "alert-and-hold-no-silent-financial-correction"
+    }
+  ]
+}
