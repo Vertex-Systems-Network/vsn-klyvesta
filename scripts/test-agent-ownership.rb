@@ -11,13 +11,13 @@ Case = Struct.new(:name, :branch, :files, :expected_success, keyword_init: true)
 cases = [
   Case.new(
     name: 'ready module accepts owned path',
-    branch: 'parallel/customer-data',
-    files: "src/Klyvesta.Domain/Customers/CustomerProfile.cs\n.ai/checkpoints/customer-data.md\n",
+    branch: 'parallel/customer-reporting',
+    files: "src/Klyvesta.Domain/Reporting/CustomerReport.cs\n.ai/checkpoints/customer-reporting.md\n",
     expected_success: true
   ),
   Case.new(
     name: 'module rejects another module path',
-    branch: 'parallel/customer-data',
+    branch: 'parallel/customer-reporting',
     files: "src/Klyvesta.Application/Risk/PaperRiskGovernor.cs\n",
     expected_success: false
   ),
