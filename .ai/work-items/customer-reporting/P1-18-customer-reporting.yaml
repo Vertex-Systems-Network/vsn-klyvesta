@@ -1,0 +1,39 @@
+id: P1-18
+module: customer-reporting
+branch: parallel/customer-reporting
+agent_slot: agent-customer-reporting
+owner_role: module-agent
+base_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+accepted_baseline_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+dependencies:
+  - portfolio
+  - notifications
+dependency_heads:
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+  notifications: 7627c66d346bd68dcfe88839a7e35a86422825bc
+allowed_paths:
+  - src/Klyvesta.Domain/Reporting/**
+  - src/Klyvesta.Application/Reporting/**
+  - tools/Klyvesta.CustomerReportingVerifier/**
+  - .ai/work-items/customer-reporting/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-paper-portfolio-summary
+    - customer-scoped-report-input-validation
+    - no-live-market-or-broker-authority
+    - no-restricted-pii-output
+    - customer-reporting-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

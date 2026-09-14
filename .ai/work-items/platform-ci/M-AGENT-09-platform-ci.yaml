@@ -6,16 +6,21 @@ owner_role: platform-agent
 assigned_agent: ChatGPT-Platform-01
 start_status: ASSIGNED
 started_at: "2026-09-03T17:12:00Z"
-base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
-accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+base_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+accepted_baseline_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
 dependencies: []
 dependency_heads: {}
 allowed_paths:
   - .ai/agent-orchestration.yaml
   - .ai/parallel-branch-registry.yaml
+  - .ai/work-items/platform-ci/**
+  - .ai/work-items/customer-data/**
+  - .ai/work-items/customer-insights/**
+  - .ai/work-items/customer-reporting/**
+  - .ai/work-items/customer-preferences/**
+  - scripts/**
   - tools/Klyvesta.PlatformVerifier/**
   - docs/PLATFORM_CI_AUDIT.md
-  - .ai/work-items/platform-ci/**
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
@@ -33,6 +38,8 @@ acceptance_evidence:
     - workflow-action-pin-audit
     - shared-path-write-boundary-audit
     - platform-verifier
-instruction_drift_check: completed-registration-required-for-canonical-platform-lane
-submission_pr: null
+    - ownership-self-tests
+    - concurrency-capacity
+instruction_drift_check: completed-api-independent-customer-roadmap-registration-2026-09-14
+submission_pr: 107
 integration_baseline_sha: null

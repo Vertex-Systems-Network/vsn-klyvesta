@@ -1,0 +1,38 @@
+id: P1-16
+module: customer-data
+branch: parallel/customer-data
+agent_slot: agent-customer-data
+owner_role: module-agent
+base_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+accepted_baseline_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+dependencies:
+  - identity-authorization
+dependency_heads:
+  identity-authorization: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+allowed_paths:
+  - src/Klyvesta.Domain/Customers/**
+  - src/Klyvesta.Application/Customers/**
+  - src/Klyvesta.Infrastructure/Customers/**
+  - tools/Klyvesta.CustomerDataVerifier/**
+  - .ai/work-items/customer-data/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - customer-ownership-isolation
+    - deterministic-risk-profile-versioning
+    - goals-and-watchlist-state-validation
+    - no-restricted-pii-in-domain-model
+    - customer-data-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

@@ -1,0 +1,39 @@
+id: P1-17
+module: customer-insights
+branch: parallel/customer-insights
+agent_slot: agent-customer-insights
+owner_role: module-agent
+base_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+accepted_baseline_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+dependencies:
+  - portfolio
+  - risk
+dependency_heads:
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+  risk: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+allowed_paths:
+  - src/Klyvesta.Domain/Insights/**
+  - src/Klyvesta.Application/Insights/**
+  - tools/Klyvesta.CustomerInsightsVerifier/**
+  - .ai/work-items/customer-insights/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-concentration-insights
+    - drawdown-and-risk-envelope-insights
+    - goal-progress-input-validation
+    - behavior-signal-no-advice-boundary
+    - customer-insights-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
