@@ -67,6 +67,7 @@ public sealed class DeterministicCustomerDashboardBuilder : ICustomerDashboardBu
             accountReference,
             request.AsOf,
             request.Report.GeneratedAt,
+            request.InsightReport.AsOf,
             period,
             portfolio,
             request.InsightReport.PortfolioValue,
