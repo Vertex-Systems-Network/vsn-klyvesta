@@ -39,15 +39,8 @@ public sealed class BrokerEventTrustGate
         TimeSpan maxFutureSkew)
     {
         ArgumentNullException.ThrowIfNull(signatureVerifier);
-        if (maxAge <= TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxAge));
-        }
-
-        if (maxFutureSkew < TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxFutureSkew));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxAge, TimeSpan.Zero);
+        ArgumentOutOfRangeException.ThrowIfLessThan(maxFutureSkew, TimeSpan.Zero);
 
         _signatureVerifier = signatureVerifier;
         _maxAge = maxAge;
@@ -118,20 +111,10 @@ public sealed record MarketDataTrustPolicy(
 {
     public void Validate()
     {
-        if (MaxAge <= TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(MaxAge));
-        }
-
-        if (MaxFutureSkew < TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(MaxFutureSkew));
-        }
-
-        if (MaxReferenceDeviationFraction < 0m || MaxReferenceDeviationFraction > 1m)
-        {
-            throw new ArgumentOutOfRangeException(nameof(MaxReferenceDeviationFraction));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(MaxAge, TimeSpan.Zero);
+        ArgumentOutOfRangeException.ThrowIfLessThan(MaxFutureSkew, TimeSpan.Zero);
+        ArgumentOutOfRangeException.ThrowIfLessThan(MaxReferenceDeviationFraction, 0m);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(MaxReferenceDeviationFraction, 1m);
     }
 }
 
@@ -209,11 +192,7 @@ public sealed class BrokerDependencySafetyGate
 
     public BrokerDependencySafetyGate(int criticalFailureThreshold = 3)
     {
-        if (criticalFailureThreshold < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(criticalFailureThreshold));
-        }
-
+        ArgumentOutOfRangeException.ThrowIfLessThan(criticalFailureThreshold, 1);
         _criticalFailureThreshold = criticalFailureThreshold;
     }
 
