@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.CustomerInsightsVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.CustomerInsightsVerifier</AssemblyName>
+    <Description>P1-17 deterministic customer-insights acceptance verifier.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Klyvesta.Domain/Klyvesta.Domain.csproj" />
+    <ProjectReference Include="../../src/Klyvesta.Application/Klyvesta.Application.csproj" />
+  </ItemGroup>
+</Project>
