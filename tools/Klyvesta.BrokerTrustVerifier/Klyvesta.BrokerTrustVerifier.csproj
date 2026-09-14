@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.BrokerTrustVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.BrokerTrustVerifier</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Klyvesta.Application/Klyvesta.Application.csproj" />
+  </ItemGroup>
+</Project>
