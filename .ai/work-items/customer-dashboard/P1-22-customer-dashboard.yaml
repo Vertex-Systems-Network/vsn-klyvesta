@@ -38,6 +38,6 @@ acceptance_evidence:
     - no-live-market-provider-or-trading-authority
     - customer-dashboard-verifier
     - exact-head-ci
-instruction_drift_check: pending
-submission_pr: null
+instruction_drift_check: completed-2026-09-15-branch-refreshed-through-67134fe8-while-preserving-original-assignment-baseline-549e8aff
+submission_pr: 121
 integration_baseline_sha: null
