@@ -2,6 +2,7 @@ using Klyvesta.Application;
 using Klyvesta.Infrastructure;
 using Klyvesta.Infrastructure.Services;
 using Klyvesta.Infrastructure.Adapters;
+using Klyvesta.Api.Middleware;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Prometheus;
@@ -13,6 +14,16 @@ builder.Configuration.AddEnvironmentVariables();
 var brokerMode = builder.Configuration.GetValue<string>("Broker:Mode") ?? "Paper";
 var liveTradingEnabled = builder.Configuration.GetValue<bool>("FeatureFlags:LiveTradingEnabled", false);
 var paperTradingEnabled = builder.Configuration.GetValue<bool>("FeatureFlags:PaperTradingEnabled", true);
+
+// Validate security configuration early
+var signingKey = builder.Configuration.GetValue<string>("Security:PayloadSigningKey");
+if (string.IsNullOrEmpty(signingKey) || signingKey.Length < 32)
+{
+    throw new InvalidOperationException(
+        "Security:PayloadSigningKey must be set and at least 32 characters. " +
+        "Generate with: openssl rand -hex 32"
+    );
+}
 
 // Services
 builder.Services.AddControllers();
@@ -36,12 +47,12 @@ builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
 if (brokerMode.Equals("Live", StringComparison.OrdinalIgnoreCase) && liveTradingEnabled)
 {
     builder.Services.AddScoped<IBrokerAdapter, LiveBrokerAdapter>();
-    Console.WriteLine("🔴 LIVE BROKER MODE ENABLED - Real trading active");
+    logger.LogInformation("🔴 LIVE BROKER MODE ENABLED - Real trading active");
 }
 else
 {
     builder.Services.AddScoped<IBrokerAdapter, PaperBrokerAdapter>();
-    Console.WriteLine("🟡 PAPER BROKER MODE - Simulation only");
+    logger.LogInformation("🟡 PAPER BROKER MODE - Simulation only");
 }
 
 // Additional Services (when implemented)
@@ -72,7 +83,13 @@ builder.Services.AddHealthChecks()
 // Prometheus Metrics
 builder.Services.AddMetricServer();
 
+// Logging
+builder.Services.AddLogging();
+
 var app = builder.Build();
+
+// Create logger for startup messages
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 // Middleware Pipeline
 app.UseExceptionHandler();
@@ -89,11 +106,12 @@ if (rateLimitEnabled)
 }
 
 // Payload Signing Middleware (for sensitive endpoints)
-var signingKey = builder.Configuration.GetValue<string>("Security:PayloadSigningKey");
-if (!string.IsNullOrEmpty(signingKey) && signingKey != "ChangeMeInProduction")
-{
-    app.UseMiddleware<PayloadSigningMiddleware>();
-}
+var payloadSigningKey = builder.Configuration.GetValue<string>("Security:PayloadSigningKey");
+// Key validation already performed above - always enable in production
+app.UseMiddleware<PayloadSigningMiddleware>();
+
+// Security Headers Middleware
+app.UseSecurityHeaders();
 
 // Prometheus Metrics
 app.UseHttpMetrics();
@@ -139,8 +157,8 @@ app.MapGet("/", () => Results.Ok(new
     timestamp = DateTime.UtcNow
 }));
 
-Console.WriteLine($"✅ Klyvesta API starting in {brokerMode} mode");
-Console.WriteLine($"📊 Prometheus metrics: http://localhost:5000/metrics");
-Console.WriteLine($"🏥 Health checks: http://localhost:5000/health/ready");
+logger.LogInformation("✅ Klyvesta API starting in {BrokerMode} mode", brokerMode);
+logger.LogInformation("📊 Prometheus metrics: http://localhost:5000/metrics");
+logger.LogInformation("🏥 Health checks: http://localhost:5000/health/ready");
 
 app.Run();

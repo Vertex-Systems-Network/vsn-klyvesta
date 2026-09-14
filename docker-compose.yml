@@ -7,14 +7,18 @@ services:
     build:
       context: .
       dockerfile: src/Klyvesta.Api/Dockerfile
+    env_file:
+      - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=db;Database=klyvesta;Username=postgres;Password=${DB_PASSWORD:-SecurePass123!}
+      - ConnectionStrings__DefaultConnection=Host=db;Database=klyvesta;Username=postgres;Password=${DB_PASSWORD}
       - Serilog__MinimumLevel=Information
       - RateLimiting__Enabled=true
       - RateLimiting__MaxRequestsPerMinute=100
-      - Broker__Mode=Paper # Switch to 'Live' when credentials are ready
-      - Security__PayloadSigningKey=${PAYLOAD_SIGNING_KEY:-ChangeMeInProduction}
+      - Broker__Mode=${BROKER_MODE:-Paper}
+      - Security__PayloadSigningKey=${PAYLOAD_SIGNING_KEY}
+      - FeatureFlags__LiveTradingEnabled=${FEATURE_FLAGS_LIVE_TRADING_ENABLED:-false}
+      - FeatureFlags__PaperTradingEnabled=${FEATURE_FLAGS_PAPER_TRADING_ENABLED:-true}
     ports:
       - "5000:8080"
     depends_on:
@@ -29,10 +33,12 @@ services:
   # PostgreSQL Database
   db:
     image: postgres:15-alpine
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=klyvesta
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${DB_PASSWORD:-SecurePass123!}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
@@ -75,8 +81,10 @@ services:
   # Grafana for Dashboards (Optional but recommended for P4)
   grafana:
     image: grafana/grafana:latest
+    env_file:
+      - .env
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin123}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
     volumes:
       - grafana-data:/var/lib/grafana
       - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
