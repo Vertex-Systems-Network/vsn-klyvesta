@@ -219,30 +219,34 @@ Run("CP-019", "channel output order remains deterministic after mutations", () =
     var customerId = CustomerA();
     var first = Await(service.SetNotificationChannelAsync(customerId, customerId, 0, NotificationChannel.WhatsApp, true));
     var second = Await(service.SetNotificationChannelAsync(customerId, customerId, first.Revision, NotificationChannel.Email, true));
+    var expected = new[]
+    {
+        NotificationChannel.Email,
+        NotificationChannel.Sms,
+        NotificationChannel.Push,
+        NotificationChannel.InApp,
+        NotificationChannel.WhatsApp,
+    };
 
     AssertSequenceEqual(
-        new[]
-        {
-            NotificationChannel.Email,
-            NotificationChannel.Sms,
-            NotificationChannel.Push,
-            NotificationChannel.InApp,
-            NotificationChannel.WhatsApp,
-        },
+        expected,
         second.NotificationChannels.Select(item => item.Channel),
         "mutated channel order");
 });
 
 Run("CP-020", "duplicate notification channel entries are rejected", () =>
 {
-    ExpectThrows<ArgumentException>(() => new CustomerPreferenceSnapshot(
-        CustomerA(),
-        revision: 0,
-        [
-            new CustomerNotificationChannelPreference(NotificationChannel.InApp, true),
-            new CustomerNotificationChannelPreference(NotificationChannel.InApp, false),
-        ],
-        fixedNow));
+    ExpectThrows<ArgumentException>(() =>
+    {
+        _ = new CustomerPreferenceSnapshot(
+            CustomerA(),
+            revision: 0,
+            [
+                new CustomerNotificationChannelPreference(NotificationChannel.InApp, true),
+                new CustomerNotificationChannelPreference(NotificationChannel.InApp, false),
+            ],
+            fixedNow);
+    });
 });
 
 Run("CP-021", "public preference schema requires no contact PII", () =>
@@ -291,6 +295,7 @@ Run("CP-022", "preference authority cannot dispatch, trade or change security po
 {
     var authority = CustomerPreferenceAuthority.PreferenceOnly;
 
+    Assert(authority.CustomerScoped, "authority remains customer scoped");
     Assert(!authority.ContainsContactPii, "contains no contact PII");
     Assert(!authority.CanDispatchNotifications, "cannot dispatch notifications");
     Assert(!authority.CanChangeSecurityPolicy, "cannot change security policy");
