@@ -4,7 +4,7 @@ branch: parallel/customer-insights
 agent_slot: agent-customer-insights
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerInsights-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-14T15:36:00Z"
 base_sha: 499fe56c7448169f22b86172a2c25e8d5729398e
 accepted_baseline_sha: 499fe56c7448169f22b86172a2c25e8d5729398e
@@ -26,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: SUBMITTED
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -43,6 +43,7 @@ acceptance_evidence:
     - goal-progress-input-validation
     - behavior-signal-no-advice-boundary
     - customer-insights-verifier
+    - exact-head-ci
 instruction_drift_check: completed-2026-09-14-customer-insights-start
 submission_pr: 111
-integration_baseline_sha: null
+integration_baseline_sha: d903860e7fad015e73b7dfff950ee827f0f25534
