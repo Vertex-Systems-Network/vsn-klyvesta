@@ -1,4 +1,3 @@
-using System.Globalization;
 using Klyvesta.Domain.Insights;
 using Klyvesta.Domain.Risk;
 
@@ -98,12 +97,12 @@ public sealed class DeterministicCustomerInsightEngine : ICustomerInsightEngine
         ValidatePolicy(request.RiskPolicy);
         ValidateActivity(request.Activity, request.AsOf);
         var valuedPositions = ValidateAndValuePositions(request.Portfolio, request.AsOf);
-        var portfolioValue = request.Portfolio.Cash + valuedPositions.Sum(position => position.Value);
         if (request.Portfolio.Cash < 0m)
         {
             throw new ArgumentOutOfRangeException(nameof(request), "Portfolio cash cannot be negative for customer insights.");
         }
 
+        var portfolioValue = request.Portfolio.Cash + valuedPositions.Sum(position => position.Value);
         if (portfolioValue <= 0m)
         {
             throw new InvalidOperationException("CUSTOMER_INSIGHT_PORTFOLIO_VALUE_REQUIRED");
