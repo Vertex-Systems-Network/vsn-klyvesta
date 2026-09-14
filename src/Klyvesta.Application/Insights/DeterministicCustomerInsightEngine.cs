@@ -222,7 +222,7 @@ public sealed class DeterministicCustomerInsightEngine : ICustomerInsightEngine
     }
 
     private static void AddConcentrationInsights(
-        ICollection<CustomerInsight> insights,
+        List<CustomerInsight> insights,
         IReadOnlyList<ValuedPosition> positions,
         decimal portfolioValue,
         PaperRiskPolicy policy)
@@ -267,7 +267,7 @@ public sealed class DeterministicCustomerInsightEngine : ICustomerInsightEngine
     }
 
     private static void AddExposureInsight(
-        ICollection<CustomerInsight> insights,
+        List<CustomerInsight> insights,
         IReadOnlyList<ValuedPosition> positions,
         decimal portfolioValue,
         PaperRiskPolicy policy,
@@ -299,7 +299,7 @@ public sealed class DeterministicCustomerInsightEngine : ICustomerInsightEngine
     }
 
     private static void AddDrawdownInsight(
-        ICollection<CustomerInsight> insights,
+        List<CustomerInsight> insights,
         decimal portfolioValue,
         decimal peakPortfolioValue,
         CustomerInsightThresholds thresholds)
@@ -323,7 +323,7 @@ public sealed class DeterministicCustomerInsightEngine : ICustomerInsightEngine
     }
 
     private static void AddGoalInsight(
-        ICollection<CustomerInsight> insights,
+        List<CustomerInsight> insights,
         CustomerGoalProgressInput goal,
         DateTimeOffset asOf,
         CustomerInsightThresholds thresholds)
@@ -350,7 +350,7 @@ public sealed class DeterministicCustomerInsightEngine : ICustomerInsightEngine
     }
 
     private static void AddActivityInsight(
-        ICollection<CustomerInsight> insights,
+        List<CustomerInsight> insights,
         RiskActivityWindow activity,
         PaperRiskPolicy policy,
         CustomerInsightThresholds thresholds)
