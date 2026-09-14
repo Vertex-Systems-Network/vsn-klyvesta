@@ -61,6 +61,6 @@ public sealed class ComplianceCheckResult
         DenialReason = denialReason;
     }
     
-    public static ComplianceCheckResult Approved() => new(true, null);
+    public static ComplianceCheckResult Pass() => new(true, null);
     public static ComplianceCheckResult Denied(string reason) => new(false, reason);
 }

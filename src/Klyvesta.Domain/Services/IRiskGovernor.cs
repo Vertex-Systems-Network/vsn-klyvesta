@@ -62,6 +62,6 @@ public sealed class RiskCheckResult
         DenialReason = denialReason;
     }
     
-    public static RiskCheckResult Approved() => new(true, null);
+    public static RiskCheckResult Pass() => new(true, null);
     public static RiskCheckResult Denied(string reason) => new(false, reason);
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Klyvesta.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca14b94459b881d9ae4ea3c9a79dfa92c9ad2240")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aeafa5be984555dcba3b2ec6af1b3ec52e02a0f0")]
 [assembly: System.Reflection.AssemblyProductAttribute("Klyvesta.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Klyvesta.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
