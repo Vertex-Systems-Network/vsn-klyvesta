@@ -27,7 +27,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -38,6 +38,12 @@ acceptance_evidence:
     - no-contact-pii-required
     - customer-preferences-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-14-customer-preferences-baseline-refresh
-submission_pr: null
+  satisfied:
+    - user-owned-preference-isolation
+    - notification-channel-preference-validation
+    - privacy-safe-defaults
+    - no-contact-pii-required
+    - customer-preferences-verifier
+instruction_drift_check: completed-2026-09-14-customer-preferences-submission
+submission_pr: 115
 integration_baseline_sha: null
