@@ -257,7 +257,7 @@ Run("CP-021", "public preference schema requires no contact PII", () =>
         typeof(CustomerNotificationChannelPreference),
         typeof(CustomerPreferenceAuthority),
     };
-    var prohibitedFragments = new[]
+    var prohibitedFragments = new List<string>
     {
         "emailaddress",
         "phone",
