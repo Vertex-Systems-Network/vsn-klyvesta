@@ -3,8 +3,11 @@ module: customer-data
 branch: parallel/customer-data
 agent_slot: agent-customer-data
 owner_role: module-agent
-base_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
-accepted_baseline_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+assigned_agent: ChatGPT-CustomerData-01
+start_status: ASSIGNED
+started_at: "2026-09-14T14:51:00Z"
+base_sha: ce2be188c8828b0913a67f565fd0f4e4dd88e320
+accepted_baseline_sha: ce2be188c8828b0913a67f565fd0f4e4dd88e320
 dependencies:
   - identity-authorization
 dependency_heads:
@@ -22,7 +25,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: READY
+status: ACTIVE
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -33,6 +36,6 @@ acceptance_evidence:
     - no-restricted-pii-in-domain-model
     - customer-data-verifier
     - exact-head-ci
-instruction_drift_check: pending
+instruction_drift_check: completed-2026-09-14-api-independent-customer-data-start
 submission_pr: null
 integration_baseline_sha: null
