@@ -181,6 +181,24 @@ modules:
     allowed_paths: [src/Klyvesta.Domain/Customers/**, src/Klyvesta.Application/Customers/**, src/Klyvesta.Infrastructure/Customers/**, tools/Klyvesta.CustomerDataVerifier/**]
     dependencies: [identity-authorization]
     contracts: [ICustomerProfileStore]
+  customer-insights:
+    owner_role: module-agent
+    canonical_branch: parallel/customer-insights
+    allowed_paths: [src/Klyvesta.Domain/Insights/**, src/Klyvesta.Application/Insights/**, tools/Klyvesta.CustomerInsightsVerifier/**]
+    dependencies: [portfolio, risk]
+    contracts: [ICustomerInsightEngine]
+  customer-reporting:
+    owner_role: module-agent
+    canonical_branch: parallel/customer-reporting
+    allowed_paths: [src/Klyvesta.Domain/Reporting/**, src/Klyvesta.Application/Reporting/**, tools/Klyvesta.CustomerReportingVerifier/**]
+    dependencies: [portfolio, notifications]
+    contracts: [ICustomerReportBuilder]
+  customer-preferences:
+    owner_role: module-agent
+    canonical_branch: parallel/customer-preferences
+    allowed_paths: [src/Klyvesta.Domain/Preferences/**, src/Klyvesta.Application/Preferences/**, src/Klyvesta.Infrastructure/Preferences/**, tools/Klyvesta.CustomerPreferencesVerifier/**]
+    dependencies: [identity-authorization, notifications]
+    contracts: [ICustomerPreferenceStore]
   ledger:
     owner_role: module-agent
     canonical_branch: parallel/ledger
@@ -212,7 +230,7 @@ modules:
   platform-ci:
     owner_role: platform-agent
     canonical_branch: parallel/platform-ci
-    allowed_paths: [.ai/agent-orchestration.yaml, .ai/parallel-branch-registry.yaml, .ai/work-items/platform-ci/**, .ai/work-items/customer-data/**, scripts/**, tools/Klyvesta.PlatformVerifier/**, docs/PLATFORM_CI_AUDIT.md]
+    allowed_paths: [.ai/agent-orchestration.yaml, .ai/parallel-branch-registry.yaml, .ai/work-items/platform-ci/**, .ai/work-items/customer-data/**, .ai/work-items/customer-insights/**, .ai/work-items/customer-reporting/**, .ai/work-items/customer-preferences/**, scripts/**, tools/Klyvesta.PlatformVerifier/**, docs/PLATFORM_CI_AUDIT.md]
 
 instruction_drift:
   required_every_task_start: true
