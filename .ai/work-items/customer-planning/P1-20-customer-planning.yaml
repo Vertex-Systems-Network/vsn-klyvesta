@@ -1,0 +1,41 @@
+id: P1-20
+module: customer-planning
+branch: parallel/customer-planning
+agent_slot: agent-customer-planning
+owner_role: module-agent
+base_sha: 08f6177d19852e18c78312838860a9aac223571c
+accepted_baseline_sha: 08f6177d19852e18c78312838860a9aac223571c
+dependencies:
+  - customer-data
+  - portfolio
+  - risk
+dependency_heads:
+  customer-data: 08f6177d19852e18c78312838860a9aac223571c
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+  risk: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+allowed_paths:
+  - src/Klyvesta.Domain/Planning/**
+  - src/Klyvesta.Application/Planning/**
+  - tools/Klyvesta.CustomerPlanningVerifier/**
+  - .ai/work-items/customer-planning/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-goal-projection
+    - contribution-gap-calculation
+    - risk-band-input-boundary
+    - no-advice-no-trading-authority
+    - customer-planning-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
