@@ -50,6 +50,7 @@ public sealed record CustomerDashboardSnapshot(
     string AccountReference,
     DateTimeOffset AsOf,
     DateTimeOffset ReportGeneratedAt,
+    DateTimeOffset InsightsAsOf,
     CustomerReportPeriod ReportPeriod,
     CustomerDashboardPortfolioSummary Portfolio,
     decimal InsightPortfolioValue,
