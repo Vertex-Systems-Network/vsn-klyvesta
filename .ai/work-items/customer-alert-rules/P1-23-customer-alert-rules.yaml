@@ -1,0 +1,41 @@
+id: P1-23
+module: customer-alert-rules
+branch: parallel/customer-alert-rules
+agent_slot: agent-customer-alert-rules
+owner_role: module-agent
+base_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
+accepted_baseline_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
+dependencies:
+  - customer-preferences
+  - notifications
+dependency_heads:
+  customer-preferences: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
+  notifications: 7627c66d346bd68dcfe88839a7e35a86422825bc
+allowed_paths:
+  - src/Klyvesta.Domain/AlertRules/**
+  - src/Klyvesta.Application/AlertRules/**
+  - src/Klyvesta.Infrastructure/AlertRules/**
+  - tools/Klyvesta.CustomerAlertRulesVerifier/**
+  - .ai/work-items/customer-alert-rules/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - customer-owned-rule-isolation
+    - deterministic-rule-validation
+    - preference-channel-boundary
+    - no-contact-pii-required
+    - no-dispatch-no-live-market-no-trading-authority
+    - customer-alert-rules-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
