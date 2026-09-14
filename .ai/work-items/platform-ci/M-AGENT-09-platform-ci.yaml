@@ -20,6 +20,7 @@ allowed_paths:
   - .ai/work-items/customer-preferences/**
   - .ai/work-items/customer-planning/**
   - .ai/work-items/customer-activity/**
+  - .ai/work-items/customer-dashboard/**
   - scripts/**
   - tools/Klyvesta.PlatformVerifier/**
   - docs/PLATFORM_CI_AUDIT.md
@@ -42,6 +43,6 @@ acceptance_evidence:
     - platform-verifier
     - ownership-self-tests
     - concurrency-capacity
-instruction_drift_check: completed-reporting-closeout-and-preferences-activation-2026-09-14
+instruction_drift_check: completed-reporting-closeout-preferences-activation-dashboard-capacity-2026-09-14
 submission_pr: null
 integration_baseline_sha: null
