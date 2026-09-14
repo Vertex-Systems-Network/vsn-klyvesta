@@ -7,14 +7,25 @@ using Klyvesta.Domain.Reporting;
 var failures = new List<string>();
 var passes = 0;
 
-Run("CR-001", "same inputs produce deterministic reports", () =>
+Run("CR-001", "same inputs produce structurally deterministic reports", () =>
 {
     var builder = new DeterministicCustomerReportBuilder();
     var request = DefaultRequest();
     var first = builder.Build(request);
     var second = builder.Build(request);
 
-    AssertEqual(first, second, "deterministic report equality");
+    AssertEqual(first.AccountReference, second.AccountReference, "account reference");
+    AssertEqual(first.Period, second.Period, "period");
+    AssertEqual(first.GeneratedAt, second.GeneratedAt, "generated at");
+    AssertEqual(first.Cash, second.Cash, "cash");
+    AssertEqual(first.InvestedCostBasis, second.InvestedCostBasis, "invested cost basis");
+    AssertEqual(first.BookValue, second.BookValue, "book value");
+    AssertSequenceEqual(first.Positions, second.Positions, "positions");
+    AssertEqual(first.LastProjectionSequence, second.LastProjectionSequence, "last sequence");
+    AssertEqual(first.SourceEventCount, second.SourceEventCount, "source event count");
+    AssertEqual(first.ExecutionCount, second.ExecutionCount, "execution count");
+    AssertEqual(first.Delivery, second.Delivery, "delivery metadata");
+    AssertEqual(first.Authority, second.Authority, "authority");
 });
 
 Run("CR-002", "cash-only paper portfolio produces cash book value", () =>
@@ -35,8 +46,9 @@ Run("CR-003", "positions are ordinally sorted and cost basis is exact", () =>
         new("AAA", 3m, 50m),
     };
     var report = new DeterministicCustomerReportBuilder().Build(DefaultRequest(cash: 100m, positions: positions));
+    var expectedOrder = new List<string> { "AAA", "ZZZ" };
 
-    AssertSequenceEqual(new[] { "AAA", "ZZZ" }, report.Positions.Select(position => position.InstrumentReference), "position ordering");
+    AssertSequenceEqual(expectedOrder, report.Positions.Select(position => position.InstrumentReference), "position ordering");
     AssertEqual(150m, report.Positions[0].CostBasis, "AAA cost basis");
     AssertEqual(250m, report.Positions[1].CostBasis, "ZZZ cost basis");
     AssertEqual(400m, report.InvestedCostBasis, "total invested cost basis");
@@ -184,14 +196,14 @@ Run("CR-018", "report authority is paper-only and non-executing", () =>
 
 Run("CR-019", "report output schema excludes restricted PII fields", () =>
 {
-    var outputTypes = new[]
+    var outputTypes = new List<Type>
     {
         typeof(CustomerPortfolioReport),
         typeof(CustomerReportPosition),
         typeof(CustomerReportDeliveryMetadata),
         typeof(CustomerReportAuthority),
     };
-    var prohibitedFragments = new[]
+    var prohibitedFragments = new List<string>
     {
         "cnic",
         "passport",
@@ -251,13 +263,25 @@ Run("CR-022", "empty paper projection can be represented without live valuation"
     Assert(report.Authority.PaperOnly, "empty report remains paper only");
 });
 
+Run("CR-023", "instrument identity is normalized before duplicate detection", () =>
+{
+    var positions = new List<ProjectedPosition>
+    {
+        new("AAA", 1m, 10m),
+        new("  AAA  ", 2m, 10m),
+    };
+    ExpectInvalidOperation(
+        () => new DeterministicCustomerReportBuilder().Build(DefaultRequest(positions: positions)),
+        "CUSTOMER_REPORT_DUPLICATE_INSTRUMENT");
+});
+
 if (failures.Count != 0)
 {
-    Console.Error.WriteLine($"Customer reporting verifier FAILED ({failures.Count}/22): {string.Join(", ", failures)}");
+    Console.Error.WriteLine($"Customer reporting verifier FAILED ({failures.Count}/23): {string.Join(", ", failures)}");
     return 1;
 }
 
-Console.WriteLine($"Customer reporting verifier PASS ({passes}/22).");
+Console.WriteLine($"Customer reporting verifier PASS ({passes}/23).");
 return 0;
 
 void Run(string id, string name, Action action)
