@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 const string DemoCookieName = "klyvesta_demo_preview";
+const string DemoMutationHeader = "X-Demo-Request";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,10 @@ if (demoEnabled && !demoEnvironmentAllowed)
 
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
+if (demoEnabled)
+{
+    builder.Services.AddSingleton<DemoUserDataStore>();
+}
 
 var app = builder.Build();
 
@@ -34,6 +39,12 @@ if (demoEnabled)
         context.Response.Headers.CacheControl = "no-store, no-cache, must-revalidate";
         context.Response.Headers.Append("Pragma", "no-cache");
         context.Response.Headers.Append("X-Robots-Tag", "noindex, nofollow, noarchive");
+        context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+        context.Response.Headers.Append("X-Frame-Options", "DENY");
+        context.Response.Headers.Append("Referrer-Policy", "no-referrer");
+        context.Response.Headers.Append(
+            "Content-Security-Policy",
+            "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
         await next();
     });
 
@@ -46,6 +57,7 @@ if (demoEnabled)
         mode = "demo-preview",
         environment = environment.EnvironmentName,
         database = "bypassed",
+        userDataStore = "local-json",
         broker = "synthetic-paper-data",
         pypsx = "not-connected",
         realMoney = false,
@@ -87,55 +99,258 @@ if (demoEnabled)
         return Results.Ok(new { authenticated = false });
     });
 
-    app.MapGet("/api/demo/dashboard", (HttpContext context) =>
+    app.MapGet("/api/demo/dashboard", async (
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
     {
-        if (!context.Request.Cookies.TryGetValue(DemoCookieName, out var demoCookie)
-            || !string.Equals(demoCookie, "active", StringComparison.Ordinal))
+        if (!IsDemoAuthenticated(context))
         {
             return Results.Unauthorized();
         }
+
+        var state = await store.GetAsync(cancellationToken);
+        var holdings = state.PaperPortfolio.Holdings
+            .Select(holding => new
+            {
+                symbol = holding.Symbol,
+                name = holding.Name,
+                quantity = holding.Quantity,
+                price = holding.Price,
+                value = holding.Value,
+                changePercent = holding.ChangePercent,
+            })
+            .ToArray();
+        var holdingsValue = state.PaperPortfolio.Holdings.Sum(holding => holding.Value);
+        var portfolioValue = state.PaperPortfolio.Cash + holdingsValue;
+        var dayChange = CalculateDayChange(state.PaperPortfolio.Holdings);
+        var dayChangePercent = portfolioValue - dayChange == 0m
+            ? 0m
+            : dayChange / (portfolioValue - dayChange) * 100m;
+        var watchlist = state.WatchlistSymbols
+            .Where(DemoMarketCatalog.Contains)
+            .Select(DemoMarketCatalog.Get)
+            .ToArray();
+        var insight = BuildAiInsight(state, portfolioValue);
 
         return Results.Ok(new
         {
             asOf = DateTimeOffset.UtcNow,
             account = new
             {
-                name = "Demo Investor",
+                name = state.Profile.DisplayName,
                 accountId = "KLY-DEMO-001",
                 mode = "AI Assisted — Preview",
-                cash = 387_500m,
-                portfolioValue = 1_842_750m,
-                dayChange = 18_425m,
-                dayChangePercent = 1.01m,
+                cash = state.PaperPortfolio.Cash,
+                portfolioValue,
+                dayChange,
+                dayChangePercent,
             },
-            holdings = new[]
-            {
-                new { symbol = "HBL", name = "Habib Bank Limited", quantity = 2400, price = 126.40m, value = 303_360m, changePercent = 1.42m },
-                new { symbol = "LUCK", name = "Lucky Cement", quantity = 510, price = 918.75m, value = 468_562.50m, changePercent = 0.74m },
-                new { symbol = "SYS", name = "Systems Limited", quantity = 1500, price = 548.20m, value = 822_300m, changePercent = 1.91m },
-                new { symbol = "MEBL", name = "Meezan Bank", quantity = 910, price = 273.11m, value = 248_530.10m, changePercent = -0.36m },
-            },
-            watchlist = new[]
-            {
-                new { symbol = "OGDC", price = 232.14m, changePercent = 0.62m },
-                new { symbol = "ENGROH", price = 214.32m, changePercent = -0.18m },
-                new { symbol = "FFC", price = 414.90m, changePercent = 1.08m },
-                new { symbol = "PSO", price = 368.70m, changePercent = 0.41m },
-            },
-            orders = new[]
-            {
-                new { symbol = "SYS", side = "BUY", quantity = 250, type = "LIMIT", status = "PAPER FILLED", price = 541.50m },
-                new { symbol = "HBL", side = "BUY", quantity = 400, type = "LIMIT", status = "PAPER FILLED", price = 124.10m },
-                new { symbol = "MEBL", side = "SELL", quantity = 100, type = "LIMIT", status = "PAPER OPEN", price = 276.00m },
-            },
-            aiInsight = new
-            {
-                title = "Portfolio concentration check",
-                message = "Synthetic preview: technology exposure is elevated versus the sample target. Review diversification before taking any action.",
-                confidence = "Demo only — not investment advice",
-            },
+            profile = state.Profile,
+            riskProfile = state.RiskProfile,
+            goals = state.Goals,
+            holdings,
+            watchlist,
+            availableWatchlistSymbols = DemoMarketCatalog.Symbols,
+            orders = state.PaperPortfolio.Orders,
+            activity = state.Activity.Take(12),
+            aiInsight = insight,
             safeguards = DemoPreviewData.Safeguards,
         });
+    });
+
+    app.MapGet("/api/demo/profile", async (
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoAuthenticated(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var state = await store.GetAsync(cancellationToken);
+        return Results.Ok(state.Profile);
+    });
+
+    app.MapPut("/api/demo/profile", async (
+        DemoProfileUpdateRequest request,
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var displayName = request.DisplayName?.Trim() ?? string.Empty;
+        var experienceLevel = request.ExperienceLevel?.Trim() ?? string.Empty;
+        var investmentHorizon = request.InvestmentHorizon?.Trim() ?? string.Empty;
+        var primaryGoal = request.PrimaryGoal?.Trim() ?? string.Empty;
+        if (!HasLength(displayName, 2, 80)
+            || !HasLength(experienceLevel, 2, 40)
+            || !HasLength(investmentHorizon, 2, 40)
+            || !HasLength(primaryGoal, 2, 120)
+            || request.MonthlyContribution is < 0m or > 100_000_000m)
+        {
+            return Results.BadRequest(new { error = "PROFILE_INPUT_INVALID" });
+        }
+
+        var state = await store.UpdateProfileAsync(
+            new DemoInvestorProfile(
+                displayName,
+                experienceLevel,
+                investmentHorizon,
+                primaryGoal,
+                request.MonthlyContribution),
+            cancellationToken);
+        return Results.Ok(state.Profile);
+    });
+
+    app.MapPut("/api/demo/risk-profile", async (
+        DemoRiskAnswers request,
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        if (!IsRiskAnswerValid(request.LossTolerance)
+            || !IsRiskAnswerValid(request.MarketExperience)
+            || !IsRiskAnswerValid(request.HorizonCapacity)
+            || !IsRiskAnswerValid(request.LiquidityNeed))
+        {
+            return Results.BadRequest(new { error = "RISK_ANSWER_INVALID", allowedRange = "1-5" });
+        }
+
+        var state = await store.UpdateRiskAnswersAsync(request, cancellationToken);
+        return Results.Ok(state.RiskProfile);
+    });
+
+    app.MapGet("/api/demo/goals", async (
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoAuthenticated(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var state = await store.GetAsync(cancellationToken);
+        return Results.Ok(state.Goals);
+    });
+
+    app.MapPost("/api/demo/goals", async (
+        DemoGoalCreateRequest request,
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var name = request.Name?.Trim() ?? string.Empty;
+        if (!HasLength(name, 2, 100)
+            || request.TargetAmount <= 0m
+            || request.TargetAmount > 1_000_000_000_000m
+            || request.CurrentAmount < 0m
+            || request.CurrentAmount > request.TargetAmount
+            || !DateOnly.TryParse(request.TargetDate, out _))
+        {
+            return Results.BadRequest(new { error = "GOAL_INPUT_INVALID" });
+        }
+
+        var goal = new DemoGoal(
+            Guid.CreateVersion7(),
+            name,
+            request.TargetAmount,
+            request.CurrentAmount,
+            request.TargetDate!,
+            "active");
+        var state = await store.AddGoalAsync(goal, cancellationToken);
+        return Results.Ok(state.Goals);
+    });
+
+    app.MapDelete("/api/demo/goals/{goalId:guid}", async (
+        Guid goalId,
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var state = await store.RemoveGoalAsync(goalId, cancellationToken);
+        return Results.Ok(state.Goals);
+    });
+
+    app.MapPost("/api/demo/watchlist", async (
+        DemoWatchlistRequest request,
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var symbol = request.Symbol?.Trim().ToUpperInvariant() ?? string.Empty;
+        if (!DemoMarketCatalog.Contains(symbol))
+        {
+            return Results.BadRequest(new
+            {
+                error = "WATCHLIST_SYMBOL_INVALID",
+                allowedSymbols = DemoMarketCatalog.Symbols,
+            });
+        }
+
+        var state = await store.AddWatchlistSymbolAsync(symbol, cancellationToken);
+        return Results.Ok(state.WatchlistSymbols.Select(DemoMarketCatalog.Get));
+    });
+
+    app.MapDelete("/api/demo/watchlist/{symbol}", async (
+        string symbol,
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        var normalized = symbol.Trim().ToUpperInvariant();
+        if (!DemoMarketCatalog.Contains(normalized))
+        {
+            return Results.BadRequest(new { error = "WATCHLIST_SYMBOL_INVALID" });
+        }
+
+        var state = await store.RemoveWatchlistSymbolAsync(normalized, cancellationToken);
+        return Results.Ok(state.WatchlistSymbols.Select(DemoMarketCatalog.Get));
+    });
+
+    app.MapPost("/api/demo/reset", async (
+        HttpContext context,
+        DemoUserDataStore store,
+        CancellationToken cancellationToken) =>
+    {
+        if (!IsDemoMutationAuthorized(context))
+        {
+            return Results.Unauthorized();
+        }
+
+        await store.ResetAsync(cancellationToken);
+        return Results.Ok(new { reset = true });
     });
 }
 else
@@ -157,15 +372,85 @@ app.MapHealthChecks("/health/ready");
 
 app.Run();
 
+static bool IsDemoAuthenticated(HttpContext context) =>
+    context.Request.Cookies.TryGetValue(DemoCookieName, out var demoCookie)
+    && string.Equals(demoCookie, "active", StringComparison.Ordinal);
+
+static bool IsDemoMutationAuthorized(HttpContext context) =>
+    IsDemoAuthenticated(context)
+    && context.Request.Headers.TryGetValue(DemoMutationHeader, out var header)
+    && string.Equals(header.ToString(), "1", StringComparison.Ordinal);
+
+static bool HasLength(string value, int minimum, int maximum) =>
+    value.Length >= minimum && value.Length <= maximum;
+
+static bool IsRiskAnswerValid(int value) => value is >= 1 and <= 5;
+
+static decimal CalculateDayChange(IReadOnlyList<DemoPaperHolding> holdings)
+{
+    var total = 0m;
+    foreach (var holding in holdings)
+    {
+        var denominator = 1m + holding.ChangePercent / 100m;
+        if (denominator <= 0m)
+        {
+            continue;
+        }
+
+        var previousValue = holding.Value / denominator;
+        total += holding.Value - previousValue;
+    }
+
+    return decimal.Round(total, 2, MidpointRounding.AwayFromZero);
+}
+
+static DemoAiInsight BuildAiInsight(DemoUserState state, decimal portfolioValue)
+{
+    var topHolding = state.PaperPortfolio.Holdings
+        .OrderByDescending(holding => holding.Value)
+        .FirstOrDefault();
+    if (topHolding is null || portfolioValue <= 0m)
+    {
+        return new DemoAiInsight(
+            "Portfolio context incomplete",
+            "Add paper holdings before generating a synthetic concentration insight.",
+            "Demo only — not investment advice");
+    }
+
+    var concentration = decimal.Round(topHolding.Value / portfolioValue * 100m, 1, MidpointRounding.AwayFromZero);
+    return new DemoAiInsight(
+        "Profile-aware concentration check",
+        $"Synthetic preview: {topHolding.Symbol} is {concentration}% of modeled NAV. Your demo risk band is {state.RiskProfile.RiskBand}. Review diversification and goal fit before taking any action.",
+        "Deterministic demo insight — not suitability, advice, or a live recommendation");
+}
+
 internal sealed record DemoLoginRequest(string? Email, string? Password);
+
+internal sealed record DemoProfileUpdateRequest(
+    string? DisplayName,
+    string? ExperienceLevel,
+    string? InvestmentHorizon,
+    string? PrimaryGoal,
+    decimal MonthlyContribution);
+
+internal sealed record DemoGoalCreateRequest(
+    string? Name,
+    decimal TargetAmount,
+    decimal CurrentAmount,
+    string? TargetDate);
+
+internal sealed record DemoWatchlistRequest(string? Symbol);
+
+internal sealed record DemoAiInsight(string Title, string Message, string Confidence);
 
 internal static class DemoPreviewData
 {
     internal static readonly string[] Safeguards =
     [
-        "No database connection",
+        "No PostgreSQL connection",
         "No pyPSX credentials or network calls",
-        "No real orders or funds",
-        "Synthetic market and portfolio data only",
+        "No real orders, deposits, withdrawals, or funds",
+        "Synthetic profile, risk, market, and portfolio data only",
+        "Local JSON demo state contains no production KYC or restricted PII",
     ];
 }
