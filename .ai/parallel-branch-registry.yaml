@@ -24,7 +24,7 @@ supervisor:
     - resume paused supervisor work after review/integration
 
 branches:
-  - {module: brokerage, branch: parallel/brokerage, agent_slot: agent-brokerage, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: reconciled-into-integration-staging, integrated_sha: 494345de9541c41a73bb6a7f9583e1c547ea2db8, merge_order_group: 20}
+  - {module: brokerage, branch: parallel/brokerage, agent_slot: agent-brokerage, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: api-independent-broker-trust-hardening, merge_order_group: 20}
   - {module: orders, branch: parallel/orders, agent_slot: agent-orders, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: reconciled-into-integration-staging, integrated_sha: 9d017ba3b63773d27fb22b5063ac46b2bd46158b, merge_order_group: 30}
   - {module: portfolio, branch: parallel/portfolio, agent_slot: agent-portfolio, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: reconciled-into-integration-staging, integrated_sha: ca8fac46ab7920743c32835f47f06e8bb60a4ba1, merge_order_group: 40}
   - {module: risk, branch: parallel/risk, agent_slot: agent-risk, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: reconciled-into-integration-staging, integrated_sha: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64, merge_order_group: 50}
@@ -41,7 +41,7 @@ branches:
   - {module: supervisor-platform, branch: parallel/supervisor-platform, agent_slot: supervisor, status: ACTIVE, occupancy: OCCUPIED, agent_name: Supervisor, start_status: ACTIVE, merge_order_group: 5}
 
 merge_strategy:
-  independent_ready_modules: [supervisor-platform, ledger, identity-authorization, notifications, observability, performance-resilience, platform-ci]
-  integrated_dependency_chain: [brokerage, orders, portfolio, risk, compliance, ai-shadow]
+  independent_ready_modules: [supervisor-platform, ledger, identity-authorization, notifications, observability, performance-resilience, platform-ci, brokerage]
+  integrated_dependency_chain: [orders, portfolio, risk, compliance, ai-shadow]
   integration_only_after: [exact-head-ci-green, zero-unresolved-review-threads, ownership-check-green, dependency-head-fresh, instruction-drift-check-recorded, security-review-complete]
   protected_main_rule: promote to main only when repository governance permits it; otherwise integrate only on parallel/integration-staging and record the blocked promotion
