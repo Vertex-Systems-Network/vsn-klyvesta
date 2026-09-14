@@ -16,7 +16,7 @@ allowed_paths:
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 acceptance_evidence:
   required:
@@ -26,8 +26,11 @@ acceptance_evidence:
     - dependency-pause-and-verified-recovery
     - exact-head-regression-green
   satisfied:
-    - pre-canonical-implementation-dotnet-foundation-green
+    - provider-neutral-event-signature-boundary
+    - event-replay-protection
+    - market-data-session-freshness-and-deviation-gates
+    - dependency-pause-and-verified-recovery
 instruction_drift_check: completed
-submission_pr: null
+submission_pr: 101
 integration_baseline_sha: null
 production_authority: false
