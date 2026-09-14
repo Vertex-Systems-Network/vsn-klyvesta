@@ -40,7 +40,7 @@ The implementation foundation and non-live safety boundaries may be validated in
 | Risk | `██████████ 100%` | 2026-09-01 | 2026-09-03 | Integrated — deterministic paper risk governor |
 | Compliance | `██████████ 100%` | 2026-09-01 | 2026-09-03 | Integrated — deterministic paper compliance gate |
 | AI Shadow | `██████████ 100%` | 2026-09-01 | 2026-09-03 | Integrated — AI proposal/paper-shadow boundary; no direct execution authority |
-| Identity & Authorization | `█████████░ 95%` | 2026-09-03 | 2026-09-14 | Final staging verification — withdrawal/session/break-glass hardening in PR #102 |
+| Identity & Authorization | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — withdrawal, session/device revocation and maker-checker break-glass hardening |
 | Ledger | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — immutable non-live double-entry boundary |
 | Notifications | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — provider-neutral delivery boundary; production provider pending |
 | Observability | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — structured secret-safe boundary; production telemetry provider pending |
@@ -58,8 +58,8 @@ The implementation foundation and non-live safety boundaries may be validated in
 | AI-agent prompt-injection hardening | 2026-09-14 | 2026-09-14 | Done |
 | EF Core dependency alignment | 2026-09-14 | 2026-09-14 | Done |
 | Broker trust canonicalization + staging merge | 2026-09-14 | 2026-09-14 | Done |
-| Withdrawal/session/break-glass canonicalization | 2026-09-14 | 2026-09-14 | Final verification / close today |
-| README module tracking table | 2026-09-14 | 2026-09-14 | In progress / close today |
+| Withdrawal/session/break-glass canonicalization | 2026-09-14 | 2026-09-14 | Done |
+| README module tracking table | 2026-09-14 | 2026-09-14 | Done in PR #103 |
 | Stale/experimental PR cleanup | 2026-09-14 | 2026-09-14 | Done |
 | pyPSX live adapter | — | — | Blocked until partner API/contract arrives |
 
