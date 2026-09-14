@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Final P1-18 acceptance marker: no behavior or dependency change. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.CustomerReportingVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.CustomerReportingVerifier</AssemblyName>
+    <Description>P1-18 deterministic customer-reporting acceptance verifier.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Klyvesta.Domain/Klyvesta.Domain.csproj" />
+    <ProjectReference Include="../../src/Klyvesta.Application/Klyvesta.Application.csproj" />
+  </ItemGroup>
+</Project>
