@@ -1,4 +1,4 @@
-version: 4
+version: 5
 status: multi-agent-orchestration-operational-candidate
 canonical_human_plan: docs/PARALLEL_AGENT_DEVELOPMENT.md
 canonical_supervisor_workflow: docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md
@@ -199,6 +199,12 @@ modules:
     allowed_paths: [src/Klyvesta.Domain/Preferences/**, src/Klyvesta.Application/Preferences/**, src/Klyvesta.Infrastructure/Preferences/**, tools/Klyvesta.CustomerPreferencesVerifier/**]
     dependencies: [identity-authorization, notifications]
     contracts: [ICustomerPreferenceStore]
+  customer-planning:
+    owner_role: module-agent
+    canonical_branch: parallel/customer-planning
+    allowed_paths: [src/Klyvesta.Domain/Planning/**, src/Klyvesta.Application/Planning/**, tools/Klyvesta.CustomerPlanningVerifier/**]
+    dependencies: [customer-data, portfolio, risk]
+    contracts: [ICustomerPlanningEngine]
   ledger:
     owner_role: module-agent
     canonical_branch: parallel/ledger
@@ -230,7 +236,7 @@ modules:
   platform-ci:
     owner_role: platform-agent
     canonical_branch: parallel/platform-ci
-    allowed_paths: [.ai/agent-orchestration.yaml, .ai/parallel-branch-registry.yaml, .ai/work-items/platform-ci/**, .ai/work-items/customer-data/**, .ai/work-items/customer-insights/**, .ai/work-items/customer-reporting/**, .ai/work-items/customer-preferences/**, scripts/**, tools/Klyvesta.PlatformVerifier/**, docs/PLATFORM_CI_AUDIT.md]
+    allowed_paths: [.ai/agent-orchestration.yaml, .ai/parallel-branch-registry.yaml, .ai/work-items/platform-ci/**, .ai/work-items/customer-data/**, .ai/work-items/customer-insights/**, .ai/work-items/customer-reporting/**, .ai/work-items/customer-preferences/**, .ai/work-items/customer-planning/**, scripts/**, tools/Klyvesta.PlatformVerifier/**, docs/PLATFORM_CI_AUDIT.md]
 
 instruction_drift:
   required_every_task_start: true
