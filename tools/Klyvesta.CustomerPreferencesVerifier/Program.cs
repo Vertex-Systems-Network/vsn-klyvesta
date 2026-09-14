@@ -249,13 +249,12 @@ Run("CP-020", "duplicate notification channel entries are rejected", () =>
     });
 });
 
-Run("CP-021", "public preference schema requires no contact PII", () =>
+Run("CP-021", "public preference payload requires no contact PII", () =>
 {
-    var preferenceTypes = new[]
+    var preferencePayloadTypes = new List<Type>
     {
         typeof(CustomerPreferenceSnapshot),
         typeof(CustomerNotificationChannelPreference),
-        typeof(CustomerPreferenceAuthority),
     };
     var prohibitedFragments = new List<string>
     {
@@ -272,7 +271,7 @@ Run("CP-021", "public preference schema requires no contact PII", () =>
         "biometric",
     };
 
-    foreach (var type in preferenceTypes)
+    foreach (var type in preferencePayloadTypes)
     {
         foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
@@ -282,6 +281,13 @@ Run("CP-021", "public preference schema requires no contact PII", () =>
                 $"restricted PII-like preference field {type.Name}.{property.Name}");
         }
     }
+
+    var authorityStringProperties = typeof(CustomerPreferenceAuthority)
+        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        .Where(property => property.PropertyType == typeof(string))
+        .ToArray();
+    AssertEqual(0, authorityStringProperties.Length, "authority metadata carries no contact strings");
+    Assert(!CustomerPreferenceAuthority.PreferenceOnly.ContainsContactPii, "authority metadata explicitly declares no contact PII");
 
     var stringParameters = typeof(CustomerPreferenceService)
         .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
