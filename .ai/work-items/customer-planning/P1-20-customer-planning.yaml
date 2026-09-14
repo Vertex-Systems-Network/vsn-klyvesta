@@ -3,8 +3,11 @@ module: customer-planning
 branch: parallel/customer-planning
 agent_slot: agent-customer-planning
 owner_role: module-agent
-base_sha: 08f6177d19852e18c78312838860a9aac223571c
-accepted_baseline_sha: 08f6177d19852e18c78312838860a9aac223571c
+assigned_agent: ChatGPT-CustomerPlanning-01
+start_status: ASSIGNED
+started_at: "2026-09-14T18:47:00Z"
+base_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
+accepted_baseline_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
 dependencies:
   - customer-data
   - portfolio
@@ -25,7 +28,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: READY
+status: ACTIVE
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -36,6 +39,6 @@ acceptance_evidence:
     - no-advice-no-trading-authority
     - customer-planning-verifier
     - exact-head-ci
-instruction_drift_check: pending
+instruction_drift_check: pending-baseline-refresh-before-implementation
 submission_pr: null
 integration_baseline_sha: null
