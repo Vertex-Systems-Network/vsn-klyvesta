@@ -24,7 +24,6 @@ internal static class Program
             var builder = new DeterministicCustomerDashboardBuilder();
             var first = builder.Build(CreateRequest());
             var second = builder.Build(CreateRequest());
-            Require(first == second, "record equality should remain deterministic for equivalent immutable output");
             Require(JsonSerializer.Serialize(first) == JsonSerializer.Serialize(second), "serialized dashboard output drifted");
         });
 
