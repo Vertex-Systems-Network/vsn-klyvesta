@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerActivity-01
 start_status: ASSIGNED
 started_at: "2026-09-14T20:56:00Z"
-base_sha: abd89374a8d339259a68252b5f44952f8a87e8e0
-accepted_baseline_sha: abd89374a8d339259a68252b5f44952f8a87e8e0
+base_sha: f5424c7e1d53c592cca83a9cbbc72dc5d2085672
+accepted_baseline_sha: f5424c7e1d53c592cca83a9cbbc72dc5d2085672
 dependencies:
   - orders
   - ledger
@@ -37,6 +37,6 @@ acceptance_evidence:
     - no-live-provider-or-trading-authority
     - customer-activity-verifier
     - exact-head-ci
-instruction_drift_check: pending-baseline-refresh-after-control-plane-closeout
+instruction_drift_check: completed-2026-09-15-after-f5424c7e-baseline-refresh-no-canonical-instruction-change-required
 submission_pr: null
 integration_baseline_sha: null
