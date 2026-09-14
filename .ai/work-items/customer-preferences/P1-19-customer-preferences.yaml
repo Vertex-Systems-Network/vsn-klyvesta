@@ -1,0 +1,40 @@
+id: P1-19
+module: customer-preferences
+branch: parallel/customer-preferences
+agent_slot: agent-customer-preferences
+owner_role: module-agent
+base_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+accepted_baseline_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+dependencies:
+  - identity-authorization
+  - notifications
+dependency_heads:
+  identity-authorization: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f
+  notifications: 7627c66d346bd68dcfe88839a7e35a86422825bc
+allowed_paths:
+  - src/Klyvesta.Domain/Preferences/**
+  - src/Klyvesta.Application/Preferences/**
+  - src/Klyvesta.Infrastructure/Preferences/**
+  - tools/Klyvesta.CustomerPreferencesVerifier/**
+  - .ai/work-items/customer-preferences/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/Persistence/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - user-owned-preference-isolation
+    - notification-channel-preference-validation
+    - privacy-safe-defaults
+    - no-contact-pii-required
+    - customer-preferences-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
