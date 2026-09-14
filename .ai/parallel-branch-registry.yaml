@@ -1,7 +1,7 @@
-version: 8
+version: 9
 created_by_role: supervisor
 created_from_ref: parallel/integration-staging
-created_from_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
+created_from_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
 required_new_agent_start_branch: main
 accepted_baseline_branch: parallel/integration-staging
 coordination_issue: 82
@@ -33,10 +33,11 @@ branches:
   - {module: customer-data, branch: parallel/customer-data, agent_slot: agent-customer-data, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 08f6177d19852e18c78312838860a9aac223571c, merge_order_group: 75}
   - {module: customer-insights, branch: parallel/customer-insights, agent_slot: agent-customer-insights, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: d903860e7fad015e73b7dfff950ee827f0f25534, merge_order_group: 76}
   - {module: customer-reporting, branch: parallel/customer-reporting, agent_slot: agent-customer-reporting, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea, merge_order_group: 77}
-  - {module: customer-preferences, branch: parallel/customer-preferences, agent_slot: agent-customer-preferences, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerPreferences-01, start_status: ASSIGNED, started_at: "2026-09-14T18:01:00Z", accepted_baseline_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea, reason: api-independent-user-preferences-and-notification-settings, merge_order_group: 78}
-  - {module: customer-planning, branch: parallel/customer-planning, agent_slot: agent-customer-planning, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: api-independent-goal-projection-and-contribution-gap-planning, merge_order_group: 79}
+  - {module: customer-preferences, branch: parallel/customer-preferences, agent_slot: agent-customer-preferences, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020, merge_order_group: 78}
+  - {module: customer-planning, branch: parallel/customer-planning, agent_slot: agent-customer-planning, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerPlanning-01, start_status: ASSIGNED, started_at: "2026-09-14T18:47:00Z", accepted_baseline_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020, reason: api-independent-goal-projection-and-contribution-gap-planning, merge_order_group: 79}
   - {module: customer-activity, branch: parallel/customer-activity, agent_slot: agent-customer-activity, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: api-independent-customer-scoped-order-and-ledger-activity-timeline, merge_order_group: 79}
   - {module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: api-independent-read-only-customer-dashboard-composition, merge_order_group: 80}
+  - {module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: api-independent-customer-scoped-alert-rule-configuration-without-dispatch-authority, merge_order_group: 81}
   - {module: ledger, branch: parallel/ledger, agent_slot: agent-ledger, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: e18dc07e6f4af7afcaac2179ac0b5503ba8df8b6, merge_order_group: 10}
   - {module: identity-authorization, branch: parallel/identity-authorization, agent_slot: agent-identity-authorization, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f, merge_order_group: 10}
   - {module: notifications, branch: parallel/notifications, agent_slot: agent-notifications, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 7627c66d346bd68dcfe88839a7e35a86422825bc, merge_order_group: 10}
@@ -44,11 +45,11 @@ branches:
   - {module: security-acceptance, branch: parallel/security-acceptance, agent_slot: agent-security-acceptance, status: BLOCKED, occupancy: UNAVAILABLE, agent_name: null, start_status: BLOCKED, reason: production-governance-provider-legal-runtime-evidence-required, merge_order_group: 80}
   - {module: performance-resilience, branch: parallel/performance-resilience, agent_slot: agent-performance-resilience, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: f8e948d3e937527a02d573548b423ecff39704d3, merge_order_group: 10}
   - {module: database-integration, branch: parallel/database-integration, agent_slot: agent-database-integration, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, merge_order_group: 90}
-  - {module: platform-ci, branch: parallel/platform-ci, agent_slot: agent-platform-ci, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-Platform-01, start_status: ASSIGNED, started_at: "2026-09-03T17:12:00Z", accepted_baseline_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea, merge_order_group: 10}
+  - {module: platform-ci, branch: parallel/platform-ci, agent_slot: agent-platform-ci, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-Platform-01, start_status: ASSIGNED, started_at: "2026-09-03T17:12:00Z", accepted_baseline_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020, merge_order_group: 10}
   - {module: supervisor-platform, branch: parallel/supervisor-platform, agent_slot: supervisor, status: ACTIVE, occupancy: OCCUPIED, agent_name: Supervisor, start_status: ACTIVE, merge_order_group: 5}
 
 merge_strategy:
-  independent_ready_modules: [customer-planning, customer-activity, customer-dashboard, database-integration, supervisor-platform, platform-ci]
+  independent_ready_modules: [customer-activity, customer-dashboard, customer-alert-rules, database-integration, supervisor-platform, platform-ci]
   integrated_dependency_chain: [orders, portfolio, risk, compliance, ai-shadow]
   integration_only_after: [exact-head-ci-green, zero-unresolved-review-threads, ownership-check-green, dependency-head-fresh, instruction-drift-check-recorded, security-review-complete]
   protected_main_rule: promote to main only when repository governance permits it; otherwise integrate only on parallel/integration-staging and record the blocked promotion
