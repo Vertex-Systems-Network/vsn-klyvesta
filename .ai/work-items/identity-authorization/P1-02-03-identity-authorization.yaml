@@ -3,8 +3,8 @@ module: identity-authorization
 branch: parallel/identity-authorization
 agent_slot: agent-identity-authorization
 owner_role: module-agent
-base_sha: 9ee91496e9e606a050de14142cf225640a94406c
-accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+base_sha: aafb5afef7a8bc2f6843f82a9fc62ed71fd2d088
+accepted_baseline_sha: aafb5afef7a8bc2f6843f82a9fc62ed71fd2d088
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -12,19 +12,34 @@ allowed_paths:
   - src/Klyvesta.Application/Identity/**
   - src/Klyvesta.Infrastructure/Identity/**
   - tools/Klyvesta.AuthorizationVerifier/**
+  - tools/Klyvesta.WithdrawalSecurityVerifier/**
   - .ai/work-items/identity-authorization/**
   - .ai/checkpoints/**
 shared_or_forbidden_paths:
   - .github/workflows/**
   - src/Klyvesta.Api/**
-status: READY
+status: SUBMITTED
 blockers: []
 acceptance_evidence:
   required:
     - authentication-abstraction
     - authorization-deny-tests
     - privilege-boundary-tests
+    - withdrawal-beneficiary-cooloff-gate
+    - session-device-revocation
+    - maker-checker-break-glass
+    - withdrawal-security-verifier-green
+    - exact-head-regression-green
     - security-review
-instruction_drift_check: pending
-submission_pr: null
+  satisfied:
+    - authentication-abstraction
+    - authorization-deny-tests
+    - privilege-boundary-tests
+    - withdrawal-beneficiary-cooloff-gate
+    - session-device-revocation
+    - maker-checker-break-glass
+    - withdrawal-security-verifier-green
+instruction_drift_check: completed
+submission_pr: 102
 integration_baseline_sha: null
+production_authority: false
