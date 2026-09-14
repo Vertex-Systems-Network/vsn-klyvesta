@@ -6,22 +6,25 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>Klyvesta Demo Dashboard</title>
   <link rel="stylesheet" href="/demo/app.css">
+  <link rel="stylesheet" href="/demo/user-data.css">
 </head>
 <body class="dashboard-body">
-  <div class="demo-banner">DEMO PREVIEW — SYNTHETIC DATA ONLY — NO DATABASE — NO pyPSX — NO REAL MONEY</div>
+  <div class="demo-banner">DEMO PREVIEW — LOCAL JSON USER STATE — NO POSTGRESQL — NO pyPSX — NO REAL MONEY</div>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="sidebar-brand"><span class="brand-mark small">K</span><strong>Klyvesta</strong></div>
       <nav class="nav-list" aria-label="Primary">
         <a class="active" href="#overview">Overview</a>
+        <a href="#profile">Investor profile</a>
         <a href="#portfolio">Portfolio</a>
-        <a href="#orders">Orders</a>
+        <a href="#goals">Goals</a>
         <a href="#watchlist">Watchlist</a>
+        <a href="#activity">Activity</a>
         <a href="#ai">AI Intelligence</a>
       </nav>
       <div class="sidebar-footer">
         <span class="status-dot"></span>
-        <div><strong>Paper mode</strong><small>Broker disconnected</small></div>
+        <div><strong>Paper mode</strong><small>Local demo state</small></div>
       </div>
     </aside>
 
@@ -33,22 +36,83 @@
         </div>
         <div class="topbar-actions">
           <span id="account-mode" class="mode-badge">Loading…</span>
+          <button id="reset-demo-button" class="secondary-button" type="button">Reset demo data</button>
           <button id="logout-button" class="secondary-button" type="button">Sign out</button>
         </div>
       </header>
 
       <section id="overview" class="metric-grid" aria-label="Portfolio summary">
-        <article class="metric-card"><span>Portfolio value</span><strong id="portfolio-value">—</strong><small>Demo valuation</small></article>
+        <article class="metric-card"><span>Portfolio value</span><strong id="portfolio-value">—</strong><small>Paper NAV incl. cash</small></article>
         <article class="metric-card"><span>Available cash</span><strong id="cash-value">—</strong><small>Synthetic balance</small></article>
         <article class="metric-card"><span>Today</span><strong id="day-change">—</strong><small id="day-change-pct">—</small></article>
-        <article class="metric-card"><span>Environment</span><strong>Paper</strong><small>Zero live execution</small></article>
+        <article class="metric-card"><span>Demo risk band</span><strong id="risk-band">—</strong><small id="risk-score">Questionnaire-derived</small></article>
+      </section>
+
+      <section id="profile" class="content-grid equal">
+        <article class="panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">USER DATA</p><h2>Investor profile</h2></div>
+            <span id="profile-save-status" class="subtle-badge">Local JSON</span>
+          </div>
+          <form id="profile-form" class="data-form">
+            <div class="form-grid two-column">
+              <label>Display name<input id="profile-display-name" maxlength="80" required></label>
+              <label>Experience
+                <select id="profile-experience" required>
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Experienced</option>
+                </select>
+              </label>
+              <label>Investment horizon
+                <select id="profile-horizon" required>
+                  <option>Less than 2 years</option>
+                  <option>2-4 years</option>
+                  <option>5-7 years</option>
+                  <option>8+ years</option>
+                </select>
+              </label>
+              <label>Monthly paper contribution<input id="profile-monthly" type="number" min="0" step="1000" required></label>
+            </div>
+            <label>Primary investment goal<input id="profile-goal" maxlength="120" required></label>
+            <button class="primary-button compact-button" type="submit">Save investor profile</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">DEMO RISK INDICATOR</p><h2>Risk profile</h2></div>
+            <span class="subtle-badge">Not suitability advice</span>
+          </div>
+          <div class="risk-summary">
+            <strong id="risk-band-large">—</strong>
+            <span id="risk-score-large">Score —</span>
+          </div>
+          <form id="risk-form" class="data-form">
+            <div class="form-grid two-column">
+              <label>Loss tolerance
+                <select id="risk-loss" required><option value="1">1 — Very low</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — High</option></select>
+              </label>
+              <label>Market experience
+                <select id="risk-experience" required><option value="1">1 — New</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — Advanced</option></select>
+              </label>
+              <label>Time-horizon capacity
+                <select id="risk-horizon" required><option value="1">1 — Short</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — Long</option></select>
+              </label>
+              <label>Liquidity need
+                <select id="risk-liquidity" required><option value="1">1 — Low need</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — High need</option></select>
+              </label>
+            </div>
+            <button class="primary-button compact-button" type="submit">Recalculate demo risk</button>
+          </form>
+        </article>
       </section>
 
       <section class="content-grid two-one">
         <article id="portfolio" class="panel wide-panel">
           <div class="panel-heading">
-            <div><p class="eyebrow">PORTFOLIO</p><h2>Holdings</h2></div>
-            <span class="subtle-badge">PKR</span>
+            <div><p class="eyebrow">PAPER PORTFOLIO</p><h2>Holdings</h2></div>
+            <span class="subtle-badge">PKR · Synthetic</span>
           </div>
           <div class="table-wrap">
             <table>
@@ -60,12 +124,35 @@
 
         <article id="ai" class="panel ai-panel">
           <div class="panel-heading"><div><p class="eyebrow">AI INTELLIGENCE</p><h2 id="ai-title">Loading insight</h2></div></div>
-          <p id="ai-message" class="ai-message">Preparing synthetic analysis…</p>
+          <p id="ai-message" class="ai-message">Preparing deterministic synthetic analysis…</p>
           <div id="ai-confidence" class="ai-confidence"></div>
           <div class="ai-actions">
             <button class="primary-button" type="button" disabled>Review recommendation</button>
-            <small>Disabled in demo preview</small>
+            <small>Execution disabled. Insight uses stored demo profile + paper portfolio only.</small>
           </div>
+        </article>
+      </section>
+
+      <section class="content-grid equal">
+        <article id="goals" class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">PLANNING</p><h2>Investment goals</h2></div><span class="subtle-badge">Persistent</span></div>
+          <div id="goals-list" class="stack-list"></div>
+          <form id="goal-form" class="inline-data-form">
+            <input id="goal-name" maxlength="100" placeholder="Goal name" required>
+            <input id="goal-target" type="number" min="1" step="1000" placeholder="Target PKR" required>
+            <input id="goal-current" type="number" min="0" step="1000" value="0" placeholder="Current PKR" required>
+            <input id="goal-date" type="date" required>
+            <button class="primary-button compact-button" type="submit">Add goal</button>
+          </form>
+        </article>
+
+        <article id="watchlist" class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">MARKET WATCH</p><h2>Watchlist</h2></div><span class="subtle-badge">Synthetic quotes</span></div>
+          <div id="watchlist-list" class="stack-list"></div>
+          <form id="watchlist-form" class="inline-data-form two-action">
+            <select id="watchlist-symbol" aria-label="Symbol"></select>
+            <button class="primary-button compact-button" type="submit">Add symbol</button>
+          </form>
         </article>
       </section>
 
@@ -75,9 +162,9 @@
           <div id="orders-list" class="stack-list"></div>
         </article>
 
-        <article id="watchlist" class="panel">
-          <div class="panel-heading"><div><p class="eyebrow">MARKET WATCH</p><h2>Watchlist</h2></div><span class="subtle-badge">Synthetic</span></div>
-          <div id="watchlist-list" class="stack-list"></div>
+        <article id="activity" class="panel">
+          <div class="panel-heading"><div><p class="eyebrow">USER TIMELINE</p><h2>Recent activity</h2></div><span class="subtle-badge">Local only</span></div>
+          <div id="activity-list" class="stack-list"></div>
         </article>
       </section>
 
@@ -86,7 +173,7 @@
         <div id="safeguards" class="safeguard-grid"></div>
       </section>
 
-      <footer class="page-footer">Klyvesta demo preview. Values shown here are fictional and must not be treated as market data or investment advice.</footer>
+      <footer class="page-footer">Klyvesta demo preview. User state is synthetic and stored locally for UI testing. It is not KYC, suitability advice, market data, or a live brokerage record.</footer>
     </main>
   </div>
   <script src="/demo/dashboard.js" defer></script>

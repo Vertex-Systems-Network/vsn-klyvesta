@@ -35,6 +35,9 @@ secrets.json
 *.jks
 *.keystore
 
+# Demo runtime state
+src/Klyvesta.Api/App_Data/
+
 # Logs/dumps
 *.log
 *.dmp
