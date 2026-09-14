@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Klyvesta Demo Login</title>
+  <link rel="stylesheet" href="/demo/app.css">
+</head>
+<body class="login-body">
+  <main class="login-shell">
+    <section class="login-brand">
+      <div class="brand-mark">K</div>
+      <div>
+        <div class="eyebrow">AI-NATIVE INVESTING PLATFORM</div>
+        <h1>Klyvesta</h1>
+      </div>
+      <div class="hero-copy">
+        <span class="pill">DEMO PREVIEW</span>
+        <h2>Explore the investor experience without a database or broker connection.</h2>
+        <p>This environment uses synthetic portfolio, market and order data. No pyPSX request, real order or customer financial record is created.</p>
+      </div>
+      <div class="trust-grid">
+        <div><strong>DB</strong><span>Bypassed</span></div>
+        <div><strong>pyPSX</strong><span>Not connected</span></div>
+        <div><strong>Money</strong><span>Fake only</span></div>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="panel-card">
+        <div class="mobile-brand"><span class="brand-mark small">K</span><strong>Klyvesta</strong></div>
+        <p class="eyebrow">USER PREVIEW</p>
+        <h3>Sign in to demo</h3>
+        <p class="muted">Use the public demo credentials below. They are intentionally not production credentials.</p>
+
+        <form id="login-form" autocomplete="off">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" value="demo@klyvesta.local" required>
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" value="demo" required>
+
+          <button id="login-button" type="submit">Enter demo dashboard</button>
+          <p id="login-error" class="error" role="alert" hidden></p>
+        </form>
+
+        <div class="demo-credentials">
+          <span>Demo email</span><code>demo@klyvesta.local</code>
+          <span>Demo password</span><code>demo</code>
+        </div>
+
+        <p class="security-note">Demo login is only a preview gate. Production authentication, customer identity, database access and live brokerage remain disabled.</p>
+      </div>
+    </section>
+  </main>
+  <script src="/demo/login.js" defer></script>
+</body>
+</html>
