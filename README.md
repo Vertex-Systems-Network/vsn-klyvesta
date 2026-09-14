@@ -16,9 +16,19 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-API-independent, **non-live engineering is active and integrated through `parallel/integration-staging`**. The repository now contains deterministic paper/simulation boundaries for core investing, security, risk, compliance, ledger, notification, observability and resilience workflows.
+**Last status update:** `2026-09-14 18:48 PKT`
+
+**Repository-owned non-live engineering:** `█████████░ 86%` — **12 of 14 canonical module lanes are accepted/integrated on `parallel/integration-staging`.**
+
+**Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
+
+API-independent, **non-live engineering is active and integrated through `parallel/integration-staging`**. The accepted staging baseline includes deterministic paper/simulation boundaries for core investing, brokerage trust, identity/authorization, risk, compliance, ledger, notifications, observability, performance/resilience and platform CI.
 
 **Live/real-money pyPSX operation is not authorized.** Production brokerage remains fail-closed until direct pyPSX partner API/contract evidence, credentials and exact provider semantics are available; required legal/regulatory/provider approvals are complete; and repository governance permits production promotion.
+
+The two remaining repository-owned canonical module lanes are:
+- **Database Integration** — ready, not yet started/integrated.
+- **Security Acceptance** — blocked pending production governance/provider/legal/runtime evidence.
 
 The first production acceptance gate remains regulatory + broker fit:
 - pyPSX Broker API production capabilities confirmed.
@@ -40,15 +50,15 @@ The implementation foundation and non-live safety boundaries may be validated in
 | Risk | `██████████ 100%` | 2026-09-01 | 2026-09-03 | Integrated — deterministic paper risk governor |
 | Compliance | `██████████ 100%` | 2026-09-01 | 2026-09-03 | Integrated — deterministic paper compliance gate |
 | AI Shadow | `██████████ 100%` | 2026-09-01 | 2026-09-03 | Integrated — AI proposal/paper-shadow boundary; no direct execution authority |
+| Brokerage Trust / Paper Broker | `██████████ 100%` | 2026-09-01 | 2026-09-14 | Integrated — API-independent broker trust + paper broker complete; live pyPSX adapter is a separate external gate |
 | Identity & Authorization | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — withdrawal, session/device revocation and maker-checker break-glass hardening |
 | Ledger | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — immutable non-live double-entry boundary |
 | Notifications | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — provider-neutral delivery boundary; production provider pending |
 | Observability | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — structured secret-safe boundary; production telemetry provider pending |
 | Performance & Resilience | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — deterministic acceptance contract; production SLO evidence pending |
 | Platform / CI | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — multi-agent ownership, verifier and CI control plane |
-| Brokerage Trust / Paper Broker | `█████████░ 90%` | 2026-09-01 | 2026-09-14 | API-independent scope integrated; live pyPSX adapter blocked on partner API/contract |
-| Database Integration | `░░░░░░░░░░ 0%` | — | — | Ready / not started in the current canonical module lane |
-| Security Acceptance | `░░░░░░░░░░ 0%` | — | — | Blocked — production governance/provider/legal evidence required |
+| Database Integration | `░░░░░░░░░░ 0%` | — | — | Ready — canonical lane available, work not yet started/integrated |
+| Security Acceptance | `░░░░░░░░░░ 0%` | — | — | Blocked — production governance/provider/legal/runtime evidence required |
 | pyPSX Live Integration | `░░░░░░░░░░ 0%` | — | — | External blocker — partner API/contract not yet available |
 
 ## Today’s close plan — 2026-09-14
@@ -59,8 +69,10 @@ The implementation foundation and non-live safety boundaries may be validated in
 | EF Core dependency alignment | 2026-09-14 | 2026-09-14 | Done |
 | Broker trust canonicalization + staging merge | 2026-09-14 | 2026-09-14 | Done |
 | Withdrawal/session/break-glass canonicalization | 2026-09-14 | 2026-09-14 | Done |
-| README module tracking table | 2026-09-14 | 2026-09-14 | Done in PR #103 |
+| README module/status reconciliation | 2026-09-14 | 2026-09-14 | Done — corrected current progress/status values |
 | Stale/experimental PR cleanup | 2026-09-14 | 2026-09-14 | Done |
+| Database Integration canonical lane | — | — | Ready / next repository-owned module |
+| Security Acceptance | — | — | Blocked by production evidence/governance gates |
 | pyPSX live adapter | — | — | Blocked until partner API/contract arrives |
 
 ## Repository model
