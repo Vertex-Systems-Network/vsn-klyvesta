@@ -1,0 +1,28 @@
+id: P1-15
+module: performance-resilience
+branch: parallel/performance-resilience
+agent_slot: agent-performance-resilience
+owner_role: verification-security-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - tools/Klyvesta.PerformanceVerifier/**
+  - docs/QA_PERFORMANCE.md
+  - perf/**
+  - .ai/work-items/performance-resilience/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/**
+  - .github/workflows/**
+status: READY
+blockers: []
+acceptance_evidence:
+  required:
+    - repeatable-load-profile
+    - failure-injection-plan
+    - performance-baseline
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

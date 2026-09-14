@@ -1,0 +1,30 @@
+id: P1-12
+module: notifications
+branch: parallel/notifications
+agent_slot: agent-notifications
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - src/Klyvesta.Domain/Notifications/**
+  - src/Klyvesta.Application/Notifications/**
+  - src/Klyvesta.Infrastructure/Notifications/**
+  - tools/Klyvesta.NotificationsVerifier/**
+  - .ai/work-items/notifications/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+  - src/Klyvesta.Api/**
+status: READY
+blockers: []
+acceptance_evidence:
+  required:
+    - provider-neutral-contracts
+    - idempotent-delivery
+    - retry-failure-semantics
+    - notifications-verifier
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

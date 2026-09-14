@@ -1,0 +1,33 @@
+id: P1-10
+module: compliance
+branch: parallel/compliance
+agent_slot: agent-compliance
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+dependencies:
+  - risk
+dependency_heads:
+  risk: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+allowed_paths:
+  - src/Klyvesta.Domain/Compliance/**
+  - src/Klyvesta.Application/Compliance/**
+  - tools/Klyvesta.ComplianceVerifier/**
+  - .ai/work-items/compliance/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+status: INTEGRATED
+blockers: []
+acceptance_evidence:
+  required:
+    - reconcile-existing-pr-77
+    - accepted-risk-head
+  satisfied:
+    - selective-module-delta-integrated
+    - risk-dependency-integrated
+    - exact-head-regression-green
+instruction_drift_check: completed
+submission_pr: 77
+integration_baseline_sha: 986368c02dddb83ac03cdbde77bcbd219daa6f4a
+production_authority: false

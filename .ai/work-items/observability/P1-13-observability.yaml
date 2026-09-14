@@ -1,0 +1,29 @@
+id: P1-13
+module: observability
+branch: parallel/observability
+agent_slot: agent-observability
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - src/Klyvesta.Application/Observability/**
+  - src/Klyvesta.Infrastructure/Observability/**
+  - tools/Klyvesta.ObservabilityVerifier/**
+  - .ai/work-items/observability/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+  - src/Klyvesta.Api/**
+status: READY
+blockers: []
+acceptance_evidence:
+  required:
+    - structured-events
+    - correlation-boundaries
+    - no-secret-logging
+    - observability-verifier
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null

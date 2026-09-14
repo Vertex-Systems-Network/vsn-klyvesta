@@ -1,0 +1,38 @@
+id: M-AGENT-09
+module: platform-ci
+branch: parallel/platform-ci
+agent_slot: agent-platform-ci
+owner_role: platform-agent
+assigned_agent: ChatGPT-Platform-01
+start_status: ASSIGNED
+started_at: "2026-09-03T17:12:00Z"
+base_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+accepted_baseline_sha: 54a968b51f0ccca59a8b5654209f6aefa8a546ad
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - .ai/agent-orchestration.yaml
+  - .ai/parallel-branch-registry.yaml
+  - tools/Klyvesta.PlatformVerifier/**
+  - docs/PLATFORM_CI_AUDIT.md
+  - .ai/work-items/platform-ci/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+  - Directory.Build.props
+  - Directory.Packages.props
+  - src/**
+  - contracts/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+status: ACTIVE
+blockers: []
+acceptance_evidence:
+  required:
+    - automatic-verifier-discovery-audit
+    - workflow-action-pin-audit
+    - shared-path-write-boundary-audit
+    - platform-verifier
+instruction_drift_check: completed-registration-required-for-canonical-platform-lane
+submission_pr: null
+integration_baseline_sha: null

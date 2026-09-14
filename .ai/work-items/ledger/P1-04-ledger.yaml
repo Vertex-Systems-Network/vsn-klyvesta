@@ -1,0 +1,33 @@
+id: P1-04
+module: ledger
+branch: parallel/ledger
+agent_slot: agent-ledger
+owner_role: module-agent
+base_sha: 9ee91496e9e606a050de14142cf225640a94406c
+accepted_baseline_sha: 9ee91496e9e606a050de14142cf225640a94406c
+dependencies: []
+dependency_heads: {}
+allowed_paths:
+  - src/Klyvesta.Domain/Ledger/**
+  - src/Klyvesta.Application/Ledger/**
+  - src/Klyvesta.Infrastructure/Ledger/**
+  - tools/Klyvesta.LedgerVerifier/**
+  - .ai/work-items/ledger/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - .github/workflows/**
+  - src/Klyvesta.Api/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+status: READY
+blockers: []
+acceptance_evidence:
+  required:
+    - immutable-double-entry-invariants
+    - idempotency
+    - exact-decimal
+    - ledger-verifier
+    - security-review
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
