@@ -145,7 +145,7 @@ modules:
   brokerage:
     owner_role: module-agent
     canonical_branch: parallel/brokerage
-    allowed_paths: [src/Klyvesta.Application/Brokerage/**, src/Klyvesta.Infrastructure/Brokerage/**, tools/Klyvesta.PaperBrokerVerifier/**]
+    allowed_paths: [src/Klyvesta.Application/Brokerage/**, src/Klyvesta.Infrastructure/Brokerage/**, tools/Klyvesta.PaperBrokerVerifier/**, tools/Klyvesta.BrokerTrustVerifier/**]
     contracts: [IBrokerAdapter]
   orders:
     owner_role: module-agent
@@ -181,7 +181,7 @@ modules:
   identity-authorization:
     owner_role: module-agent
     canonical_branch: parallel/identity-authorization
-    allowed_paths: [src/Klyvesta.Domain/Identity/**, src/Klyvesta.Application/Identity/**, src/Klyvesta.Infrastructure/Identity/**, tools/Klyvesta.AuthorizationVerifier/**]
+    allowed_paths: [src/Klyvesta.Domain/Identity/**, src/Klyvesta.Application/Identity/**, src/Klyvesta.Infrastructure/Identity/**, tools/Klyvesta.AuthorizationVerifier/**, tools/Klyvesta.WithdrawalSecurityVerifier/**]
   notifications:
     owner_role: module-agent
     canonical_branch: parallel/notifications
