@@ -26,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -39,5 +39,5 @@ acceptance_evidence:
     - customer-dashboard-verifier
     - exact-head-ci
 instruction_drift_check: completed-2026-09-15-branch-refreshed-through-67134fe8-while-preserving-original-assignment-baseline-549e8aff
-submission_pr: null
+submission_pr: 121
 integration_baseline_sha: null
