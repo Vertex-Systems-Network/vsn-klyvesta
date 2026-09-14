@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerPreferences-01
 start_status: ASSIGNED
 started_at: "2026-09-14T18:01:00Z"
-base_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
-accepted_baseline_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
+base_sha: 481a20e9f93ed029d1bda384d572b8f955fd2afc
+accepted_baseline_sha: 481a20e9f93ed029d1bda384d572b8f955fd2afc
 dependencies:
   - identity-authorization
   - notifications
@@ -27,7 +27,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: SUBMITTED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -38,6 +38,12 @@ acceptance_evidence:
     - no-contact-pii-required
     - customer-preferences-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-14-customer-preferences-assignment
-submission_pr: null
+  satisfied:
+    - user-owned-preference-isolation
+    - notification-channel-preference-validation
+    - privacy-safe-defaults
+    - no-contact-pii-required
+    - customer-preferences-verifier
+instruction_drift_check: completed-2026-09-14-customer-preferences-submission
+submission_pr: 115
 integration_baseline_sha: null
