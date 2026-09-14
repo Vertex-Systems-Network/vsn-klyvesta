@@ -4,7 +4,7 @@ branch: parallel/customer-reporting
 agent_slot: agent-customer-reporting
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerReporting-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-14T16:25:00Z"
 base_sha: 7a9e68f86aff7ea209c76587912e9b36897f2f97
 accepted_baseline_sha: 7a9e68f86aff7ea209c76587912e9b36897f2f97
@@ -26,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: SUBMITTED
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -43,6 +43,7 @@ acceptance_evidence:
     - no-live-market-or-broker-authority
     - no-restricted-pii-output
     - customer-reporting-verifier
+    - exact-head-ci
 instruction_drift_check: completed-2026-09-14-customer-reporting-submission
 submission_pr: 113
-integration_baseline_sha: null
+integration_baseline_sha: 3aa8cfcd2d6a3920faff9d7b6900894f2eb938ea
