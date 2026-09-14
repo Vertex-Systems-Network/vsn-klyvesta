@@ -9,7 +9,7 @@ namespace Klyvesta.CustomerDashboardVerifier;
 internal static class DashboardProvenanceVerifier
 {
     [ModuleInitializer]
-    internal static void VerifyInsightEvidenceTimestamp()
+    internal static void VerifyEvidenceTimestamps()
     {
         var customerId = Guid.Parse("11111111-1111-1111-1111-111111111111");
         var dashboardAsOf = new DateTimeOffset(2026, 9, 15, 3, 0, 0, TimeSpan.Zero);
@@ -48,11 +48,21 @@ internal static class DashboardProvenanceVerifier
                 report,
                 insightReport));
 
+        if (snapshot.AsOf != dashboardAsOf)
+        {
+            throw new InvalidOperationException("DASH-036 dashboard as-of provenance drifted.");
+        }
+
+        if (snapshot.ReportGeneratedAt != reportGeneratedAt)
+        {
+            throw new InvalidOperationException("DASH-036 report generation timestamp provenance drifted.");
+        }
+
         if (snapshot.InsightsAsOf != insightAsOf)
         {
             throw new InvalidOperationException("DASH-036 insight evidence timestamp provenance drifted.");
         }
 
-        Console.WriteLine("PASS DASH-036: insight evidence timestamp is propagated exactly");
+        Console.WriteLine("PASS DASH-036: dashboard, report and insight timestamps preserve exact evidence provenance");
     }
 }
