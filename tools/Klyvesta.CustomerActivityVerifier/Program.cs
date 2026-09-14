@@ -261,17 +261,12 @@ Check("ACT-029", "activity authority is permanently read-only paper", () =>
 
 Check("ACT-030", "public output schema excludes restricted and provider authority fields", () =>
 {
-    var forbidden = new[]
-    {
-        "password", "cnic", "passport", "iban", "bank", "provider", "broker", "external",
-        "actor", "idempotency", "hash", "credential", "token", "secret", "orderplacement",
-    };
     foreach (var type in VerifierData.PublicOutputTypes)
     {
         foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
             var normalized = property.Name.Replace("_", string.Empty, StringComparison.Ordinal).ToLowerInvariant();
-            Require(!forbidden.Any(normalized.Contains), $"restricted output field exposed: {type.Name}.{property.Name}");
+            Require(!VerifierData.ForbiddenOutputFieldFragments.Any(normalized.Contains), $"restricted output field exposed: {type.Name}.{property.Name}");
         }
     }
 });
@@ -546,6 +541,25 @@ static void RequireThrows<TException>(Action action, string? expectedMessage = n
 
 static class VerifierData
 {
+    internal static readonly string[] ForbiddenOutputFieldFragments =
+    {
+        "password",
+        "cnic",
+        "passport",
+        "iban",
+        "bank",
+        "provider",
+        "broker",
+        "external",
+        "actor",
+        "idempotency",
+        "hash",
+        "credential",
+        "token",
+        "secret",
+        "orderplacement",
+    };
+
     internal static readonly Type[] PublicOutputTypes =
     {
         typeof(CustomerActivityTimeline),
