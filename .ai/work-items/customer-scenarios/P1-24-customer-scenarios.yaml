@@ -1,0 +1,39 @@
+id: P1-24
+module: customer-scenarios
+branch: parallel/customer-scenarios
+agent_slot: agent-customer-scenarios
+owner_role: module-agent
+base_sha: abd89374a8d339259a68252b5f44952f8a87e8e0
+accepted_baseline_sha: abd89374a8d339259a68252b5f44952f8a87e8e0
+dependencies:
+  - portfolio
+  - risk
+dependency_heads:
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+  risk: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+allowed_paths:
+  - src/Klyvesta.Domain/Scenarios/**
+  - src/Klyvesta.Application/Scenarios/**
+  - tools/Klyvesta.CustomerScenariosVerifier/**
+  - .ai/work-items/customer-scenarios/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-scenario-shock-arithmetic
+    - customer-and-account-scope-validation
+    - risk-context-boundary
+    - no-advice-no-trading-authority
+    - customer-scenarios-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
