@@ -266,7 +266,7 @@ Check("ACT-030", "public output schema excludes restricted and provider authorit
         "password", "cnic", "passport", "iban", "bank", "provider", "broker", "external",
         "actor", "idempotency", "hash", "credential", "token", "secret", "orderplacement",
     };
-    foreach (var type in new[] { typeof(CustomerActivityTimeline), typeof(CustomerActivityItem) })
+    foreach (var type in VerifierData.PublicOutputTypes)
     {
         foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
         {
@@ -289,7 +289,7 @@ Check("ACT-031", "raw broker and ledger internal strings do not leak into timeli
         idempotencyKey: "idempotency-secret",
         normalizedRequestHash: "hash-secret");
     var json = JsonSerializer.Serialize(builder.Build(CreateRequest(orderEvents: new[] { order }, ledgerEvents: new[] { ledger })));
-    foreach (var secret in new[] { "provider-order-secret", "broker-reason-secret", "actor-secret", "idempotency-secret", "hash-secret" })
+    foreach (var secret in VerifierData.InternalSecretMarkers)
     {
         Require(!json.Contains(secret, StringComparison.Ordinal), $"internal string leaked into timeline: {secret}");
     }
@@ -542,4 +542,22 @@ static void RequireThrows<TException>(Action action, string? expectedMessage = n
     }
 
     throw new InvalidOperationException($"Expected {typeof(TException).Name} was not thrown.");
+}
+
+static class VerifierData
+{
+    internal static readonly Type[] PublicOutputTypes =
+    {
+        typeof(CustomerActivityTimeline),
+        typeof(CustomerActivityItem),
+    };
+
+    internal static readonly string[] InternalSecretMarkers =
+    {
+        "provider-order-secret",
+        "broker-reason-secret",
+        "actor-secret",
+        "idempotency-secret",
+        "hash-secret",
+    };
 }
