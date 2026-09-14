@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- Final P1-18 acceptance marker: no behavior or dependency change. -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>Klyvesta.CustomerReportingVerifier</RootNamespace>
