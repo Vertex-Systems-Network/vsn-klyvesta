@@ -117,10 +117,7 @@ public sealed class SessionDeviceSecurityInventory
             throw new InvalidOperationException("Only a server-authoritative authenticated identity context may register a session.");
         }
 
-        if (expiresAt <= createdAt)
-        {
-            throw new ArgumentOutOfRangeException(nameof(expiresAt));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(expiresAt, createdAt);
 
         var session = new ManagedSecuritySession(
             sessionReference,
@@ -268,8 +265,20 @@ public sealed record BreakGlassGrant(
 public sealed class BreakGlassApprovalService
 {
     public const string ApprovalStepUpAction = "identity.breakglass.approve";
-    private static readonly TimeSpan MaximumProposalLifetime = TimeSpan.FromMinutes(30);
-    private static readonly TimeSpan MaximumGrantLifetime = TimeSpan.FromMinutes(15);
+
+    private readonly TimeSpan _maximumProposalLifetime;
+    private readonly TimeSpan _maximumGrantLifetime;
+
+    public BreakGlassApprovalService(
+        TimeSpan? maximumProposalLifetime = null,
+        TimeSpan? maximumGrantLifetime = null)
+    {
+        _maximumProposalLifetime = maximumProposalLifetime ?? TimeSpan.FromMinutes(30);
+        _maximumGrantLifetime = maximumGrantLifetime ?? TimeSpan.FromMinutes(15);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_maximumProposalLifetime, TimeSpan.Zero);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_maximumGrantLifetime, TimeSpan.Zero);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(_maximumGrantLifetime, _maximumProposalLifetime);
+    }
 
     public BreakGlassProposal CreateProposal(
         string makerPrincipalId,
@@ -281,11 +290,8 @@ public sealed class BreakGlassApprovalService
         ArgumentException.ThrowIfNullOrWhiteSpace(makerPrincipalId);
         ArgumentException.ThrowIfNullOrWhiteSpace(action);
         ArgumentException.ThrowIfNullOrWhiteSpace(purpose);
-
-        if (expiresAt <= createdAt || expiresAt - createdAt > MaximumProposalLifetime)
-        {
-            throw new ArgumentOutOfRangeException(nameof(expiresAt));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(expiresAt, createdAt);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(expiresAt - createdAt, _maximumProposalLifetime);
 
         return new BreakGlassProposal(Guid.NewGuid(), makerPrincipalId, action, purpose, createdAt, expiresAt);
     }
@@ -332,7 +338,7 @@ public sealed class BreakGlassApprovalService
             throw new InvalidOperationException("Trusted-device phishing-resistant step-up is required for break-glass approval.");
         }
 
-        var grantExpiry = approvedAt + MaximumGrantLifetime;
+        var grantExpiry = approvedAt + _maximumGrantLifetime;
         if (grantExpiry > proposal.ExpiresAt)
         {
             grantExpiry = proposal.ExpiresAt;
