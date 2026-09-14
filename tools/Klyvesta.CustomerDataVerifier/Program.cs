@@ -81,7 +81,10 @@ await RunAsync("CD-005", "risk profile history is append-only and versioned", as
 
 await RunAsync("CD-006", "risk answers outside the supported range are rejected", () =>
 {
-    ExpectThrows<ArgumentOutOfRangeException>(() => new CustomerRiskAnswers(0, 3, 3, 3));
+    ExpectThrows<ArgumentOutOfRangeException>(() =>
+    {
+        _ = new CustomerRiskAnswers(0, 3, 3, 3);
+    });
     return Task.CompletedTask;
 });
 
@@ -198,7 +201,10 @@ await RunAsync("CD-015", "workspace rejects foreign-owned child data", () =>
         1000m,
         DateTimeOffset.UtcNow);
 
-    ExpectThrows<ArgumentException>(() => new CustomerWorkspace(customerId, 1, foreignProfile));
+    ExpectThrows<ArgumentException>(() =>
+    {
+        _ = new CustomerWorkspace(customerId, 1, foreignProfile);
+    });
     return Task.CompletedTask;
 });
 
