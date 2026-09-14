@@ -6,8 +6,8 @@ owner_role: platform-agent
 assigned_agent: ChatGPT-Platform-01
 start_status: ASSIGNED
 started_at: "2026-09-03T17:12:00Z"
-base_sha: 08f6177d19852e18c78312838860a9aac223571c
-accepted_baseline_sha: 08f6177d19852e18c78312838860a9aac223571c
+base_sha: d903860e7fad015e73b7dfff950ee827f0f25534
+accepted_baseline_sha: d903860e7fad015e73b7dfff950ee827f0f25534
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -19,6 +19,7 @@ allowed_paths:
   - .ai/work-items/customer-reporting/**
   - .ai/work-items/customer-preferences/**
   - .ai/work-items/customer-planning/**
+  - .ai/work-items/customer-activity/**
   - scripts/**
   - tools/Klyvesta.PlatformVerifier/**
   - docs/PLATFORM_CI_AUDIT.md
@@ -41,6 +42,6 @@ acceptance_evidence:
     - platform-verifier
     - ownership-self-tests
     - concurrency-capacity
-instruction_drift_check: completed-customer-insights-transition-and-planning-capacity-2026-09-14
-submission_pr: 110
+instruction_drift_check: completed-customer-insights-closeout-and-reporting-activation-2026-09-14
+submission_pr: null
 integration_baseline_sha: null
