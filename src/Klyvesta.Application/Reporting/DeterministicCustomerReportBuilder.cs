@@ -32,16 +32,7 @@ public sealed class DeterministicCustomerReportBuilder : ICustomerReportBuilder
         var delivery = request.Delivery.Normalize();
         var accountReference = request.AccountReference.Trim();
         ValidateGeneratedAt(request.GeneratedAt, period);
-        ValidatePortfolio(request.Portfolio, accountReference);
-
-        var positions = request.Portfolio.Positions
-            .Select(position => new CustomerReportPosition(
-                position.InstrumentReference.Trim(),
-                position.Quantity,
-                position.AverageCost,
-                position.Quantity * position.AverageCost))
-            .OrderBy(position => position.InstrumentReference, StringComparer.Ordinal)
-            .ToArray();
+        var positions = NormalizePortfolio(request.Portfolio, accountReference);
         var investedCostBasis = positions.Sum(position => position.CostBasis);
         var bookValue = request.Portfolio.Cash + investedCostBasis;
 
@@ -92,7 +83,9 @@ public sealed class DeterministicCustomerReportBuilder : ICustomerReportBuilder
         }
     }
 
-    private static void ValidatePortfolio(PortfolioProjectionSnapshot portfolio, string requestedAccountReference)
+    private static CustomerReportPosition[] NormalizePortfolio(
+        PortfolioProjectionSnapshot portfolio,
+        string requestedAccountReference)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(portfolio.AccountReference);
         ArgumentNullException.ThrowIfNull(portfolio.Positions);
@@ -116,14 +109,8 @@ public sealed class DeterministicCustomerReportBuilder : ICustomerReportBuilder
             throw new InvalidOperationException("CUSTOMER_REPORT_EXECUTION_COUNT_INVALID");
         }
 
-        var duplicateInstrument = portfolio.Positions
-            .GroupBy(position => position.InstrumentReference, StringComparer.Ordinal)
-            .FirstOrDefault(group => group.Count() > 1);
-        if (duplicateInstrument is not null)
-        {
-            throw new InvalidOperationException("CUSTOMER_REPORT_DUPLICATE_INSTRUMENT");
-        }
-
+        var normalizedPositions = new List<CustomerReportPosition>(portfolio.Positions.Count);
+        var instruments = new HashSet<string>(StringComparer.Ordinal);
         foreach (var position in portfolio.Positions)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(position.InstrumentReference);
@@ -131,6 +118,22 @@ public sealed class DeterministicCustomerReportBuilder : ICustomerReportBuilder
             {
                 throw new ArgumentOutOfRangeException(nameof(portfolio), "Paper report positions require positive quantity and average cost.");
             }
+
+            var instrumentReference = position.InstrumentReference.Trim();
+            if (!instruments.Add(instrumentReference))
+            {
+                throw new InvalidOperationException("CUSTOMER_REPORT_DUPLICATE_INSTRUMENT");
+            }
+
+            normalizedPositions.Add(new CustomerReportPosition(
+                instrumentReference,
+                position.Quantity,
+                position.AverageCost,
+                position.Quantity * position.AverageCost));
         }
+
+        return normalizedPositions
+            .OrderBy(position => position.InstrumentReference, StringComparer.Ordinal)
+            .ToArray();
     }
 }
