@@ -8,6 +8,7 @@ public sealed record CustomerNotificationChannelPreference(
     bool Enabled);
 
 public sealed record CustomerPreferenceAuthority(
+    bool CustomerScoped,
     bool ContainsContactPii,
     bool CanDispatchNotifications,
     bool CanChangeSecurityPolicy,
@@ -15,6 +16,7 @@ public sealed record CustomerPreferenceAuthority(
 {
     public static CustomerPreferenceAuthority PreferenceOnly { get; } =
         new(
+            CustomerScoped: true,
             ContainsContactPii: false,
             CanDispatchNotifications: false,
             CanChangeSecurityPolicy: false,
@@ -70,7 +72,8 @@ public sealed class CustomerPreferenceSnapshot
 
     public DateTimeOffset UpdatedAt { get; }
 
-    public CustomerPreferenceAuthority Authority => CustomerPreferenceAuthority.PreferenceOnly;
+    public CustomerPreferenceAuthority Authority =>
+        CustomerPreferenceAuthority.PreferenceOnly with { CustomerScoped = CustomerId != Guid.Empty };
 
     public bool IsEnabled(NotificationChannel channel)
     {
