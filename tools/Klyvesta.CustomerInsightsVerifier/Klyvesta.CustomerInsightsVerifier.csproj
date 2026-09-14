@@ -3,6 +3,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Klyvesta.CustomerInsightsVerifier</RootNamespace>
     <AssemblyName>Klyvesta.CustomerInsightsVerifier</AssemblyName>
+    <Description>P1-17 deterministic customer-insights acceptance verifier.</Description>
   </PropertyGroup>
 
   <ItemGroup>
