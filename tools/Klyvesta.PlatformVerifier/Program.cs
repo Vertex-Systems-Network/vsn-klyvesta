@@ -177,11 +177,12 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
         "README security-acceptance row must remain blocked");
 });
 
-Check("PLAT-013", "P1-26 ready capacity lane is durable and non-authorizing", () =>
+Check("PLAT-013", "P1-26 ready capacity lane is durable and assignment-gated", () =>
 {
     var manifest = Read(".ai/agent-orchestration.yaml");
     var registry = Read(".ai/parallel-branch-registry.yaml");
     var workItem = Read(".ai/work-items/customer-risk-center/P1-26-customer-risk-center.yaml");
+    var ownershipValidator = Read("scripts/validate-agent-ownership.rb");
 
     Require(manifest.Contains("customer-risk-center:", StringComparison.Ordinal), "customer-risk-center orchestration module is missing");
     Require(manifest.Contains("canonical_branch: parallel/customer-risk-center", StringComparison.Ordinal), "customer-risk-center canonical branch is missing");
@@ -193,6 +194,8 @@ Check("PLAT-013", "P1-26 ready capacity lane is durable and non-authorizing", ()
     Require(workItem.Contains("production_authority: false", StringComparison.Ordinal), "P1-26 must not claim production authority");
     Require(workItem.Contains("no-advice-no-trading-no-provider-authority", StringComparison.Ordinal),
         "P1-26 must retain the no-advice/no-trading/provider boundary");
+    Require(ownershipValidator.Contains("%w[BLOCKED READY RESERVED INTEGRATED].include?(status)", StringComparison.Ordinal),
+        "READY module branches must reject substantive implementation before assignment");
 });
 
 if (failures.Count > 0)
