@@ -1,0 +1,42 @@
+id: P1-26
+module: customer-risk-center
+branch: parallel/customer-risk-center
+agent_slot: agent-customer-risk-center
+owner_role: module-agent
+base_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+dependencies:
+  - customer-data
+  - portfolio
+  - risk
+dependency_heads:
+  customer-data: 08f6177d19852e18c78312838860a9aac223571c
+  portfolio: ca8fac46ab7920743c32835f47f06e8bb60a4ba1
+  risk: abb8ebcdbe206f53f6bc03aa611d842dc4be1d64
+allowed_paths:
+  - src/Klyvesta.Domain/RiskCenter/**
+  - src/Klyvesta.Application/RiskCenter/**
+  - tools/Klyvesta.CustomerRiskCenterVerifier/**
+  - .ai/work-items/customer-risk-center/**
+  - .ai/checkpoints/**
+shared_or_forbidden_paths:
+  - src/Klyvesta.Api/**
+  - src/Klyvesta.Infrastructure/**
+  - '**/Migrations/**'
+  - '**/*ModelSnapshot.cs'
+  - contracts/**
+status: READY
+blockers: []
+production_authority: false
+acceptance_evidence:
+  required:
+    - deterministic-customer-scoped-risk-summary
+    - customer-and-account-scope-validation
+    - risk-profile-and-portfolio-evidence-boundary
+    - no-advice-no-trading-no-provider-authority
+    - no-restricted-pii-output
+    - customer-risk-center-verifier
+    - exact-head-ci
+instruction_drift_check: pending
+submission_pr: null
+integration_baseline_sha: null
