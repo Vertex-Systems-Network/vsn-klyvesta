@@ -6,13 +6,15 @@ owner_role: platform-agent
 assigned_agent: ChatGPT-Platform-01
 start_status: ASSIGNED
 started_at: "2026-09-03T17:12:00Z"
-base_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
-accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
+base_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
 dependencies: []
 dependency_heads: {}
 allowed_paths:
+  - README.md
   - .ai/agent-orchestration.yaml
   - .ai/parallel-branch-registry.yaml
+  - .ai/integration-baseline.yaml
   - .ai/work-items/platform-ci/**
   - .ai/work-items/customer-data/**
   - .ai/work-items/customer-insights/**
@@ -24,6 +26,7 @@ allowed_paths:
   - .ai/work-items/customer-alert-rules/**
   - .ai/work-items/customer-scenarios/**
   - .ai/work-items/customer-security-center/**
+  - .ai/work-items/customer-risk-center/**
   - scripts/**
   - tools/Klyvesta.PlatformVerifier/**
   - docs/PLATFORM_CI_AUDIT.md
@@ -46,6 +49,6 @@ acceptance_evidence:
     - platform-verifier
     - ownership-self-tests
     - concurrency-capacity
-instruction_drift_check: completed-p1-21-closeout-p1-22-activation-p1-25-capacity-2026-09-15
+instruction_drift_check: completed-p1-22-closeout-p1-23-activation-readme-sync-p1-26-capacity-2026-09-15
 submission_pr: null
 integration_baseline_sha: null
