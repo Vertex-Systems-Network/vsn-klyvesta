@@ -163,12 +163,36 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
     Require(readme.Contains("## Module delivery table", StringComparison.Ordinal), "README module delivery table is missing");
     Require(readme.Contains("Accepted staging baseline: `ef1f9912cc2928771dee0d104a29dec0563c9323`", StringComparison.Ordinal),
         "README accepted staging baseline is stale");
+    Require(readme.Contains("18 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
+        "README accepted-lane summary is stale");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Dashboard \\|.*Integrated —"),
         "README customer-dashboard row must be integrated");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Alert Rules \\|.*Active — P1-23 assigned"),
         "README customer-alert-rules row must be active");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Risk Center \\|.*Ready — P1-26"),
         "README customer-risk-center row must be ready");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Database Integration \\|.*Ready —"),
+        "README database-integration row must remain ready");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Security Acceptance \\|.*Blocked —"),
+        "README security-acceptance row must remain blocked");
+});
+
+Check("PLAT-013", "P1-26 ready capacity lane is durable and non-authorizing", () =>
+{
+    var manifest = Read(".ai/agent-orchestration.yaml");
+    var registry = Read(".ai/parallel-branch-registry.yaml");
+    var workItem = Read(".ai/work-items/customer-risk-center/P1-26-customer-risk-center.yaml");
+
+    Require(manifest.Contains("customer-risk-center:", StringComparison.Ordinal), "customer-risk-center orchestration module is missing");
+    Require(manifest.Contains("canonical_branch: parallel/customer-risk-center", StringComparison.Ordinal), "customer-risk-center canonical branch is missing");
+    Require(registry.Contains("module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: READY, occupancy: OPEN", StringComparison.Ordinal),
+        "customer-risk-center must remain READY/OPEN before assignment");
+    Require(workItem.Contains("status: READY", StringComparison.Ordinal), "P1-26 work item must remain READY before assignment");
+    Require(workItem.Contains("accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
+        "P1-26 accepted baseline must match current accepted staging");
+    Require(workItem.Contains("production_authority: false", StringComparison.Ordinal), "P1-26 must not claim production authority");
+    Require(workItem.Contains("no-advice-no-trading-no-provider-authority", StringComparison.Ordinal),
+        "P1-26 must retain the no-advice/no-trading/provider boundary");
 });
 
 if (failures.Count > 0)
@@ -182,7 +206,7 @@ if (failures.Count > 0)
     return 1;
 }
 
-Console.WriteLine($"Platform CI verification PASS ({passes}/12 checks). No product source, API composition, migration, or workflow mutation was required.");
+Console.WriteLine($"Platform CI verification PASS ({passes}/13 checks). No product source, API composition, migration, or workflow mutation was required.");
 return 0;
 
 void Check(string id, string description, Action assertion)

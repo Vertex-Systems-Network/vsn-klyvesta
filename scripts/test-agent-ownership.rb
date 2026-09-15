@@ -28,6 +28,18 @@ cases = [
     expected_success: false
   ),
   Case.new(
+    name: 'ready module rejects substantive implementation before assignment',
+    branch: 'parallel/customer-risk-center',
+    files: "src/Klyvesta.Application/RiskCenter/CustomerRiskCenterBuilder.cs\n",
+    expected_success: false
+  ),
+  Case.new(
+    name: 'platform lane accepts owned README lifecycle files',
+    branch: 'parallel/platform-ci',
+    files: "README.md\n.ai/integration-baseline.yaml\n",
+    expected_success: true
+  ),
+  Case.new(
     name: 'supervisor rejects module source takeover',
     branch: 'parallel/supervisor-platform',
     files: "src/Klyvesta.Application/Notifications/NotificationService.cs\n",
