@@ -87,6 +87,7 @@ Check("PLAT-005", "pull_request_target is not used", () =>
 Check("PLAT-006", "shared engineering paths remain centrally owned", () =>
 {
     var manifest = Read(".ai/agent-orchestration.yaml");
+    Require(manifest.Contains("README.md", StringComparison.Ordinal), "shared-path ownership is missing README.md");
     Require(manifest.Contains(".github/workflows/**", StringComparison.Ordinal), "shared-path ownership is missing .github/workflows/**");
     Require(manifest.Contains("Directory.Build.props", StringComparison.Ordinal), "shared-path ownership is missing Directory.Build.props");
     Require(manifest.Contains("Directory.Packages.props", StringComparison.Ordinal), "shared-path ownership is missing Directory.Packages.props");
@@ -133,27 +134,68 @@ Check("PLAT-010", "no-slot and refresh safety signals are preserved", () =>
         "refresh safety alert drifted");
 });
 
-Check("PLAT-011", "P1-21 closeout and P1-22 handoff are durable", () =>
+Check("PLAT-011", "P1-22 closeout and P1-23 handoff are durable", () =>
 {
     var registry = Read(".ai/parallel-branch-registry.yaml");
-    var activity = Read(".ai/work-items/customer-activity/P1-21-customer-activity.yaml");
     var dashboard = Read(".ai/work-items/customer-dashboard/P1-22-customer-dashboard.yaml");
+    var alerts = Read(".ai/work-items/customer-alert-rules/P1-23-customer-alert-rules.yaml");
 
-    Require(registry.Contains("module: customer-activity, branch: parallel/customer-activity, agent_slot: agent-customer-activity, status: INTEGRATED", StringComparison.Ordinal),
-        "customer-activity must be integrated in the registry");
-    Require(registry.Contains("integrated_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80", StringComparison.Ordinal),
-        "customer-activity integration SHA must match the accepted merge");
-    Require(activity.Contains("start_status: COMPLETE", StringComparison.Ordinal) && activity.Contains("status: INTEGRATED", StringComparison.Ordinal),
-        "P1-21 work item must be durably complete and integrated");
-    Require(activity.Contains("integration_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80", StringComparison.Ordinal),
-        "P1-21 integration baseline must match accepted staging");
+    Require(registry.Contains("module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: INTEGRATED", StringComparison.Ordinal),
+        "customer-dashboard must be integrated in the registry");
+    Require(registry.Contains("integrated_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
+        "customer-dashboard integration SHA must match the accepted merge");
+    Require(dashboard.Contains("start_status: COMPLETE", StringComparison.Ordinal) && dashboard.Contains("status: INTEGRATED", StringComparison.Ordinal),
+        "P1-22 work item must be durably complete and integrated");
+    Require(dashboard.Contains("integration_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
+        "P1-22 integration baseline must match accepted staging");
 
-    Require(registry.Contains("module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerDashboard-01", StringComparison.Ordinal),
-        "customer-dashboard must be the active assigned customer lane");
-    Require(dashboard.Contains("assigned_agent: ChatGPT-CustomerDashboard-01", StringComparison.Ordinal) && dashboard.Contains("status: ACTIVE", StringComparison.Ordinal),
-        "P1-22 work item must be assigned and active");
-    Require(dashboard.Contains("accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80", StringComparison.Ordinal),
-        "P1-22 accepted baseline must match the P1-21 staging merge");
+    Require(registry.Contains("module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerAlertRules-01", StringComparison.Ordinal),
+        "customer-alert-rules must be the active assigned customer lane");
+    Require(alerts.Contains("assigned_agent: ChatGPT-CustomerAlertRules-01", StringComparison.Ordinal) && alerts.Contains("status: ACTIVE", StringComparison.Ordinal),
+        "P1-23 work item must be assigned and active");
+    Require(alerts.Contains("accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
+        "P1-23 accepted baseline must match the P1-22 staging merge");
+});
+
+Check("PLAT-012", "README module delivery table tracks canonical lifecycle state", () =>
+{
+    var readme = Read("README.md");
+    Require(readme.Contains("## Module delivery table", StringComparison.Ordinal), "README module delivery table is missing");
+    Require(readme.Contains("Accepted staging baseline: `ef1f9912cc2928771dee0d104a29dec0563c9323`", StringComparison.Ordinal),
+        "README accepted staging baseline is stale");
+    Require(readme.Contains("18 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
+        "README accepted-lane summary is stale");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Dashboard \\|.*Integrated —"),
+        "README customer-dashboard row must be integrated");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Alert Rules \\|.*Active — P1-23 assigned"),
+        "README customer-alert-rules row must be active");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Risk Center \\|.*Ready — P1-26"),
+        "README customer-risk-center row must be ready");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Database Integration \\|.*Ready —"),
+        "README database-integration row must remain ready");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Security Acceptance \\|.*Blocked —"),
+        "README security-acceptance row must remain blocked");
+});
+
+Check("PLAT-013", "P1-26 ready capacity lane is durable and assignment-gated", () =>
+{
+    var manifest = Read(".ai/agent-orchestration.yaml");
+    var registry = Read(".ai/parallel-branch-registry.yaml");
+    var workItem = Read(".ai/work-items/customer-risk-center/P1-26-customer-risk-center.yaml");
+    var ownershipValidator = Read("scripts/validate-agent-ownership.rb");
+
+    Require(manifest.Contains("customer-risk-center:", StringComparison.Ordinal), "customer-risk-center orchestration module is missing");
+    Require(manifest.Contains("canonical_branch: parallel/customer-risk-center", StringComparison.Ordinal), "customer-risk-center canonical branch is missing");
+    Require(registry.Contains("module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: READY, occupancy: OPEN", StringComparison.Ordinal),
+        "customer-risk-center must remain READY/OPEN before assignment");
+    Require(workItem.Contains("status: READY", StringComparison.Ordinal), "P1-26 work item must remain READY before assignment");
+    Require(workItem.Contains("accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
+        "P1-26 accepted baseline must match current accepted staging");
+    Require(workItem.Contains("production_authority: false", StringComparison.Ordinal), "P1-26 must not claim production authority");
+    Require(workItem.Contains("no-advice-no-trading-no-provider-authority", StringComparison.Ordinal),
+        "P1-26 must retain the no-advice/no-trading/provider boundary");
+    Require(ownershipValidator.Contains("%w[BLOCKED READY RESERVED INTEGRATED].include?(status)", StringComparison.Ordinal),
+        "READY module branches must reject substantive implementation before assignment");
 });
 
 if (failures.Count > 0)
@@ -167,7 +209,7 @@ if (failures.Count > 0)
     return 1;
 }
 
-Console.WriteLine($"Platform CI verification PASS ({passes}/11 checks). No product source, API composition, migration, or workflow mutation was required.");
+Console.WriteLine($"Platform CI verification PASS ({passes}/13 checks). No product source, API composition, migration, or workflow mutation was required.");
 return 0;
 
 void Check(string id, string description, Action assertion)

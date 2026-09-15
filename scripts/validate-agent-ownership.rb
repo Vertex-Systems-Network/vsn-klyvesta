@@ -98,7 +98,7 @@ if module_rules.nil?
   warn "Ownership violation: module #{module_name} has no orchestration rules."
   exit 1
 end
-if %w[BLOCKED RESERVED INTEGRATED].include?(status)
+if %w[BLOCKED READY RESERVED INTEGRATED].include?(status)
   substantive = files.reject { |path| path.start_with?('.ai/checkpoints/') || matches?(owned_work_item_pattern, path) }
   unless substantive.empty?
     warn "Readiness violation: #{module_name} is #{status}; substantive implementation changes are not permitted in this state."
