@@ -16,16 +16,59 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-Planning/foundation only. No production trading implementation is authorized yet.
+**Last status update:** `2026-09-15 — P1-22 Customer Dashboard integrated; P1-23 Customer Alert Rules activated`
 
-The first acceptance gate is regulatory + broker fit:
+Accepted staging baseline: `ef1f9912cc2928771dee0d104a29dec0563c9323`
+
+**Repository-owned non-live product/verification lanes:** `███████░░░ 75%` — **18 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-23 is active, four additional lanes are READY, and Security Acceptance remains blocked by external production evidence.
+
+**Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
+
+The accepted staging baseline contains deterministic, API-independent/non-live boundaries for paper brokerage, OMS, portfolio/reconciliation, risk, compliance, AI shadow planning, customer data, customer insights, reporting, preferences, planning, activity, dashboard composition, identity/authorization, ledger, notifications, observability, and performance/resilience.
+
+Live/real-money pyPSX operation is not authorized. Production brokerage remains fail-closed until direct pyPSX partner API/contract evidence, credentials and exact provider semantics are available; required legal/regulatory/provider approvals are complete; and repository governance permits production promotion.
+
+The first production acceptance gate remains regulatory + broker fit:
 - pyPSX Broker API production capabilities confirmed.
 - Underlying regulated broker/custody structure confirmed.
 - Regulatory treatment of AI recommendations confirmed.
 - Regulatory treatment of discretionary/automatic portfolio management confirmed.
 - Required adviser/securities-manager licence or licensed partner arrangement confirmed.
 
-The implementation foundation has been specified and generic foundation work may be validated independently, but no real-money capability is unlocked until the canonical acceptance gates are satisfied.
+The implementation foundation and non-live safety boundaries may be validated independently, but no real-money capability is unlocked until the canonical acceptance gates are satisfied.
+
+## Module delivery table
+
+> This table tracks the **canonical repository-owned non-live engineering state on `parallel/integration-staging`**. `100%` means the scoped non-live module is accepted/integrated; it does not mean live pyPSX, regulatory, provider, KYC/PII, or real-money approval. README lifecycle rows are checked by Platform CI so accepted module transitions must update this table.
+
+| Module | Progress | Work Item | Status |
+| --- | --- | --- | --- |
+| Brokerage Trust / Paper Broker | `██████████ 100%` | P1 brokerage foundation | Integrated — API-independent paper broker + broker trust boundary; live pyPSX remains external |
+| Orders / OMS | `██████████ 100%` | P1 OMS | Integrated — deterministic paper/non-live order state machine |
+| Portfolio & Reconciliation | `██████████ 100%` | P1 portfolio | Integrated — deterministic paper projection/reconciliation boundary |
+| Risk | `██████████ 100%` | P1 risk | Integrated — deterministic paper risk governor |
+| Compliance | `██████████ 100%` | P1 compliance | Integrated — deterministic paper compliance gate |
+| AI Shadow | `██████████ 100%` | P1 AI shadow | Integrated — proposal/paper-shadow boundary; no direct execution authority |
+| Customer Data | `██████████ 100%` | P1-16 | Integrated — customer-owned profile, risk-profile, goals and watchlist foundation |
+| Customer Insights | `██████████ 100%` | P1-17 | Integrated — deterministic informational customer insights |
+| Customer Reporting | `██████████ 100%` | P1-18 | Integrated — customer-scoped paper portfolio reporting |
+| Customer Preferences | `██████████ 100%` | P1-19 | Integrated — privacy-safe notification preference state |
+| Customer Planning | `██████████ 100%` | P1-20 | Integrated — deterministic goal/contribution planning without advice authority |
+| Customer Activity | `██████████ 100%` | P1-21 | Integrated — sanitized customer-scoped order/ledger activity timeline |
+| Customer Dashboard | `██████████ 100%` | P1-22 | Integrated — deterministic read-only paper/informational composition |
+| Customer Alert Rules | `██░░░░░░░░ 20%` | P1-23 | Active — P1-23 assigned; customer-scoped rule configuration without dispatch authority |
+| Customer Scenarios | `░░░░░░░░░░ 0%` | P1-24 | Ready — deterministic paper scenario/risk views without advice or execution authority |
+| Customer Security Center | `░░░░░░░░░░ 0%` | P1-25 | Ready — read-only customer-scoped session/device/security-state projection |
+| Customer Risk Center | `░░░░░░░░░░ 0%` | P1-26 | Ready — P1-26 deterministic customer-scoped risk visibility without advice/execution authority |
+| Identity & Authorization | `██████████ 100%` | P1-02/03 | Integrated — server-authoritative identity, withdrawal/session/device and break-glass boundaries |
+| Ledger | `██████████ 100%` | P1-04 | Integrated — immutable non-live double-entry boundary |
+| Notifications | `██████████ 100%` | P1-12 | Integrated — provider-neutral delivery boundary; production provider remains separate |
+| Observability | `██████████ 100%` | P1-13 | Integrated — structured secret-safe telemetry boundary |
+| Performance & Resilience | `██████████ 100%` | P1-15 | Integrated — deterministic performance/failure contract; production measurements remain pending |
+| Database Integration | `░░░░░░░░░░ 0%` | M-AGENT-06 | Ready — migrations/model snapshots remain database-integration owned |
+| Security Acceptance | `░░░░░░░░░░ 0%` | P1-14 | Blocked — production governance/provider/legal/runtime evidence required |
+| Platform / CI | `█████████░ 90%` | M-AGENT-09 | Active — ownership, lifecycle, verifier discovery, capacity and README status enforcement |
+| pyPSX Live Integration | `░░░░░░░░░░ 0%` | External | Blocked — direct partner API/contract/credential semantics not available |
 
 ## Repository model
 
@@ -60,7 +103,7 @@ Key rules:
 - independent modules should branch from a common stable integration baseline rather than an unnecessary sequential feature stack;
 - dependent modules may stack only when a real dependency requires it;
 - module agents work inside explicit allowed paths and communicate across modules through stable contracts/interfaces;
-- shared files such as central CI, build/package configuration, shared state, contracts, composition wiring, and final migration/model-snapshot integration are Supervisor/Platform/Integration-owned by default;
+- shared files such as `README.md`, central CI, build/package configuration, shared state, contracts, composition wiring, and final migration/model-snapshot integration are Supervisor/Platform/Integration-owned by default;
 - every work item records its exact base SHA and dependency evidence;
 - every agent performs a pre-work collision check against active PRs/issues and module ownership;
 - every meaningful PR/checkpoint records its instruction-drift check.
@@ -166,4 +209,4 @@ If no free slot exists, Supervisor sends exactly **Go Home Come Back Next Time**
 
 See `docs/NEW_AGENT_ONBOARDING.md`, `.ai/integration-baseline.yaml`, and `scripts/onboard-new-agent.rb`.
 
-Operational orchestration CI now verifies onboarding allocation/overflow behavior, durable work-item readiness, accepted-baseline ancestry, module ownership, migration/model-snapshot ownership, dependency-DAG/branch/occupancy consistency, and configured concurrency capacity. `parallel/integration-staging` advances one reviewed integration at a time while protected `main` remains governance-blocked.
+Operational orchestration CI now verifies onboarding allocation/overflow behavior, durable work-item readiness, accepted-baseline ancestry, module ownership, migration/model-snapshot ownership, dependency-DAG/branch/occupancy consistency, configured concurrency capacity, and README lifecycle freshness. `parallel/integration-staging` advances one reviewed integration at a time while protected `main` remains governance-blocked.
