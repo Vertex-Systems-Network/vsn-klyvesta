@@ -4,7 +4,7 @@ branch: parallel/customer-dashboard
 agent_slot: agent-customer-dashboard
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerDashboard-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-14T21:59:00Z"
 base_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
 accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
@@ -26,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -38,6 +38,14 @@ acceptance_evidence:
     - no-live-market-provider-or-trading-authority
     - customer-dashboard-verifier
     - exact-head-ci
+  satisfied:
+    - deterministic-read-only-dashboard-composition
+    - customer-and-account-scope-validation
+    - reporting-and-insight-authority-propagation
+    - no-restricted-pii-output
+    - no-live-market-provider-or-trading-authority
+    - customer-dashboard-verifier
+    - exact-head-ci
 instruction_drift_check: completed-2026-09-15-branch-refreshed-through-67134fe8-while-preserving-original-assignment-baseline-549e8aff
 submission_pr: 121
-integration_baseline_sha: null
+integration_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
