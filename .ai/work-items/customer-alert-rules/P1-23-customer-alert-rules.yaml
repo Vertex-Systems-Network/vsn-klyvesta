@@ -3,8 +3,11 @@ module: customer-alert-rules
 branch: parallel/customer-alert-rules
 agent_slot: agent-customer-alert-rules
 owner_role: module-agent
-base_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
-accepted_baseline_sha: f14edcdd7b8e0ace792db2e08b06b08c2beeb020
+assigned_agent: ChatGPT-CustomerAlertRules-01
+start_status: ASSIGNED
+started_at: "2026-09-15T12:12:00Z"
+base_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
 dependencies:
   - customer-preferences
   - notifications
@@ -24,7 +27,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: READY
+status: ACTIVE
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -36,6 +39,6 @@ acceptance_evidence:
     - no-dispatch-no-live-market-no-trading-authority
     - customer-alert-rules-verifier
     - exact-head-ci
-instruction_drift_check: pending
+instruction_drift_check: completed-2026-09-15-assigned-on-ef1f9912-dashboard-integrated-baseline
 submission_pr: null
 integration_baseline_sha: null
