@@ -11,20 +11,20 @@ Case = Struct.new(:name, :branch, :files, :expected_success, keyword_init: true)
 cases = [
   Case.new(
     name: 'active module accepts owned path',
-    branch: 'parallel/customer-dashboard',
-    files: "src/Klyvesta.Domain/Dashboard/CustomerDashboard.cs\n.ai/checkpoints/customer-dashboard.md\n",
+    branch: 'parallel/customer-alert-rules',
+    files: "src/Klyvesta.Domain/AlertRules/CustomerAlertRule.cs\n.ai/checkpoints/customer-alert-rules.md\n",
     expected_success: true
   ),
   Case.new(
     name: 'module rejects another module path',
-    branch: 'parallel/customer-dashboard',
+    branch: 'parallel/customer-alert-rules',
     files: "src/Klyvesta.Application/Risk/PaperRiskGovernor.cs\n",
     expected_success: false
   ),
   Case.new(
     name: 'integrated module rejects substantive implementation',
-    branch: 'parallel/customer-activity',
-    files: "src/Klyvesta.Application/Activity/DeterministicCustomerActivityBuilder.cs\n",
+    branch: 'parallel/customer-dashboard',
+    files: "src/Klyvesta.Application/Dashboard/DeterministicCustomerDashboardBuilder.cs\n",
     expected_success: false
   ),
   Case.new(
