@@ -46,6 +46,18 @@ cases = [
     expected_success: false
   ),
   Case.new(
+    name: 'supervisor review branch accepts shared governance paths',
+    branch: 'supervisor/20260921-governance-resume-v2',
+    files: ".github/workflows/agent-orchestration.yml\n.ai/compact-state/CURRENT-STATE.yaml\nAGENTS.md\n",
+    expected_success: true
+  ),
+  Case.new(
+    name: 'supervisor review branch rejects module source takeover',
+    branch: 'supervisor/20260921-governance-resume-v2',
+    files: "src/Klyvesta.Application/Notifications/NotificationService.cs\n",
+    expected_success: false
+  ),
+  Case.new(
     name: 'configured integration branch accepts cross-module merge train',
     branch: 'parallel/integration-staging',
     files: "src/Klyvesta.Application/Brokerage/BrokerContracts.cs\nsrc/Klyvesta.Application/Orders/OrderManagementService.cs\n",
