@@ -134,32 +134,23 @@ Check("PLAT-010", "no-slot and refresh safety signals are preserved", () =>
         "refresh safety alert drifted");
 });
 
-Check("PLAT-011", "P1-22 closeout and P1-23 handoff are durable", () =>
+Check("PLAT-011", "P1-22 and P1-23 customer-lane closeouts are durable", () =>
 {
     var registry = Read(".ai/parallel-branch-registry.yaml");
     var dashboard = Read(".ai/work-items/customer-dashboard/P1-22-customer-dashboard.yaml");
     var alerts = Read(".ai/work-items/customer-alert-rules/P1-23-customer-alert-rules.yaml");
 
-    Require(registry.Contains("module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: INTEGRATED", StringComparison.Ordinal),
-        "customer-dashboard must be integrated in the registry");
-    Require(registry.Contains("integrated_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
-        "customer-dashboard integration SHA must match the accepted merge");
-    Require(dashboard.Contains("start_status: COMPLETE", StringComparison.Ordinal) && dashboard.Contains("status: INTEGRATED", StringComparison.Ordinal),
-        "P1-22 work item must be durably complete and integrated");
-    Require(dashboard.Contains("integration_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
-        "P1-22 integration baseline must match accepted staging");
+    Require(registry.Contains("module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: INTEGRATED", StringComparison.Ordinal), "customer-dashboard must be integrated in the registry");
+    Require(registry.Contains("integrated_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal), "customer-dashboard integration SHA must match the accepted merge");
+    Require(dashboard.Contains("start_status: COMPLETE", StringComparison.Ordinal) && dashboard.Contains("status: INTEGRATED", StringComparison.Ordinal), "P1-22 work item must be durably complete and integrated");
+    Require(dashboard.Contains("integration_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal), "P1-22 integration baseline must match accepted staging");
 
-    Require(registry.Contains("module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerAlertRules-01", StringComparison.Ordinal),
-        "customer-alert-rules must be the active assigned customer lane");
-    Require(alerts.Contains("assigned_agent: ChatGPT-CustomerAlertRules-01", StringComparison.Ordinal) && alerts.Contains("status: ACTIVE", StringComparison.Ordinal),
-        "P1-23 work item must be assigned and active");
-    var alertBaselineMatches = Regex.Matches(
-        alerts,
-        @"(?m)^accepted_baseline_sha:\s*([0-9a-f]{40})\s*$");
-    Require(alertBaselineMatches.Count == 1,
-        "P1-23 accepted baseline must be recorded exactly once as a full SHA");
-    Require(alerts.Contains("production_authority: false", StringComparison.Ordinal),
-        "P1-23 must remain non-production while active");
+    Require(registry.Contains("module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: INTEGRATED", StringComparison.Ordinal), "customer-alert-rules must be integrated in the registry");
+    Require(registry.Contains("integrated_sha: d134b2839ff1af3b6867f11b3304779a29b14b0b", StringComparison.Ordinal), "customer-alert-rules integration SHA must match PR #131 accepted merge");
+    Require(alerts.Contains("start_status: COMPLETE", StringComparison.Ordinal) && alerts.Contains("status: INTEGRATED", StringComparison.Ordinal), "P1-23 work item must be durably complete and integrated");
+    Require(alerts.Contains("integration_baseline_sha: d134b2839ff1af3b6867f11b3304779a29b14b0b", StringComparison.Ordinal), "P1-23 integration baseline must match PR #131 accepted staging");
+    Require(alerts.Contains("- exact-head-ci", StringComparison.Ordinal), "P1-23 exact-head CI acceptance evidence must be satisfied");
+    Require(alerts.Contains("production_authority: false", StringComparison.Ordinal), "P1-23 must remain non-production after integration");
 });
 
 Check("PLAT-012", "README module delivery table tracks canonical lifecycle state", () =>
