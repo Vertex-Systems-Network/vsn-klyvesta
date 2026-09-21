@@ -1,4 +1,4 @@
-version: 12
+version: 13
 status: multi-agent-orchestration-operational-candidate
 canonical_human_plan: docs/PARALLEL_AGENT_DEVELOPMENT.md
 canonical_supervisor_workflow: docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md
@@ -102,6 +102,15 @@ supervisor_workflow:
   main_promotion_rule: protected-main-and-governance-gates-must-permit
   blocked_main_fallback: parallel/integration-staging
   completion_time_never_overrides_dependency_order: true
+
+integration_identity:
+  current_head_authority: runtime_branch_resolution
+  durable_mutable_broadcast_surface: "issue:82"
+  immutable_manifest_sha_field: verified_parent_baseline_sha
+  immutable_manifest_sha_semantics: "exact accepted integration head from which the current control-plane generation was branched"
+  persisted_current_head_required: false
+  self_referential_current_head_sha_forbidden: true
+  validator_rule: "verified_parent_baseline_sha must be a full SHA and an ancestor of the runtime-resolved accepted integration ref"
 
 agent_refresh_protocol:
   required_after_supervisor_refresh_alert: true
