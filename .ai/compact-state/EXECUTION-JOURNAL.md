@@ -40,3 +40,14 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Opened PR #126 from `supervisor/20260921-control-plane-reconcile` to `parallel/integration-staging`.
 - Bound active PR identity to #126 and transitioned reconciliation milestone from IMPLEMENTING to VERIFYING before exact-head CI observation.
 - Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
+
+## 2026-09-21 — PLAT-012 ownership-correct repair
+
+- PR #126 exact-head .NET regression failed only at PlatformVerifier PLAT-012 because the verifier hardcoded historical accepted staging SHA `ef1f9912cc2928771dee0d104a29dec0563c9323`.
+- Confirmed `tools/Klyvesta.PlatformVerifier/**` is owned by canonical `parallel/platform-ci`.
+- Confirmed `parallel/platform-ci` had 0 unique commits and no open PR; safely fast-forwarded it without force to the #126 lineage.
+- Updated PLAT-012 to derive the expected README baseline from canonical `.ai/integration-baseline.yaml:last_verified_baseline_sha`.
+- Recorded platform consumed baseline `0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f` in the platform work item and branch registry.
+- Opened ownership-correct PR #127 and closed #126 unmerged as superseded.
+- Transitioned platform work item to VERIFYING with submission PR #127.
+- Next action: one consolidated exact-head CI/status/review refresh for #127; no polling.
