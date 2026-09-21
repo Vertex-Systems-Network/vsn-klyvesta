@@ -14,7 +14,14 @@ occupied_parallel = Array(REGISTRY['branches']).count { |e| e['occupancy'] == 'O
 capacity = open_slots.length + occupied_parallel
 min = ORCHESTRATION.dig('concurrency', 'current_recommended_min').to_i
 max = ORCHESTRATION.dig('concurrency', 'current_recommended_max').to_i
-errors << "configured parallel capacity #{capacity} is below recommended minimum #{min}" if capacity < min
+
+schedulable_statuses = %w[READY ACTIVE VERIFYING SUBMITTED]
+remaining_schedulable = Array(REGISTRY['branches']).count do |entry|
+  entry['module'] != 'supervisor-platform' && schedulable_statuses.include?(entry['status'])
+end
+effective_min = [min, remaining_schedulable].min
+
+errors << "configured parallel capacity #{capacity} is below effective minimum #{effective_min} (configured minimum #{min}; remaining schedulable lanes #{remaining_schedulable})" if capacity < effective_min
 errors << "configured parallel capacity #{capacity} exceeds current maximum #{max}" if capacity > max
 errors << 'required no-slot phrase drifted' unless ORCHESTRATION.dig('new_agent_onboarding', 'no_slot_message') == NO_SLOT_MESSAGE
 
@@ -30,5 +37,5 @@ unless errors.empty?
   exit 1
 end
 
-puts "Concurrency capacity validation PASS. Configured module capacity: #{capacity}; OPEN now: #{open_slots.length}; OCCUPIED module slots: #{occupied_parallel}."
+puts "Concurrency capacity validation PASS. Configured module capacity: #{capacity}; effective minimum: #{effective_min}; configured minimum: #{min}; remaining schedulable lanes: #{remaining_schedulable}; OPEN now: #{open_slots.length}; OCCUPIED module slots: #{occupied_parallel}."
 puts "Overflow response: #{NO_SLOT_MESSAGE}"
