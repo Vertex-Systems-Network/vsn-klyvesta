@@ -36,3 +36,7 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Synchronized README accepted staging marker while preserving P1-23 at 20% and overall repository-owned non-live progress at 75%.
 - Did not falsely advance active agent branch `accepted_baseline_sha` values before those agents consume the refresh.
 - Next action: open reconciliation PR, bind identity, transition VERIFYING, run one exact-head CI/status refresh.
+
+- Opened PR #126 from `supervisor/20260921-control-plane-reconcile` to `parallel/integration-staging`.
+- Bound active PR identity to #126 and transitioned reconciliation milestone from IMPLEMENTING to VERIFYING before exact-head CI observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
