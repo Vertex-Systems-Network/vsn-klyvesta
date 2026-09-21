@@ -82,3 +82,18 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Opened PR #129 from `parallel/platform-ci` to `parallel/integration-staging`.
 - Bound platform work item and compact state to PR #129; transitioned milestone to VERIFYING before exact-head observation.
 - Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
+
+## 2026-09-21 — P1-23 shared registry reconciliation
+
+- PR #129 integrated into `parallel/integration-staging` at `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`.
+- P1-23 branch consumed that runtime baseline and recorded work-item refresh evidence at `a4c2c5453a2f73e5234dcc60fe2f5846e98b3b31`.
+- Exact refresh orchestration run `35640464758` passed; .NET correctly did not trigger because only `.ai/work-items/**` changed.
+- Reconciliation found shared branch registry still carried historical P1-23 consumption SHA `ef1f9912...`.
+- Fast-forwarded canonical `parallel/platform-ci` to `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77` without force.
+- Advanced only P1-23 and platform-ci registry consumption records to `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`; no other agent baseline was mass-updated.
+- Persisted PR #128/#129 terminal exact-head PASS evidence into Runner Benchmark.
+- Next action: open reconciliation PR, bind identity, transition VERIFYING, one consolidated exact-head CI/status/review refresh.
+
+- Opened PR #130 from `parallel/platform-ci` to `parallel/integration-staging`.
+- Bound platform work item and compact state to PR #130; transitioned milestone to VERIFYING before exact-head observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.

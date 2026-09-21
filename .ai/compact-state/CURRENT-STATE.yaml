@@ -9,19 +9,19 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 129
+active_pr: 130
 active_branch: parallel/platform-ci
-current_milestone: unblock P1-23 baseline refresh by removing PLAT-011 historical baseline pin
+current_milestone: reconcile P1-23 consumed baseline between work item and shared branch registry
 milestone_status: VERIFYING
-last_completed_milestone: PR #128 non-self-referential identity model integrated into parallel/integration-staging at e8b6d7efdb346688deb99fbb5fb50bfe390b9972
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #129; if checks are pending or failing, report that state and end the milestone without polling
+last_completed_milestone: PR #129 PLAT-011 refresh-unblock integrated into parallel/integration-staging at 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #130; if checks are pending or failing, report that state and end the milestone without polling
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
   lifecycle: ACTIVE
   progress_percent: 20
   progress_bar: "██░░░░░░░░"
-  evidence_ref: "README.md@parallel/integration-staging (runtime-resolved)"
+  evidence_ref: "P1-23 work item@a4c2c5453a2f73e5234dcc60fe2f5846e98b3b31"
 overall_progress:
   scope: repository-owned non-live canonical lanes
   accepted_or_integrated: 18
@@ -32,7 +32,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "P1-23 baseline refresh is temporarily blocked by stale PLAT-011 historical baseline pin until the platform repair is accepted."
+  - "P1-23 implementation remains paused until shared branch registry consumption evidence matches the refreshed P1-23 work item."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -44,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-21T22:12:51+05:00"
+last_reconciled_at: "2026-09-21T23:00:00+05:00"
