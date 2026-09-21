@@ -1,6 +1,6 @@
 # Last Checkpoint — Non-Self-Referential Integration Identity
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth at milestone start:
 - default branch: `main`
@@ -26,4 +26,4 @@ Historical module-agent `accepted_baseline_sha` fields remain consumption eviden
 
 No product module completion, deployment/release, production PII, provider/pyPSX, destructive migration, or real-money authority is granted.
 
-Exact next safe action: open the semantic repair PR from `parallel/platform-ci` to `parallel/integration-staging`, bind its identity in compact state/work item, transition to VERIFYING, then perform one consolidated exact-head CI/status/review refresh without polling.
+PR #128 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
