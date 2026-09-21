@@ -22,3 +22,17 @@ PR #125 is open from `supervisor/20260921-governance-resume-v2` to `parallel/int
 Implementation commit before compact-state PR binding: `6144a980a47a8d2021ba5102782e87a13ac9987d`.
 
 Exact next safe action: perform one consolidated exact-head CI/status refresh for PR #125. If checks or review are still pending, report that state and end this milestone without polling.
+
+
+## 2026-09-21 — CI trigger repair milestone
+
+Root cause: PR #125 targets `parallel/integration-staging` from `supervisor/20260921-governance-resume-v2`, while accepted workflows only covered `parallel/**` pushes and `main`-targeted PRs. The ownership validator also skipped strict enforcement on non-`parallel/**` branches.
+
+Repair scope:
+- add `supervisor/**` push coverage to orchestration and .NET regression workflows;
+- add future `parallel/integration-staging` PR coverage;
+- include Supervisor governance/compact-state paths in workflow path filters;
+- enforce auxiliary Supervisor review branches as shared-governance-only and reject module `src/**` changes;
+- add ownership self-tests for allowed governance changes and forbidden module-source takeover.
+
+Status remains VERIFYING until exact-head CI evidence exists.
