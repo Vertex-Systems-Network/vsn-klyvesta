@@ -9,12 +9,12 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: null
+active_pr: 128
 active_branch: parallel/platform-ci
 current_milestone: replace self-referential integration-head persistence with verified-parent baseline semantics
-milestone_status: IMPLEMENTING
+milestone_status: VERIFYING
 last_completed_milestone: PR #127 PLAT-012 repair integrated into parallel/integration-staging at 30de8c4c8daeff302cf1c669ef1d3b1a78f02c52
-exact_next_safe_action: finish the semantic-model repair on parallel/platform-ci, open a PR against parallel/integration-staging, bind its PR identity, transition to VERIFYING, then perform one consolidated exact-head CI/status/review refresh
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #128; if checks are pending or failing, report that state and end the milestone without polling
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
