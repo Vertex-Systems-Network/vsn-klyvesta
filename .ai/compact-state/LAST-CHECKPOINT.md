@@ -1,6 +1,6 @@
 # Last Checkpoint — P1-25 Customer Security Center Assignment
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth:
 - PR #136 P1-24 canonical closeout merged into `parallel/integration-staging` at `4d46d94c70e3aed9a6a66b94f7785a79bbbe3924`.
@@ -15,4 +15,4 @@ P1-25 assignment candidate:
 - README moves Customer Security Center from 0% Ready to 20% Active while overall remains 20/24 = 83%;
 - implementation contract is read-only/customer-scoped and excludes secrets, tokens, restricted PII, revocation/provider/live authority.
 
-Exact next safe action: open the ownership-correct assignment PR and perform one consolidated exact-head CI/review refresh.
+PR #137 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
