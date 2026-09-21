@@ -118,3 +118,13 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - README candidate now shows Customer Alert Rules 100% and overall 19/24 = 79%.
 - PLAT-011 updated to enforce durable P1-23 integration semantics.
 - No live/production/provider/pyPSX/PII/deployment/migration/real-money authority granted.
+
+## 2026-09-22 — P1-24 Customer Scenarios assignment candidate
+
+- PR #133 merged P1-23 canonical closeout into staging at `9ec5f70d4cd4a81a3d84d85d19b66b309976c077`; P1-23 is now canonical 100% and overall non-live progress is 19/24 = 79%.
+- Issue #82 closeout refresh published as comment #5767611704.
+- Non-force fast-forwarded `parallel/platform-ci` and `parallel/customer-scenarios` to the new accepted staging head.
+- Verified Portfolio and Risk dependency heads are ancestors of the refreshed baseline.
+- Prepared registry version 18: P1-24 Customer Scenarios ACTIVE/OCCUPIED, assigned to ChatGPT-CustomerScenarios-01.
+- Prepared P1-24 work-item baseline/assignment evidence and README 20% Active row; overall remains 79% until integration.
+- No live/provider/pyPSX/advice/execution/PII/migration authority granted.
