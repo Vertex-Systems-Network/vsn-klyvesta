@@ -15,3 +15,8 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Opened PR #125 targeting `parallel/integration-staging`.
 - Persisted PR identity and transitioned milestone status from IMPLEMENTING to VERIFYING before exact-head CI observation.
 - Next action is one consolidated exact-head status refresh; no tight polling is authorized.
+
+- Fresh CI reconciliation identified a deterministic trigger mismatch for PR #125: the Supervisor review branch matched neither existing push nor PR-base workflow triggers.
+- Security review found a related ownership gap: a non-parallel Supervisor branch would have skipped strict ownership validation.
+- Repaired CI coverage for `supervisor/**` and staging-targeted PRs; added shared-governance-only ownership enforcement and negative source-takeover tests.
+- Milestone remains VERIFYING pending one exact-head CI observation. No merge or production authority granted.
