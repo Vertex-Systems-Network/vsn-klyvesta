@@ -13,7 +13,13 @@ Check("SEC-001", "same inputs produce deterministic security-center output", () 
 {
     var first = projector.Project(CreateRequest());
     var second = projector.Project(CreateRequest());
-    Require(first == second, "security-center projection must be deterministic");
+    Require(first.CustomerId == second.CustomerId, "customer id must be deterministic");
+    Require(first.SessionReference == second.SessionReference, "session reference must be deterministic");
+    Require(first.DeviceReference == second.DeviceReference, "device reference must be deterministic");
+    Require(first.ObservedAt == second.ObservedAt, "observation time must be deterministic");
+    Require(first.Posture == second.Posture, "posture must be deterministic");
+    Require(first.Signals.SequenceEqual(second.Signals), "signals must be deterministic");
+    Require(first.Authority == second.Authority, "authority must be deterministic");
 });
 
 Check("SEC-002", "cross-customer request fails closed", () =>
@@ -50,7 +56,7 @@ Check("SEC-006", "blank device reference is rejected", () =>
 Check("SEC-007", "missing observation time is rejected", () =>
 {
     RequireThrows<ArgumentException>(() =>
-        projector.Project(CreateRequest(requestObservedAt: default)));
+        projector.Project(CreateRequest(requestObservedAt: DateTimeOffset.MinValue)));
 });
 
 Check("SEC-008", "non-authoritative identity context fails closed", () =>
