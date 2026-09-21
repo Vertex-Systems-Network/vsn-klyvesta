@@ -139,3 +139,13 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - README candidate advances Customer Scenarios to 100% and overall non-live progress to 20/24 = 83%.
 - PLAT-011/PLAT-012 are updated to enforce P1-24 integrated lifecycle and README truth.
 - No live/provider/pyPSX/advice/execution/PII/deployment/migration/real-money authority is granted.
+
+## 2026-09-22 — P1-25 Customer Security Center assignment candidate
+
+- PR #136 merged P1-24 canonical closeout into staging at `4d46d94c70e3aed9a6a66b94f7785a79bbbe3924`; canonical progress is 20/24 = 83%.
+- Issue #82 closeout refresh published as comment #5767995307.
+- Non-force fast-forwarded `parallel/platform-ci` and `parallel/customer-security-center` to the accepted staging head.
+- Verified identity-authorization dependency head is an ancestor of the refreshed baseline.
+- Prepared registry version 20: P1-25 ACTIVE/OCCUPIED, assigned to ChatGPT-CustomerSecurityCenter-01.
+- README candidate moves Customer Security Center to 20% Active; overall remains 83% until integration.
+- P1-25 is read-only and excludes secret/token/restricted-PII output plus revocation/provider/live authority.
