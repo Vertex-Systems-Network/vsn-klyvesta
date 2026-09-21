@@ -172,7 +172,8 @@ public sealed class CustomerAlertRule
 
     public DateTimeOffset UpdatedAt { get; }
 
-    public CustomerAlertRuleAuthority Authority => CustomerAlertRuleAuthority.ConfigurationOnly;
+    public CustomerAlertRuleAuthority Authority =>
+        CustomerAlertRuleAuthority.ConfigurationOnly with { CustomerScoped = CustomerId != Guid.Empty };
 
     public CustomerAlertRule WithConfiguration(
         string name,
