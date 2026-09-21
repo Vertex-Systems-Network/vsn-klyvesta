@@ -52,3 +52,51 @@ tasks:
     dedup_key: "PR125:67ed5ea5c15f3052c647ac8584d74fbada7674fb:dotnet-foundation"
     status: PASS
     terminal_evidence: "GitHub Actions run 35627236477; restore/format/API graph/all verifier builds/all verifier runtimes PASS"
+  - id: RB-126-ORCH-01
+    source: PR-126-control-plane-reconcile
+    command_or_workflow: agent-orchestration
+    exact_source_identity: 848b47c71f98d802b1fbca39d79d8ebbe96cb32e
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-126 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: true
+    merge_blocking: true
+    expected_runner_time: "<= 8 minutes"
+    dedup_key: "PR126:848b47c71f98d802b1fbca39d79d8ebbe96cb32e:agent-orchestration"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35628471080; exact-head orchestration PASS"
+  - id: RB-126-DOTNET-01
+    source: PR-126-control-plane-reconcile
+    command_or_workflow: dotnet-foundation
+    exact_source_identity: 848b47c71f98d802b1fbca39d79d8ebbe96cb32e
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-126 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: false
+    merge_blocking: true
+    expected_runner_time: "<= 15 minutes"
+    dedup_key: "PR126:848b47c71f98d802b1fbca39d79d8ebbe96cb32e:dotnet-foundation"
+    status: FAIL
+    terminal_evidence: "GitHub Actions run 35628470654; PlatformVerifier PLAT-012 failed because historical accepted staging SHA was hardcoded"
+  - id: RB-127-ORCH-01
+    source: PR-127-platform-plat012-repair
+    command_or_workflow: agent-orchestration
+    exact_source_identity: ae98fd21fa81a390d3d1deb8e6d911300663cbc5
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-127 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: true
+    merge_blocking: true
+    expected_runner_time: "<= 8 minutes"
+    dedup_key: "PR127:ae98fd21fa81a390d3d1deb8e6d911300663cbc5:agent-orchestration"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35629846216; exact-head orchestration PASS"
+  - id: RB-127-DOTNET-01
+    source: PR-127-platform-plat012-repair
+    command_or_workflow: dotnet-foundation
+    exact_source_identity: ae98fd21fa81a390d3d1deb8e6d911300663cbc5
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-127 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: false
+    merge_blocking: true
+    expected_runner_time: "<= 15 minutes"
+    dedup_key: "PR127:ae98fd21fa81a390d3d1deb8e6d911300663cbc5:dotnet-foundation"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35629846204; exact-head full .NET regression PASS after PLAT-012 repair"
