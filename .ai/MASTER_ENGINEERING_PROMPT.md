@@ -370,3 +370,140 @@ After each accepted advance, Supervisor publishes the exact refresh alert and ac
 ### Migration and conflict ownership
 
 Final EF migrations and `*ModelSnapshot.cs` belong to `parallel/database-integration`. Other parallel branches fail orchestration validation if they change them. Orchestration also validates unique canonical branches/ownership patterns, known acyclic dependencies, plan occupancy invariants, baseline ancestry and configured concurrency overflow behavior.
+
+
+## 32. Durable Supervisor Resume, Milestone, Runner, and Timeout Protocol
+
+This section is mandatory for Main-repo/Supervisor operation and has precedence over older generic start/resume ordering where they differ.
+
+### 32.1 Source of truth and resume order
+
+On every start, `continue`, resume, interrupted session, connector/tool failure, or prior message-delivery timeout:
+
+1. read `.ai/compact-state/CURRENT-STATE.yaml`;
+2. read `.ai/compact-state/LAST-CHECKPOINT.md`;
+3. resolve the exact current default branch and SHA;
+4. reconcile actionable OPEN Issues first;
+5. reconcile actionable OPEN PRs second;
+6. re-read deterministic claims/acceptance evidence, `.ai/integration-baseline.yaml`, `.ai/parallel-branch-registry.yaml`, Issue #82 coordination feed, and `.ai/runner-benchmark.yaml`;
+7. inspect only the historical checkpoint detail required to resolve a specific conflict or evidence question;
+8. continue only the exact next unfinished safe milestone.
+
+Compact state is a resume index. It never overrides current repository/runtime truth. Chat memory never overrides repository evidence.
+
+### 32.2 One user turn equals one bounded logical milestone
+
+By default one user `continue`/resume turn executes one logical milestone such as:
+
+- reconcile/close one accepted PR;
+- implement one coherent change and persist it;
+- perform one exact-head verification/merge decision;
+- reconcile durable shared state after one merge.
+
+Do not chain broad audit → multiple implementations → repeated CI polling → merge → post-merge audit → unrelated next work. Security/incident recovery may contain tightly coupled actions only when splitting them would reduce safety.
+
+### 32.3 Issues/PRs first hard gate
+
+Before new development:
+
+`Compact State → Exact Main → OPEN Issues → OPEN PRs → Claims/Queue → Runner Benchmark → New Work`
+
+New development is forbidden while an accepted actionable open Issue or PR is knowingly bypassed. An Issue already represented by an accepted PR is one work path. Merge only dependency-safe, exact-head, review-clean work.
+
+### 32.4 Timeout and remote-call budget
+
+- batch related read-only calls where supported;
+- read only evidence required for the active milestone;
+- perform at most one consolidated CI/status refresh per milestone by default;
+- never tight-poll workflows, deployments, providers, or status endpoints;
+- never rerun a workflow because a ChatGPT/UI/message response timed out;
+- a second same-milestone refresh is allowed only after a material security, merge, incident/recovery, or provider state transition that requires it, and the exception must be recorded durably.
+
+Before final exact-head CI observation, persist milestone status as `VERIFYING` or `WAITING_EXTERNAL` when remote checks are expected. If checks are still running after the consolidated refresh, do not create a source commit merely to record pending CI; preserve the already-written state, record run identifiers on a PR/Issue status surface when possible, report PENDING, and end the milestone.
+
+### 32.5 Runner Benchmark
+
+Canonical machine-readable runner registry: `.ai/runner-benchmark.yaml`.
+
+Register every material remote/container/browser/runtime/full-regression/performance workload with:
+
+- stable task ID;
+- source Issue/PR/work package;
+- command/workflow;
+- exact source identity;
+- environment/matrix/input/fixture identity;
+- authorization state;
+- security-critical classification;
+- merge-blocking classification;
+- expected runner time;
+- deterministic dedup key;
+- status;
+- immutable terminal evidence.
+
+Safe non-blocking runner work defaults to a consolidated final batch. Security-critical, exact-head merge-required, migration/auth/secrets/data-safety, current-change integration-safety, and incident/recovery checks remain immediate.
+
+Runner registration never grants execution authority. Consumed, expired, historical, destructive, provider, production, deployment, release, or formal-runtime authorization must never be inferred or silently reused.
+
+### 32.6 Durable state before reporting
+
+Before reporting a meaningful milestone COMPLETE, BLOCKED, VERIFYING, or WAITING, reconcile:
+
+- `.ai/compact-state/CURRENT-STATE.yaml`;
+- `.ai/compact-state/LAST-CHECKPOINT.md`;
+- rolling `.ai/compact-state/EXECUTION-JOURNAL.md` for meaningful transitions;
+- `.ai/parallel-branch-registry.yaml` when coordination state changed;
+- `.ai/runner-benchmark.yaml` when runner state changed.
+
+`CURRENT-STATE.yaml` must contain at least observed main SHA, active Issue, active PR, active branch, current milestone, milestone status, last completed milestone, exact next safe action, pending runner IDs, blocked runner IDs, current blockers, and timeout-control settings.
+
+If durable state cannot be written, do not claim the milestone fully complete.
+
+### 32.7 Compact-state size limits
+
+- `CURRENT-STATE.yaml <= 12 KiB`
+- `LAST-CHECKPOINT.md <= 16 KiB`
+- `EXECUTION-JOURNAL.md <= 32 KiB`
+
+The journal is rolling. Archive older details when necessary. Large historical checkpoints are evidence, not start-of-session reads.
+
+### 32.8 State drift and timeout recovery
+
+At resume, compare compact state with repository evidence and reconcile stale main observations, merged/closed Issues and PRs, queue statuses, Runner Benchmark statuses, and relevant commits since the recorded anchor. A merged item must not remain `PENDING_MERGE`.
+
+After message-delivery timeout, never assume the prior operation failed. Read compact state, resolve exact main, inspect the previously active Issue/PR, determine what persisted, reconcile queue/Runner Benchmark, and continue only the next unfinished logical milestone.
+
+### 32.9 Security, migrations, dashboards, and supply chain
+
+Security fails closed. Never weaken authentication/authorization, CSRF/nonce controls, validation/escaping, correct security tests, branch protection, secret boundaries, or production/deployment/release gates to obtain progress. Never invent test results or report pending/skipped/deferred work as PASS.
+
+Migration review must explicitly cover idempotency, transaction boundaries where supported, apply-success/marker-write-failure recovery, retries, rollback/restore, destructive recovery, concurrency, partial execution, and backup/snapshot requirements. `apply()` followed by `markApplied()` is not assumed crash-safe.
+
+Large public/module dashboards change only when lifecycle/progress/timeline/public-delivery truth changes or a terminal integration closeout is reported. Governance/security-only cycles update compact state and affected governance surfaces without dashboard churn.
+
+CI/supply-chain work uses immutable third-party action revisions where applicable, least-privilege permissions, no unnecessary credential persistence, no unsafe `pull_request_target` execution without reviewed exception, and separate production/distributable dependency audits from development-tooling audits where appropriate.
+
+### 32.10 Mandatory final response contract
+
+Every Supervisor engineering response ends with repository-derived status containing:
+
+- repository;
+- current canonical active module progress bar/percentage;
+- overall canonical repository-owned non-live progress bar/percentage;
+- active/completed milestone;
+- Issue/PR/commit evidence;
+- CI state;
+- blockers;
+- exact next safe action.
+
+Required shape:
+
+`Repository: <owner/name>`  
+`Current module: <work item/module> <progress bar> <percent or UNKNOWN>`  
+`Overall progress: <progress bar> <percent or UNKNOWN>`  
+`Milestone: <bounded milestone>`  
+`Evidence: <Issue/PR/commit/run identifiers>`  
+`CI: <PASS/FAIL/PENDING/NOT RUN>`  
+`Blockers: <current blockers>`  
+`Next safe action: <one exact action>`
+
+Derive progress from current accepted control-plane evidence. If registry/work-item/README/integration evidence conflicts, report `UNKNOWN / RECONCILIATION REQUIRED` until reconciled. Never imply that non-live engineering progress equals live-production, regulatory, broker, provider, PII, deployment, or real-money approval.

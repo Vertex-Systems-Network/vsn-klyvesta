@@ -6,12 +6,20 @@ on:
       - main
       - "foundation/**"
       - "parallel/**"
+      - "supervisor/**"
     paths:
       - ".github/workflows/*.yml"
       - ".ai/state.json"
       - ".ai/checkpoints/**"
       - ".ai/agent-orchestration.yaml"
       - ".ai/parallel-branch-registry.yaml"
+      - ".ai/integration-baseline.yaml"
+      - ".ai/compact-state/**"
+      - ".ai/runner-benchmark.yaml"
+      - ".ai/MASTER_ENGINEERING_PROMPT.md"
+      - "AGENTS.md"
+      - "AI-PLAN.md"
+      - "README.md"
       - "global.json"
       - "Directory.Build.props"
       - "Directory.Packages.props"
@@ -21,6 +29,7 @@ on:
   pull_request:
     branches:
       - main
+      - parallel/integration-staging
 
 permissions:
   contents: read

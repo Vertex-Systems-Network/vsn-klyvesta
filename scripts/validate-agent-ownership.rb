@@ -53,7 +53,28 @@ if branch.empty?
   exit 2
 end
 unless branch.start_with?('parallel/')
-  puts "Ownership validator: #{branch} is not a canonical parallel branch; strict ownership enforcement skipped."
+  supervisor_review_patterns = Array(orchestration.dig('supervisor_workflow', 'review_branch_patterns'))
+  if any_match?(supervisor_review_patterns, branch)
+    files = changed_files
+    allowed = Array(orchestration.dig('supervisor_workflow', 'review_branch_allowed_paths'))
+    violations = files.reject { |path| any_match?(allowed, path) }
+    violations |= files.select { |path| path.start_with?('src/') }
+
+    puts "Branch: #{branch}"
+    puts 'Role: Supervisor review/recovery branch'
+    puts "Changed files: #{files.length}"
+
+    unless violations.empty?
+      warn 'Supervisor review branch ownership violation: only configured shared governance/control-plane paths are permitted:'
+      violations.each { |path| warn " - #{path}" }
+      exit 1
+    end
+
+    puts 'Supervisor review branch ownership check PASS.'
+    exit 0
+  end
+
+  puts "Ownership validator: #{branch} is not a canonical parallel or configured Supervisor review branch; strict ownership enforcement skipped."
   exit 0
 end
 

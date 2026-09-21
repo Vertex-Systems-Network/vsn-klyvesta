@@ -273,3 +273,52 @@ Every engineering agent must perform an instruction-drift check at every task/se
 - **M-AGENT-08:** concurrency scale test before raising the recommended ceiling.
 
 Engineering parallelism, Supervisor integration and fast branch refreshes must never bypass financial, regulatory, security, broker, Risk Governor, Compliance Gate, reconciliation, or production authorization gates.
+
+
+## 12. Durable AI Engineering Supervisor control plane
+
+Engineering supervision is repository-driven and fail-closed. The canonical engineering-process contract is `.ai/MASTER_ENGINEERING_PROMPT.md`; this section binds that process to the AI-native delivery model without granting product, broker, regulatory, production, deployment, migration, destructive-data, or real-money authority.
+
+### Resume/source-of-truth order
+
+For every Supervisor start, continue, resume, interrupted session, connector/tool failure, or prior message-delivery timeout:
+
+1. read `.ai/compact-state/CURRENT-STATE.yaml`;
+2. read `.ai/compact-state/LAST-CHECKPOINT.md`;
+3. resolve the exact current default branch and SHA;
+4. reconcile actionable open Issues first;
+5. reconcile actionable open PRs second;
+6. reconcile deterministic claims/acceptance gates, the coordination queue, accepted integration baseline, and Runner Benchmark;
+7. continue only the next unfinished bounded milestone.
+
+Compact state is a resume index only. Repository/runtime evidence always wins.
+
+### One turn, one milestone
+
+A normal user `continue`/resume turn executes one bounded logical milestone. Broad audit, unrelated implementations, repeated CI polling, merge, post-merge audit, and unrelated next work are not chained into one turn. Security/incident recovery may group tightly coupled actions only when splitting them would reduce safety.
+
+### Canonical coordination and runner surfaces
+
+- deterministic claims: `.ai/acceptance-gates.yaml`, `.ai/integration-baseline.yaml`, and the active work-item acceptance evidence;
+- coordination queue: `.ai/parallel-branch-registry.yaml` plus Issue #82 as the durable human-readable integration feed;
+- runner benchmark: `.ai/runner-benchmark.yaml`;
+- compact resume state: `.ai/compact-state/CURRENT-STATE.yaml`, `.ai/compact-state/LAST-CHECKPOINT.md`, and rolling `.ai/compact-state/EXECUTION-JOURNAL.md`.
+
+Runner registration never grants execution authority. Historical, destructive, provider, production, deployment, release, or formal-runtime grants are never inferred or silently reused.
+
+### Mandatory user-facing progress footer
+
+Every Supervisor engineering response must end with repository-derived status including:
+
+- repository name;
+- current canonical active module and progress bar/percentage;
+- overall repository-owned non-live delivery progress bar/percentage;
+- active/completed milestone;
+- Issue/PR/commit evidence when available;
+- CI state;
+- blockers;
+- exact next safe action.
+
+Progress must be derived from current control-plane evidence. If module/overall progress sources conflict or cannot be reconciled, report `UNKNOWN / RECONCILIATION REQUIRED` rather than inventing a percentage.
+
+This reporting contract never converts non-live module completion into live-production, regulatory, broker, provider, PII, deployment, or real-money acceptance.

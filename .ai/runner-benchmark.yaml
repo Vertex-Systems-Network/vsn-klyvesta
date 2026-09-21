@@ -1,0 +1,30 @@
+version: 1
+name: Klyvesta Runner Benchmark
+purpose: machine-readable registry for material remote/container/browser/runtime/full-regression/performance workloads
+registration_grants_execution_authority: false
+default_policy:
+  safe_non_blocking_work: consolidated_final_batch
+  immediate_classes:
+    - security-critical
+    - exact-head-merge-required
+    - migration-auth-secrets-data-safety
+    - current-change-integration-safety
+    - incident-recovery
+  historical_authorization_reuse: forbidden
+  production_provider_deployment_release_authority_inference: forbidden
+task_schema:
+  required_fields:
+    - id
+    - source
+    - command_or_workflow
+    - exact_source_identity
+    - environment_matrix_input_fixture
+    - authorization_state
+    - security_critical
+    - merge_blocking
+    - expected_runner_time
+    - dedup_key
+    - status
+    - terminal_evidence
+statuses: [REGISTERED, AUTHORIZED, RUNNING, PASS, FAIL, BLOCKED, CANCELLED, EXPIRED]
+tasks: []

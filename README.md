@@ -210,3 +210,19 @@ If no free slot exists, Supervisor sends exactly **Go Home Come Back Next Time**
 See `docs/NEW_AGENT_ONBOARDING.md`, `.ai/integration-baseline.yaml`, and `scripts/onboard-new-agent.rb`.
 
 Operational orchestration CI now verifies onboarding allocation/overflow behavior, durable work-item readiness, accepted-baseline ancestry, module ownership, migration/model-snapshot ownership, dependency-DAG/branch/occupancy consistency, configured concurrency capacity, and README lifecycle freshness. `parallel/integration-staging` advances one reviewed integration at a time while protected `main` remains governance-blocked.
+
+
+## AI Supervisor durable resume protocol
+
+Supervisor `continue`/resume work is repository-driven. Before new engineering it reads `.ai/compact-state/CURRENT-STATE.yaml` and `.ai/compact-state/LAST-CHECKPOINT.md`, resolves exact `main`, reconciles open Issues before open PRs, then reconciles acceptance claims, the parallel coordination queue, accepted integration baseline, and `.ai/runner-benchmark.yaml`.
+
+One user `continue` turn normally advances one bounded logical milestone. CI/status is refreshed once per milestone by default rather than tight-polled. A prior message-delivery timeout never proves the underlying repository operation failed; repository evidence is re-read before any retry.
+
+Every Supervisor engineering response includes repository name, current active-module progress, overall repository-owned non-live progress, milestone/evidence, CI state, blockers, and the exact next safe action. Progress is reported as unknown instead of guessed when canonical sources disagree.
+
+This control plane does not grant live pyPSX, production PII, broker/provider, deployment, destructive migration, real-money, or release authority.
+
+
+### Supervisor review-branch CI coverage
+
+The canonical Supervisor branch remains `parallel/supervisor-platform`. Bounded `supervisor/**` review/recovery branches are also covered by orchestration and .NET regression CI and are ownership-restricted to shared governance/control-plane paths. They cannot modify module `src/**` implementation and do not bypass accepted-baseline, review, security, or promotion gates.
