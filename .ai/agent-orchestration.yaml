@@ -79,7 +79,7 @@ supervisor_workflow:
   supervisor_works_in_parallel: true
   supervisor_own_branch: parallel/supervisor-platform
   review_branch_patterns: ["supervisor/**"]
-  review_branch_allowed_paths: [".github/workflows/**", ".ai/**", "AGENTS.md", "AI-PLAN.md", "README.md", "docs/**", "scripts/**", "Directory.Build.props", "Directory.Packages.props", "contracts/**"]
+  review_branch_allowed_paths: [".github/workflows/**", ".ai/**", ".ai/compact-state/**", "AGENTS.md", "AI-PLAN.md", "README.md", "docs/**", "scripts/**", "Directory.Build.props", "Directory.Packages.props", "contracts/**"]
   review_branch_forbids_module_source: true
   accepted_integration_branch: parallel/integration-staging
   target_main_branch: main
