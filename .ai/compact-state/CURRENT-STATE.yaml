@@ -6,12 +6,12 @@ accepted_integration_branch: parallel/integration-staging
 accepted_integration_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: null
+active_pr: 126
 active_branch: supervisor/20260921-control-plane-reconcile
 current_milestone: reconcile post-PR-125 control-plane metadata to accepted staging truth
-milestone_status: IMPLEMENTING
+milestone_status: VERIFYING
 last_completed_milestone: PR #125 governance protocol integrated into parallel/integration-staging at 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
-exact_next_safe_action: open the reconciliation PR against parallel/integration-staging, bind its PR identity into compact state, transition to VERIFYING, then perform one consolidated exact-head CI/status refresh
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #126; if checks are pending or failing, report that state and end the milestone without polling
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
