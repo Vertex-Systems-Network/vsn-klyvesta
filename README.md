@@ -16,13 +16,13 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-**Last status update:** `2026-09-22 — P1-23 canonical closeout accepted via PR #133; P1-24 Customer Scenarios assigned on refreshed staging baseline`
+**Last status update:** `2026-09-22 — P1-24 Customer Scenarios accepted via PR #135; canonical closeout prepared at 20/24`
 
 Accepted integration branch: `parallel/integration-staging`
 
 Verified parent baseline: `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52` — this is the immutable parent for the current control-plane generation; the current accepted branch head is resolved at runtime and broadcast through Issue #82.
 
-**Repository-owned non-live product/verification lanes:** `████████░░ 79%` — **19 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-23 Customer Alert Rules is integrated; Customer Scenarios, Customer Security Center, Customer Risk Center and Database Integration remain READY, while Security Acceptance remains blocked by external production evidence.
+**Repository-owned non-live product/verification lanes:** `████████░░ 83%` — **20 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-24 Customer Scenarios is integrated; Customer Security Center, Customer Risk Center and Database Integration remain READY, while Security Acceptance remains blocked by external production evidence.
 
 **Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
 
@@ -59,7 +59,7 @@ The implementation foundation and non-live safety boundaries may be validated in
 | Customer Activity | `██████████ 100%` | P1-21 | Integrated — sanitized customer-scoped order/ledger activity timeline |
 | Customer Dashboard | `██████████ 100%` | P1-22 | Integrated — deterministic read-only paper/informational composition |
 | Customer Alert Rules | `██████████ 100%` | P1-23 | Integrated — customer-scoped deterministic rule configuration/evaluation; no dispatch, live-market, trading or money-movement authority |
-| Customer Scenarios | `██░░░░░░░░ 20%` | P1-24 | Active — assigned for deterministic paper scenario/risk views; no advice or execution authority |
+| Customer Scenarios | `██████████ 100%` | P1-24 | Integrated — deterministic paper market/sector scenario shocks over bounded Portfolio/Risk context; no advice or execution authority |
 | Customer Security Center | `░░░░░░░░░░ 0%` | P1-25 | Ready — read-only customer-scoped session/device/security-state projection |
 | Customer Risk Center | `░░░░░░░░░░ 0%` | P1-26 | Ready — P1-26 deterministic customer-scoped risk visibility without advice/execution authority |
 | Identity & Authorization | `██████████ 100%` | P1-02/03 | Integrated — server-authoritative identity, withdrawal/session/device and break-glass boundaries |
