@@ -11,3 +11,7 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Reconciled presentation progress: current module 20%; repository-owned non-live canonical lanes 18/24 = 75%.
 - Started bounded milestone to integrate durable resume, runner, timeout, Issue/PR, and final-response protocol.
 - No product/live authority transition occurred.
+
+- Opened PR #125 targeting `parallel/integration-staging`.
+- Persisted PR identity and transitioned milestone status from IMPLEMENTING to VERIFYING before exact-head CI observation.
+- Next action is one consolidated exact-head status refresh; no tight polling is authorized.
