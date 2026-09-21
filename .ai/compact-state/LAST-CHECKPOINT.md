@@ -1,6 +1,6 @@
 # Last Checkpoint — AI Engineering Supervisor Governance v2
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth reconciled before this change:
 - default branch: `main`
@@ -17,4 +17,8 @@ This milestone adds the durable Supervisor resume/source-of-truth protocol, one-
 
 No live pyPSX, production PII, broker/provider, deployment, release, destructive migration, or real-money authority is granted.
 
-Exact next safe action: open a PR from `supervisor/20260921-governance-resume-v2` to `parallel/integration-staging`, persist its identity in compact state, and perform one consolidated exact-head CI/status refresh.
+PR #125 is open from `supervisor/20260921-governance-resume-v2` to `parallel/integration-staging`.
+
+Implementation commit before compact-state PR binding: `6144a980a47a8d2021ba5102782e87a13ac9987d`.
+
+Exact next safe action: perform one consolidated exact-head CI/status refresh for PR #125. If checks or review are still pending, report that state and end this milestone without polling.
