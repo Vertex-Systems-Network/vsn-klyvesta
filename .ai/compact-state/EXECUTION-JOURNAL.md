@@ -64,3 +64,7 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Updated platform work-item/registry consumption evidence to `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52`; other agent baseline records were intentionally not mass-advanced.
 - Persisted PR #126 failure and PR #127 terminal exact-head PASS evidence into the Runner Benchmark.
 - Next action: open semantic repair PR, bind identity, transition VERIFYING, perform one consolidated exact-head CI/status/review refresh.
+
+- Opened PR #128 from `parallel/platform-ci` to `parallel/integration-staging` for the non-self-referential identity model.
+- Bound platform work item and compact state to PR #128; transitioned milestone to VERIFYING before exact-head observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
