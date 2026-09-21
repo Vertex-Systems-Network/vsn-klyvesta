@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerAlertRules-01
 start_status: ASSIGNED
 started_at: "2026-09-15T12:12:00Z"
-base_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
-accepted_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
+base_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
+accepted_baseline_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
 dependencies:
   - customer-preferences
   - notifications
@@ -39,14 +39,16 @@ acceptance_evidence:
     - no-dispatch-no-live-market-no-trading-authority
     - customer-alert-rules-verifier
     - exact-head-ci
-instruction_drift_check: refreshed-2026-09-21-pr129-runtime-baseline-ai-native-plan-checked-no-module-contract-change
+instruction_drift_check: refreshed-2026-09-21-pr130-runtime-baseline-ai-native-plan-checked-no-module-contract-change
 submission_pr: null
 integration_baseline_sha: null
 refresh_evidence:
   coordination_issue: 82
-  coordination_comment: 5765672420
-  consumed_runtime_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
-  branch_fast_forwarded_without_force: true
+  coordination_comment: 5765858042
+  consumed_runtime_baseline_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
+  preserved_unique_refresh_commit: a4c2c5453a2f73e5234dcc60fe2f5846e98b3b31
+  refresh_merge_commit: afcb5cc82d511f14dace84d23826dcc5fc67f8f5
+  non_force_ref_update: true
   customer_preferences_dependency_ancestor_verified: true
   notifications_dependency_ancestor_verified: true
-  shared_registry_update_required_by_supervisor: true
+  runtime_integration_baseline_ancestor_verified: true
