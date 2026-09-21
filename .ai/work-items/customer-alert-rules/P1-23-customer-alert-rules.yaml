@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerAlertRules-01
 start_status: ASSIGNED
 started_at: "2026-09-15T12:12:00Z"
-base_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
-accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+base_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
+accepted_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
 dependencies:
   - customer-preferences
   - notifications
@@ -39,6 +39,14 @@ acceptance_evidence:
     - no-dispatch-no-live-market-no-trading-authority
     - customer-alert-rules-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-15-assigned-on-ef1f9912-dashboard-integrated-baseline
+instruction_drift_check: refreshed-2026-09-21-pr129-runtime-baseline-ai-native-plan-checked-no-module-contract-change
 submission_pr: null
 integration_baseline_sha: null
+refresh_evidence:
+  coordination_issue: 82
+  coordination_comment: 5765672420
+  consumed_runtime_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
+  branch_fast_forwarded_without_force: true
+  customer_preferences_dependency_ancestor_verified: true
+  notifications_dependency_ancestor_verified: true
+  shared_registry_update_required_by_supervisor: true
