@@ -3,8 +3,11 @@ module: customer-security-center
 branch: parallel/customer-security-center
 agent_slot: agent-customer-security-center
 owner_role: module-agent
-base_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
-accepted_baseline_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
+assigned_agent: ChatGPT-CustomerSecurityCenter-01
+start_status: ASSIGNED
+started_at: "2026-09-22T02:50:00+05:00"
+base_sha: 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924
+accepted_baseline_sha: 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924
 dependencies:
   - identity-authorization
 dependency_heads:
@@ -21,7 +24,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: READY
+status: ACTIVE
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -33,6 +36,14 @@ acceptance_evidence:
     - no-revocation-provider-or-live-authority
     - customer-security-center-verifier
     - exact-head-ci
-instruction_drift_check: pending
+instruction_drift_check: completed-2026-09-22-assignment-baseline-refresh-no-contract-drift
 submission_pr: null
 integration_baseline_sha: null
+
+refresh_evidence:
+  coordination_issue: 82
+  coordination_comment: 5767995307
+  consumed_runtime_baseline_sha: 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924
+  non_force_ref_update: true
+  identity_authorization_dependency_ancestor_verified: true
+  runtime_integration_baseline_ancestor_verified: true
