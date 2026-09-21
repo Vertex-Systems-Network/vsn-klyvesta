@@ -1,4 +1,4 @@
-version: 11
+version: 12
 status: multi-agent-orchestration-operational-candidate
 canonical_human_plan: docs/PARALLEL_AGENT_DEVELOPMENT.md
 canonical_supervisor_workflow: docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md
@@ -78,6 +78,9 @@ supervisor_workflow:
   branch_registry_required: true
   supervisor_works_in_parallel: true
   supervisor_own_branch: parallel/supervisor-platform
+  review_branch_patterns: ["supervisor/**"]
+  review_branch_allowed_paths: [".github/workflows/**", ".ai/**", "AGENTS.md", "AI-PLAN.md", "README.md", "docs/**", "scripts/**", "Directory.Build.props", "Directory.Packages.props", "contracts/**"]
+  review_branch_forbids_module_source: true
   accepted_integration_branch: parallel/integration-staging
   target_main_branch: main
   work_done_signal_source: top-level-pr-comment
