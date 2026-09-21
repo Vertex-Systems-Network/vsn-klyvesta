@@ -68,3 +68,17 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Opened PR #128 from `parallel/platform-ci` to `parallel/integration-staging` for the non-self-referential identity model.
 - Bound platform work item and compact state to PR #128; transitioned milestone to VERIFYING before exact-head observation.
 - Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
+
+## 2026-09-21 — P1-23 baseline refresh unblock
+
+- Runtime accepted staging head resolved to `e8b6d7efdb346688deb99fbb5fb50bfe390b9972`.
+- P1-23 branch was 50 commits behind with 0 unique commits; safely fast-forwarded it without force to the accepted head.
+- Refresh reconciliation found PLAT-011 still hardcoded P1-23 `accepted_baseline_sha` to historical P1-22 merge `ef1f9912...`.
+- Determined this would false-fail CI when the active agent records the newly consumed baseline.
+- Fast-forwarded canonical `parallel/platform-ci` to `e8b6d7ef...` and began ownership-correct PLAT-011 repair.
+- PLAT-011 now treats active P1-23 accepted-baseline as one full-SHA consumption record, while retaining assignment/status/non-production checks.
+- Next action: open platform PR, bind identity, transition VERIFYING, one exact-head CI/status/review refresh.
+
+- Opened PR #129 from `parallel/platform-ci` to `parallel/integration-staging`.
+- Bound platform work item and compact state to PR #129; transitioned milestone to VERIFYING before exact-head observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
