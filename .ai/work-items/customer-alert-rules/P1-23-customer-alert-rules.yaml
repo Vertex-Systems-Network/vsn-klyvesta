@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerAlertRules-01
 start_status: ASSIGNED
 started_at: "2026-09-15T12:12:00Z"
-base_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
-accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+base_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
+accepted_baseline_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
 dependencies:
   - customer-preferences
   - notifications
@@ -39,6 +39,34 @@ acceptance_evidence:
     - no-dispatch-no-live-market-no-trading-authority
     - customer-alert-rules-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-15-assigned-on-ef1f9912-dashboard-integrated-baseline
-submission_pr: null
+  satisfied:
+    - customer-owned-rule-isolation
+    - deterministic-rule-validation
+    - preference-channel-boundary
+    - no-contact-pii-required
+    - no-dispatch-no-live-market-no-trading-authority
+    - customer-alert-rules-verifier
+  pending:
+    - exact-head-ci
+instruction_drift_check: completed-2026-09-22-p1-23-implementation-no-contract-drift
+submission_pr: 131
+implementation_evidence:
+  core_commit_sha: 0e29923a497b4c930847f415988e2cc404030977
+  domain_rule_model: implemented
+  application_rule_service: implemented
+  in_memory_rule_store: implemented
+  customer_alert_rules_verifier_cases: 26
+  product_api_surface_changed: false
+  persistence_or_migration_changed: false
+  production_authority: false
 integration_baseline_sha: null
+refresh_evidence:
+  coordination_issue: 82
+  coordination_comment: 5765858042
+  consumed_runtime_baseline_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
+  preserved_unique_refresh_commit: a4c2c5453a2f73e5234dcc60fe2f5846e98b3b31
+  refresh_merge_commit: afcb5cc82d511f14dace84d23826dcc5fc67f8f5
+  non_force_ref_update: true
+  customer_preferences_dependency_ancestor_verified: true
+  notifications_dependency_ancestor_verified: true
+  runtime_integration_baseline_ancestor_verified: true
