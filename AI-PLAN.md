@@ -261,6 +261,12 @@ The requested end-state is reviewed promotion into protected `main`. While the c
 
 Every engineering agent must perform an instruction-drift check at every task/session start and after every accepted-baseline refresh. When architecture, workflow, tools, branch assignment, module ownership, dependencies, testing commands, safety boundaries or integration process change, the applicable canonical instructions must be updated in the same PR. Repository-level workflow changes must be reflected in `README.md`; agent process changes in `AGENTS.md`; global engineering protocol changes in `.ai/MASTER_ENGINEERING_PROMPT.md`; ownership/dependency/Supervisor changes in `.ai/agent-orchestration.yaml`; branch/readiness changes in `.ai/parallel-branch-registry.yaml`; module-specific changes in the relevant module documentation/README.
 
+### README progress synchronization
+
+README progress is mandatory durable state. After **every accepted integration**, update README's `Last status update` before the integration closeout is considered complete. If canonical lifecycle/progress/timeline/public-delivery truth changes, the same reviewed closeout must update the overall repository-owned non-live lane count/progress bar and every affected Module delivery table row.
+
+Do not wait for a later documentation sweep. Do not advance README percentages from an unmerged feature branch. If code is accepted but a shared lifecycle closeout is still pending, record that pending-closeout state explicitly in README and keep the canonical percentage unchanged until registry/work-item closeout is accepted. Platform/Supervisor verification should fail stale README lifecycle/progress assertions when repository truth has advanced.
+
 ### M-AGENT foundation milestones
 
 - **M-AGENT-01:** documentation + orchestration manifest + Supervisor workflow + branch registry;
