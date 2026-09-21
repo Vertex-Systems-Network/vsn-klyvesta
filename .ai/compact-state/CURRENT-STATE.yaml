@@ -9,12 +9,12 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: null
+active_pr: 137
 active_branch: parallel/platform-ci
 current_milestone: assign P1-25 Customer Security Center on the accepted P1-24-closeout baseline
-milestone_status: IMPLEMENTING
+milestone_status: VERIFYING
 last_completed_milestone: PR #136 P1-24 canonical closeout integrated at 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924
-exact_next_safe_action: open the P1-25 assignment PR, bind its exact head, and perform one consolidated exact-head CI/review refresh
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #137; if all authoritative gates pass and base remains fresh, persist MERGE-READY
 current_module:
   work_item: P1-25
   module: Customer Security Center
