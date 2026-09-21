@@ -20,3 +20,7 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Security review found a related ownership gap: a non-parallel Supervisor branch would have skipped strict ownership validation.
 - Repaired CI coverage for `supervisor/**` and staging-targeted PRs; added shared-governance-only ownership enforcement and negative source-takeover tests.
 - Milestone remains VERIFYING pending one exact-head CI observation. No merge or production authority granted.
+
+- Exact-head orchestration run RB-125-ORCH-01 failed in the ownership self-test because the configured generic `.ai/**` review path did not match nested `.ai/compact-state/CURRENT-STATE.yaml` under the current matcher.
+- Applied the minimum fail-closed repair by explicitly allowing `.ai/compact-state/**`; negative module-source takeover protection remains unchanged.
+- A new exact-head CI observation is required because the source head changed.
