@@ -108,3 +108,13 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - PR #132 adds mandatory README progress synchronization to AI-PLAN, MASTER_ENGINEERING_PROMPT, README governance text, and compact resume state.
 - New rule: every accepted integration updates README status; any canonical lifecycle/progress change must update lane count/bar and affected module rows in the same reviewed closeout.
 - Milestone transitioned to VERIFYING before exact-head CI observation.
+
+## 2026-09-22 — P1-23 canonical lifecycle closeout candidate
+
+- PR #132 merged mandatory README progress synchronization into staging at `0859921f0fa7902c0555725c757d9961a5bcd227`.
+- Fast-forwarded `parallel/platform-ci` to the accepted staging head without force.
+- Registry version advanced to 17 and P1-23 moved to INTEGRATED/COMPLETE with integrated SHA `d134b2839ff1af3b6867f11b3304779a29b14b0b`.
+- P1-23 exact-head CI evidence from PR #131 is satisfied; dedicated verifier passed 26/26.
+- README candidate now shows Customer Alert Rules 100% and overall 19/24 = 79%.
+- PLAT-011 updated to enforce durable P1-23 integration semantics.
+- No live/production/provider/pyPSX/PII/deployment/migration/real-money authority granted.
