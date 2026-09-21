@@ -1,18 +1,18 @@
-# Last Checkpoint — P1-23 Canonical Lifecycle Closeout
+# Last Checkpoint — P1-24 Customer Scenarios Assignment
 
-Status: VERIFYING
+Status: IMPLEMENTING
 
 Repository truth:
-- PR #131 Customer Alert Rules was accepted into staging at `d134b2839ff1af3b6867f11b3304779a29b14b0b`.
-- exact-head orchestration and .NET regression passed; Customer Alert Rules verifier passed 26/26.
-- PR #132 README-progress synchronization protocol was accepted into staging at `0859921f0fa7902c0555725c757d9961a5bcd227`.
-- mandatory README progress-sync rule is now canonical.
+- PR #133 P1-23 canonical closeout merged into `parallel/integration-staging` at `9ec5f70d4cd4a81a3d84d85d19b66b309976c077`.
+- P1-23 is now canonically INTEGRATED / COMPLETE and README overall progress is 19/24 = 79%.
+- Issue #82 refresh for the accepted closeout is comment #5767611704.
+- `parallel/customer-scenarios` and `parallel/platform-ci` were both non-force fast-forwarded to `9ec5f70d4cd4a81a3d84d85d19b66b309976c077`.
+- Portfolio dependency `ca8fac46...` and Risk dependency `abb8ebcd...` are both ancestors of the refreshed staging baseline.
 
-Closeout candidate:
-- registry version 17 marks P1-23 INTEGRATED with exact integrated SHA;
-- P1-23 work item is COMPLETE/INTEGRATED and exact-head CI is satisfied;
-- README moves P1-23 to 100% and overall repository-owned non-live progress to 19/24 = 79%;
-- PLAT-011 verifies both P1-22 and P1-23 integrated closeouts;
-- production/live authority remains blocked.
+P1-24 assignment candidate:
+- registry version 18 marks customer-scenarios ACTIVE/OCCUPIED and assigns ChatGPT-CustomerScenarios-01;
+- P1-24 work item records the exact accepted baseline and dependency ancestry;
+- README moves Customer Scenarios from 0% Ready to 20% Active while overall remains 19/24 = 79%;
+- no API/Infrastructure/migration/contracts/live/provider/trading authority is granted.
 
-PR #133 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
+Exact next safe action: open the ownership-correct assignment PR and perform one consolidated exact-head CI/review refresh.
