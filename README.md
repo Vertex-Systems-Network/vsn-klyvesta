@@ -16,7 +16,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-**Last status update:** `2026-09-22 — P1-23 Customer Alert Rules canonically closed as INTEGRATED after PR #131; README progress-sync policy accepted via PR #132`
+**Last status update:** `2026-09-22 — P1-23 canonical closeout accepted via PR #133; P1-24 Customer Scenarios assigned on refreshed staging baseline`
 
 Accepted integration branch: `parallel/integration-staging`
 
@@ -59,7 +59,7 @@ The implementation foundation and non-live safety boundaries may be validated in
 | Customer Activity | `██████████ 100%` | P1-21 | Integrated — sanitized customer-scoped order/ledger activity timeline |
 | Customer Dashboard | `██████████ 100%` | P1-22 | Integrated — deterministic read-only paper/informational composition |
 | Customer Alert Rules | `██████████ 100%` | P1-23 | Integrated — customer-scoped deterministic rule configuration/evaluation; no dispatch, live-market, trading or money-movement authority |
-| Customer Scenarios | `░░░░░░░░░░ 0%` | P1-24 | Ready — deterministic paper scenario/risk views without advice or execution authority |
+| Customer Scenarios | `██░░░░░░░░ 20%` | P1-24 | Active — assigned for deterministic paper scenario/risk views; no advice or execution authority |
 | Customer Security Center | `░░░░░░░░░░ 0%` | P1-25 | Ready — read-only customer-scoped session/device/security-state projection |
 | Customer Risk Center | `░░░░░░░░░░ 0%` | P1-26 | Ready — P1-26 deterministic customer-scoped risk visibility without advice/execution authority |
 | Identity & Authorization | `██████████ 100%` | P1-02/03 | Integrated — server-authoritative identity, withdrawal/session/device and break-glass boundaries |
