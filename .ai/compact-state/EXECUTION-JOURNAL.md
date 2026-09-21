@@ -78,3 +78,7 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Fast-forwarded canonical `parallel/platform-ci` to `e8b6d7ef...` and began ownership-correct PLAT-011 repair.
 - PLAT-011 now treats active P1-23 accepted-baseline as one full-SHA consumption record, while retaining assignment/status/non-production checks.
 - Next action: open platform PR, bind identity, transition VERIFYING, one exact-head CI/status/review refresh.
+
+- Opened PR #129 from `parallel/platform-ci` to `parallel/integration-staging`.
+- Bound platform work item and compact state to PR #129; transitioned milestone to VERIFYING before exact-head observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
