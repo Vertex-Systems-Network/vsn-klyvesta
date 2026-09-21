@@ -10,9 +10,9 @@ Case = Struct.new(:name, :branch, :files, :expected_success, keyword_init: true)
 
 cases = [
   Case.new(
-    name: 'active module accepts owned path',
-    branch: 'parallel/customer-alert-rules',
-    files: "src/Klyvesta.Domain/AlertRules/CustomerAlertRule.cs\n.ai/checkpoints/customer-alert-rules.md\n",
+    name: 'active platform module accepts owned path',
+    branch: 'parallel/platform-ci',
+    files: "scripts/test-agent-ownership.rb\n.ai/checkpoints/platform-ci.md\n",
     expected_success: true
   ),
   Case.new(
