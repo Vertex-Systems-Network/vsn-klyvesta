@@ -16,13 +16,13 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-**Last status update:** `2026-09-21 — PR #127 integrated; control-plane identity semantics repair active; P1-23 Customer Alert Rules remains active`
+**Last status update:** `2026-09-22 — PR #131 Customer Alert Rules integrated at d134b2839ff1af3b6867f11b3304779a29b14b0b; P1-23 canonical lifecycle closeout/progress sync pending`
 
 Accepted integration branch: `parallel/integration-staging`
 
 Verified parent baseline: `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52` — this is the immutable parent for the current control-plane generation; the current accepted branch head is resolved at runtime and broadcast through Issue #82.
 
-**Repository-owned non-live product/verification lanes:** `███████░░░ 75%` — **18 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-23 is active, four additional lanes are READY, and Security Acceptance remains blocked by external production evidence.
+**Repository-owned non-live product/verification lanes:** `███████░░░ 75%` — **18 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** PR #131 has merged the P1-23 implementation, but its canonical lifecycle closeout has not yet advanced the lane count; four additional lanes are READY, and Security Acceptance remains blocked by external production evidence.
 
 **Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
 
@@ -144,6 +144,12 @@ At minimum:
 - branch assignment/readiness/baseline changes → update `.ai/parallel-branch-registry.yaml`.
 
 New working rules must not exist only in chat, memory, or issue comments.
+
+### Mandatory README progress synchronization
+
+README progress/status is part of the durable delivery control plane, not optional presentation. After **every accepted integration** the Supervisor must update the README `Last status update` in the same bounded closeout path. When that integration or terminal closeout changes canonical lifecycle/progress/timeline/public-delivery truth, the same reviewed change must also update the repository-owned lane count/progress bar and every affected row in the Module delivery table.
+
+A milestone that changes canonical delivery truth is not fully closed while README progress is stale. If the accepted code has merged but lifecycle closeout is still pending, README must say that explicitly rather than prematurely advancing the percentage. Governance-only work that does not change accepted delivery truth must not fabricate progress.
 
 ## Core planning documents
 

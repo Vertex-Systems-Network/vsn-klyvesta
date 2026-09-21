@@ -97,3 +97,14 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Opened PR #130 from `parallel/platform-ci` to `parallel/integration-staging`.
 - Bound platform work item and compact state to PR #130; transitioned milestone to VERIFYING before exact-head observation.
 - Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
+
+## 2026-09-22 — PR #131 integration and README progress-sync protocol
+
+- PR #131 Customer Alert Rules merged into `parallel/integration-staging` at `d134b2839ff1af3b6867f11b3304779a29b14b0b` from certified head `d63c82cc2c8370e05203ebf831ca94b2243238b6`.
+- Exact-head agent-orchestration and full .NET regression passed; Customer Alert Rules verifier passed 26/26.
+- Issue #82 accepted-baseline refresh published as comment #5767254736.
+- Reconciliation found README `Last status update` still described PR #127 after PR #131 had merged.
+- Because P1-23 registry/work-item lifecycle closeout is still pending, canonical delivery remains 18/24 = 75%; no false percentage advance was made.
+- PR #132 adds mandatory README progress synchronization to AI-PLAN, MASTER_ENGINEERING_PROMPT, README governance text, and compact resume state.
+- New rule: every accepted integration updates README status; any canonical lifecycle/progress change must update lane count/bar and affected module rows in the same reviewed closeout.
+- Milestone transitioned to VERIFYING before exact-head CI observation.

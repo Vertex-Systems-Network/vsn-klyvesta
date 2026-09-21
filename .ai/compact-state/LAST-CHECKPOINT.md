@@ -1,25 +1,20 @@
-# Last Checkpoint — P1-23 Shared Registry Reconciliation
+# Last Checkpoint — README Progress Synchronization Contract
 
 Status: VERIFYING
 
 Repository truth:
-- accepted integration ref: `parallel/integration-staging`
-- runtime-resolved accepted head: `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`
-- main remains unprotected; Issue #1 remains open
-- PR #129 is merged and its exact-head orchestration/.NET gates passed
-- P1-23 branch consumed `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77` and recorded that consumption on its own work item at `a4c2c5453a2f73e5234dcc60fe2f5846e98b3b31`
-- P1-23 dependency ancestry and instruction-drift checks passed
-- current module remains P1-23 Customer Alert Rules at 20%
-- overall repository-owned non-live progress remains 18/24 = 75%
+- PR #131 Customer Alert Rules merged into `parallel/integration-staging` at `d134b2839ff1af3b6867f11b3304779a29b14b0b`.
+- exact-head orchestration and full .NET regression passed; dedicated Customer Alert Rules verifier passed 26/26.
+- Issue #82 accepted-baseline refresh was published as comment #5767254736.
+- P1-23 registry/work-item lifecycle still says ACTIVE, so canonical lane count remains 18/24 = 75% until the shared closeout is reviewed and accepted.
+- PR #132 now carries the mandatory README progress-sync protocol and immediate README status refresh.
 
-Current reconciliation:
-- shared registry still records historical P1-23 baseline `ef1f9912...`;
-- canonical platform branch has now consumed `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`;
-- registry version advances to 16;
-- only P1-23 and platform-ci consumption records advance to `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`;
-- other agent baseline records remain untouched;
-- Runner Benchmark gains the already-certified PR #128/#129 exact-head PASS evidence.
+Mandatory rule introduced by PR #132:
+- every accepted integration updates README `Last status update`;
+- lifecycle/progress-changing closeouts update the overall lane count/progress bar and affected module rows in the same reviewed change;
+- accepted code with pending lifecycle closeout is reported explicitly and does not prematurely advance percentage;
+- delivery-changing milestones are not fully closed while README progress is stale.
 
 No product source, migration/model snapshot, provider/pyPSX, deployment/release, PII, or real-money authority is changed.
 
-PR #130 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
+Exact next safe action: perform one consolidated exact-head CI/status/review refresh for PR #132. Merge only if all authoritative gates are PASS and the base remains current.
