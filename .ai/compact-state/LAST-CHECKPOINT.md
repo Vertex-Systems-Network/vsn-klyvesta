@@ -1,6 +1,6 @@
 # Last Checkpoint — P1-23 Refresh Unblock / PLAT-011
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth:
 - accepted integration ref: `parallel/integration-staging`
@@ -21,4 +21,4 @@ Repair:
 - do not require a fixed historical SHA;
 - no product source, migration, provider, release, or live-authority change.
 
-Exact next safe action: open the ownership-correct platform PR, bind it in durable state/work-item, transition to VERIFYING, then perform one consolidated exact-head CI/status/review refresh.
+PR #129 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
