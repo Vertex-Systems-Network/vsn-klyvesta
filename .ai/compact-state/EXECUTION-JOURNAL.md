@@ -128,3 +128,14 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Prepared registry version 18: P1-24 Customer Scenarios ACTIVE/OCCUPIED, assigned to ChatGPT-CustomerScenarios-01.
 - Prepared P1-24 work-item baseline/assignment evidence and README 20% Active row; overall remains 79% until integration.
 - No live/provider/pyPSX/advice/execution/PII/migration authority granted.
+
+## 2026-09-22 — P1-24 canonical lifecycle closeout candidate
+
+- PR #135 Customer Scenarios merged into staging at `73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14`.
+- Exact-head orchestration and full .NET regression passed.
+- Issue #82 accepted-baseline refresh published as comment #5767842518.
+- Registry version advances to 19 and P1-24 moves to INTEGRATED/COMPLETE with exact integrated SHA.
+- P1-24 exact-head CI evidence is satisfied from PR #135 terminal runs.
+- README candidate advances Customer Scenarios to 100% and overall non-live progress to 20/24 = 83%.
+- PLAT-011/PLAT-012 are updated to enforce P1-24 integrated lifecycle and README truth.
+- No live/provider/pyPSX/advice/execution/PII/deployment/migration/real-money authority is granted.
