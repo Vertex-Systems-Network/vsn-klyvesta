@@ -6,12 +6,12 @@ accepted_integration_branch: parallel/integration-staging
 accepted_integration_sha: 9f47063eaf3092c449dcafd423cf1ec2657d99d6
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: null
+active_pr: 125
 active_branch: supervisor/20260921-governance-resume-v2
 current_milestone: integrate durable AI Engineering Supervisor protocol and mandatory progress reporting
-milestone_status: IMPLEMENTING
+milestone_status: VERIFYING
 last_completed_milestone: P1-22 Customer Dashboard control-plane closeout and P1-23 activation on accepted staging baseline
-exact_next_safe_action: open a reviewable PR to parallel/integration-staging, persist the PR identity, then perform one consolidated exact-head CI/status refresh
+exact_next_safe_action: perform one consolidated exact-head CI/status refresh for PR #125; if checks or review are pending, report pending and end the milestone
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
@@ -40,4 +40,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-21T21:18:00+05:00"
+last_reconciled_at: "2026-09-21T21:24:35+05:00"
