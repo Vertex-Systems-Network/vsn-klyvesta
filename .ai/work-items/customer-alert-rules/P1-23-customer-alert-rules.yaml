@@ -4,7 +4,7 @@ branch: parallel/customer-alert-rules
 agent_slot: agent-customer-alert-rules
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerAlertRules-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-15T12:12:00Z"
 base_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
 accepted_baseline_sha: c23ea0f76b4cf6f5a1341c23813758aca5fe5a7e
@@ -27,7 +27,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -46,9 +46,8 @@ acceptance_evidence:
     - no-contact-pii-required
     - no-dispatch-no-live-market-no-trading-authority
     - customer-alert-rules-verifier
-  pending:
     - exact-head-ci
-instruction_drift_check: completed-2026-09-22-p1-23-implementation-no-contract-drift
+instruction_drift_check: completed-2026-09-22-pr131-integrated-pr132-readme-policy-accepted
 submission_pr: 131
 implementation_evidence:
   core_commit_sha: 0e29923a497b4c930847f415988e2cc404030977
@@ -59,7 +58,7 @@ implementation_evidence:
   product_api_surface_changed: false
   persistence_or_migration_changed: false
   production_authority: false
-integration_baseline_sha: null
+integration_baseline_sha: d134b2839ff1af3b6867f11b3304779a29b14b0b
 refresh_evidence:
   coordination_issue: 82
   coordination_comment: 5765858042
@@ -70,3 +69,13 @@ refresh_evidence:
   customer_preferences_dependency_ancestor_verified: true
   notifications_dependency_ancestor_verified: true
   runtime_integration_baseline_ancestor_verified: true
+
+integration_acceptance_evidence:
+  accepted_pr: 131
+  certified_head_sha: d63c82cc2c8370e05203ebf831ca94b2243238b6
+  integration_sha: d134b2839ff1af3b6867f11b3304779a29b14b0b
+  orchestration_run: 35651694865
+  dotnet_run: 35651694839
+  customer_alert_rules_verifier: PASS_26_OF_26
+  coordination_comment: 5767254736
+  readme_sync_policy_integration: 0859921f0fa7902c0555725c757d9961a5bcd227
