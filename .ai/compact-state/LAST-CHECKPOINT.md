@@ -1,6 +1,6 @@
 # Last Checkpoint — P1-24 Canonical Lifecycle Closeout
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth:
 - PR #135 Customer Scenarios was accepted into staging at `73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14`.
@@ -15,4 +15,4 @@ Closeout candidate:
 - PLAT-011 and PLAT-012 verify the integrated P1-24 lifecycle and README truth;
 - production/live authority remains blocked.
 
-Exact next safe action: open the Platform closeout PR, bind exact head, and perform one consolidated exact-head CI/review refresh.
+PR #136 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
