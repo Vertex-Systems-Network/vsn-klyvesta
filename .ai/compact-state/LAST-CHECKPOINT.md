@@ -1,4 +1,4 @@
-# Last Checkpoint — Post-PR-125 Control-Plane Reconciliation
+# Last Checkpoint — Platform PLAT-012 Repair + Control-Plane Reconciliation
 
 Status: VERIFYING
 
@@ -23,4 +23,10 @@ The branch registry is intentionally not mass-updated: active agent `accepted_ba
 
 No product module completion, production authority, live pyPSX/provider access, PII authority, deployment/release, destructive migration, or real-money authority is granted.
 
-PR #126 is open from `supervisor/20260921-control-plane-reconcile` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
+PR #126 was closed unmerged after its exact-head .NET regression isolated stale PlatformVerifier PLAT-012 logic. The canonical `parallel/platform-ci` branch had no unique commits, was safely fast-forwarded to the #126 lineage, and now carries the ownership-correct repair.
+
+PR #127 is open from `parallel/platform-ci` to `parallel/integration-staging`.
+
+PLAT-012 now derives the README accepted staging baseline from `.ai/integration-baseline.yaml:last_verified_baseline_sha` instead of hardcoding historical SHA `ef1f9912cc2928771dee0d104a29dec0563c9323`.
+
+Exact next safe action: perform one consolidated exact-head CI/status/review refresh for PR #127. If checks are pending or failing, report that state and end without polling.
