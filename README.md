@@ -221,3 +221,8 @@ One user `continue` turn normally advances one bounded logical milestone. CI/sta
 Every Supervisor engineering response includes repository name, current active-module progress, overall repository-owned non-live progress, milestone/evidence, CI state, blockers, and the exact next safe action. Progress is reported as unknown instead of guessed when canonical sources disagree.
 
 This control plane does not grant live pyPSX, production PII, broker/provider, deployment, destructive migration, real-money, or release authority.
+
+
+### Supervisor review-branch CI coverage
+
+The canonical Supervisor branch remains `parallel/supervisor-platform`. Bounded `supervisor/**` review/recovery branches are also covered by orchestration and .NET regression CI and are ownership-restricted to shared governance/control-plane paths. They cannot modify module `src/**` implementation and do not bypass accepted-baseline, review, security, or promotion gates.
