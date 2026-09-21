@@ -160,9 +160,19 @@ Check("PLAT-011", "P1-22 closeout and P1-23 handoff are durable", () =>
 Check("PLAT-012", "README module delivery table tracks canonical lifecycle state", () =>
 {
     var readme = Read("README.md");
+    var integrationBaseline = Read(".ai/integration-baseline.yaml");
+    var baselineMatches = Regex.Matches(
+        integrationBaseline,
+        @"(?m)^last_verified_baseline_sha:\s*([0-9a-f]{40})\s*$");
+
+    Require(baselineMatches.Count == 1,
+        "integration baseline must expose exactly one canonical last_verified_baseline_sha");
+
+    var acceptedBaselineSha = baselineMatches[0].Groups[1].Value;
+
     Require(readme.Contains("## Module delivery table", StringComparison.Ordinal), "README module delivery table is missing");
-    Require(readme.Contains("Accepted staging baseline: `ef1f9912cc2928771dee0d104a29dec0563c9323`", StringComparison.Ordinal),
-        "README accepted staging baseline is stale");
+    Require(readme.Contains($"Accepted staging baseline: `{acceptedBaselineSha}`", StringComparison.Ordinal),
+        $"README accepted staging baseline is stale; expected {acceptedBaselineSha}");
     Require(readme.Contains("18 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
         "README accepted-lane summary is stale");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Dashboard \\|.*Integrated —"),
