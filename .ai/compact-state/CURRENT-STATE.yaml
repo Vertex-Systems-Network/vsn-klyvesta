@@ -6,12 +6,12 @@ accepted_integration_branch: parallel/integration-staging
 accepted_integration_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 126
-active_branch: supervisor/20260921-control-plane-reconcile
-current_milestone: reconcile post-PR-125 control-plane metadata to accepted staging truth
+active_pr: 127
+active_branch: parallel/platform-ci
+current_milestone: repair stale PLAT-012 canonical-baseline invariant and complete post-PR-125 reconciliation
 milestone_status: VERIFYING
 last_completed_milestone: PR #125 governance protocol integrated into parallel/integration-staging at 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #126; if checks are pending or failing, report that state and end the milestone without polling
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #127; if checks are pending or failing, report that state and end the milestone without polling
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
@@ -29,7 +29,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "Post-PR-125 reconciliation metadata is not yet accepted back into parallel/integration-staging."
+  - "PR #127 exact-head CI is pending after the ownership-correct PLAT-012 verifier repair and reconciliation carry-forward."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
