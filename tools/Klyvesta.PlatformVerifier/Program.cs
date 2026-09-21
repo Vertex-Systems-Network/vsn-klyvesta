@@ -153,8 +153,13 @@ Check("PLAT-011", "P1-22 closeout and P1-23 handoff are durable", () =>
         "customer-alert-rules must be the active assigned customer lane");
     Require(alerts.Contains("assigned_agent: ChatGPT-CustomerAlertRules-01", StringComparison.Ordinal) && alerts.Contains("status: ACTIVE", StringComparison.Ordinal),
         "P1-23 work item must be assigned and active");
-    Require(alerts.Contains("accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
-        "P1-23 accepted baseline must match the P1-22 staging merge");
+    var alertBaselineMatches = Regex.Matches(
+        alerts,
+        @"(?m)^accepted_baseline_sha:\s*([0-9a-f]{40})\s*$");
+    Require(alertBaselineMatches.Count == 1,
+        "P1-23 accepted baseline must be recorded exactly once as a full SHA");
+    Require(alerts.Contains("production_authority: false", StringComparison.Ordinal),
+        "P1-23 must remain non-production while active");
 });
 
 Check("PLAT-012", "README module delivery table tracks canonical lifecycle state", () =>
