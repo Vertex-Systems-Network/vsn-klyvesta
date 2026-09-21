@@ -100,3 +100,51 @@ tasks:
     dedup_key: "PR127:ae98fd21fa81a390d3d1deb8e6d911300663cbc5:dotnet-foundation"
     status: PASS
     terminal_evidence: "GitHub Actions run 35629846204; exact-head full .NET regression PASS after PLAT-012 repair"
+  - id: RB-128-ORCH-01
+    source: PR-128-integration-identity-semantics
+    command_or_workflow: agent-orchestration
+    exact_source_identity: d334b0c9e84ca6d3f5dda9b0a4ee9460be19b913
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-128 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: true
+    merge_blocking: true
+    expected_runner_time: "<= 8 minutes"
+    dedup_key: "PR128:d334b0c9e84ca6d3f5dda9b0a4ee9460be19b913:agent-orchestration"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35631203580; exact-head orchestration PASS"
+  - id: RB-128-DOTNET-01
+    source: PR-128-integration-identity-semantics
+    command_or_workflow: dotnet-foundation
+    exact_source_identity: d334b0c9e84ca6d3f5dda9b0a4ee9460be19b913
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-128 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: false
+    merge_blocking: true
+    expected_runner_time: "<= 15 minutes"
+    dedup_key: "PR128:d334b0c9e84ca6d3f5dda9b0a4ee9460be19b913:dotnet-foundation"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35631203587; exact-head full .NET regression PASS"
+  - id: RB-129-ORCH-01
+    source: PR-129-plat011-refresh-unblock
+    command_or_workflow: agent-orchestration
+    exact_source_identity: 4a140b038bd6664ba59f2f1108bd94b80fc1fcf6
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-129 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: true
+    merge_blocking: true
+    expected_runner_time: "<= 8 minutes"
+    dedup_key: "PR129:4a140b038bd6664ba59f2f1108bd94b80fc1fcf6:agent-orchestration"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35639186551; exact-head orchestration PASS"
+  - id: RB-129-DOTNET-01
+    source: PR-129-plat011-refresh-unblock
+    command_or_workflow: dotnet-foundation
+    exact_source_identity: 4a140b038bd6664ba59f2f1108bd94b80fc1fcf6
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-129 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: false
+    merge_blocking: true
+    expected_runner_time: "<= 15 minutes"
+    dedup_key: "PR129:4a140b038bd6664ba59f2f1108bd94b80fc1fcf6:dotnet-foundation"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35639186513; exact-head full .NET regression PASS"
