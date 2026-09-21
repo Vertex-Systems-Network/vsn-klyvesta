@@ -16,9 +16,11 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-**Last status update:** `2026-09-21 — Supervisor governance v2 integrated; P1-23 Customer Alert Rules remains active`
+**Last status update:** `2026-09-21 — PR #127 integrated; control-plane identity semantics repair active; P1-23 Customer Alert Rules remains active`
 
-Accepted staging baseline: `0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f`
+Accepted integration branch: `parallel/integration-staging`
+
+Verified parent baseline: `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52` — this is the immutable parent for the current control-plane generation; the current accepted branch head is resolved at runtime and broadcast through Issue #82.
 
 **Repository-owned non-live product/verification lanes:** `███████░░░ 75%` — **18 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-23 is active, four additional lanes are READY, and Security Acceptance remains blocked by external production evidence.
 

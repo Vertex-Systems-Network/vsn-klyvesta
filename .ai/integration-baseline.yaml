@@ -1,8 +1,11 @@
-version: 3
+version: 4
 baseline_branch: parallel/integration-staging
 main_anchor_sha: 9ee91496e9e606a050de14142cf225640a94406c
-last_verified_baseline_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
-generation: 8
+verified_parent_baseline_sha: 30de8c4c8daeff302cf1c669ef1d3b1a78f02c52
+current_head_authority: runtime_branch_resolution
+durable_mutable_broadcast_surface: "issue:82"
+persisted_current_head_required: false
+generation: 9
 promotion_target: main
 promotion_state: BLOCKED_MAIN_PROTECTION
 coordination_issue: 82
@@ -17,10 +20,11 @@ merge_train:
   migration_integration_check_required: true
   instruction_drift_evidence_required: true
 last_integration:
-  work_item: SUP-GOV-125
-  source_pr: 125
-  source_branch: supervisor/20260921-governance-resume-v2
-  source_head_sha: 67ed5ea5c15f3052c647ac8584d74fbada7674fb
-  integration_baseline_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
-  integrated_at: "2026-09-21T16:47:29Z"
+  work_item: M-AGENT-09
+  source_pr: 127
+  source_branch: parallel/platform-ci
+  source_head_sha: ae98fd21fa81a390d3d1deb8e6d911300663cbc5
+  base_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
+  merge_commit_sha: 30de8c4c8daeff302cf1c669ef1d3b1a78f02c52
+  integrated_at: "2026-09-21T17:12:51Z"
   production_authority: false

@@ -161,18 +161,30 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
 {
     var readme = Read("README.md");
     var integrationBaseline = Read(".ai/integration-baseline.yaml");
-    var baselineMatches = Regex.Matches(
+    var branchMatches = Regex.Matches(
         integrationBaseline,
-        @"(?m)^last_verified_baseline_sha:\s*([0-9a-f]{40})\s*$");
+        @"(?m)^baseline_branch:\s*([A-Za-z0-9._/-]+)\s*$");
+    var parentMatches = Regex.Matches(
+        integrationBaseline,
+        @"(?m)^verified_parent_baseline_sha:\s*([0-9a-f]{40})\s*$");
 
-    Require(baselineMatches.Count == 1,
-        "integration baseline must expose exactly one canonical last_verified_baseline_sha");
+    Require(branchMatches.Count == 1,
+        "integration baseline must expose exactly one canonical baseline_branch");
+    Require(parentMatches.Count == 1,
+        "integration baseline must expose exactly one verified_parent_baseline_sha");
+    Require(integrationBaseline.Contains("current_head_authority: runtime_branch_resolution", StringComparison.Ordinal),
+        "current integration head authority must be runtime branch resolution");
+    Require(integrationBaseline.Contains("persisted_current_head_required: false", StringComparison.Ordinal),
+        "immutable control-plane state must not require its own current commit SHA");
 
-    var acceptedBaselineSha = baselineMatches[0].Groups[1].Value;
+    var acceptedBranch = branchMatches[0].Groups[1].Value;
+    var verifiedParentSha = parentMatches[0].Groups[1].Value;
 
     Require(readme.Contains("## Module delivery table", StringComparison.Ordinal), "README module delivery table is missing");
-    Require(readme.Contains($"Accepted staging baseline: `{acceptedBaselineSha}`", StringComparison.Ordinal),
-        $"README accepted staging baseline is stale; expected {acceptedBaselineSha}");
+    Require(readme.Contains($"Accepted integration branch: `{acceptedBranch}`", StringComparison.Ordinal),
+        $"README accepted integration branch is stale; expected {acceptedBranch}");
+    Require(readme.Contains($"Verified parent baseline: `{verifiedParentSha}`", StringComparison.Ordinal),
+        $"README verified parent baseline is stale; expected {verifiedParentSha}");
     Require(readme.Contains("18 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
         "README accepted-lane summary is stale");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Dashboard \\|.*Integrated —"),

@@ -51,3 +51,20 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Opened ownership-correct PR #127 and closed #126 unmerged as superseded.
 - Transitioned platform work item to VERIFYING with submission PR #127.
 - Next action: one consolidated exact-head CI/status/review refresh for #127; no polling.
+
+## 2026-09-21 — Non-self-referential integration identity
+
+- PR #127 merged into `parallel/integration-staging` at `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52`.
+- Post-merge reconciliation proved that persisting a required equality between an immutable file and its own resulting staging HEAD cannot converge.
+- Fast-forwarded canonical `parallel/platform-ci` to `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52` without force.
+- Replaced `last_verified_baseline_sha` with `verified_parent_baseline_sha`.
+- Defined current accepted HEAD authority as runtime branch resolution; Issue #82 remains the durable mutable broadcast surface.
+- Changed integration-baseline validation from equality-to-current-head to ancestor validation of the verified parent.
+- Changed PlatformVerifier PLAT-012 and README to distinguish accepted integration ref from verified parent baseline.
+- Updated platform work-item/registry consumption evidence to `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52`; other agent baseline records were intentionally not mass-advanced.
+- Persisted PR #126 failure and PR #127 terminal exact-head PASS evidence into the Runner Benchmark.
+- Next action: open semantic repair PR, bind identity, transition VERIFYING, perform one consolidated exact-head CI/status/review refresh.
+
+- Opened PR #128 from `parallel/platform-ci` to `parallel/integration-staging` for the non-self-referential identity model.
+- Bound platform work item and compact state to PR #128; transitioned milestone to VERIFYING before exact-head observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.

@@ -1,24 +1,27 @@
-version: 1
+version: 2
 repository: Vertex-Systems-Network/vsn-klyvesta
 observed_main_sha: 2d390013fec84064f4ce1f150caba7839940e53d
 default_branch: main
 accepted_integration_branch: parallel/integration-staging
-accepted_integration_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
+verified_parent_baseline_sha: 30de8c4c8daeff302cf1c669ef1d3b1a78f02c52
+current_integration_head_authority: runtime_branch_resolution
+durable_current_head_surface: "issue:82"
+persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 127
+active_pr: 128
 active_branch: parallel/platform-ci
-current_milestone: repair stale PLAT-012 canonical-baseline invariant and complete post-PR-125 reconciliation
+current_milestone: replace self-referential integration-head persistence with verified-parent baseline semantics
 milestone_status: VERIFYING
-last_completed_milestone: PR #125 governance protocol integrated into parallel/integration-staging at 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #127; if checks are pending or failing, report that state and end the milestone without polling
+last_completed_milestone: PR #127 PLAT-012 repair integrated into parallel/integration-staging at 30de8c4c8daeff302cf1c669ef1d3b1a78f02c52
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #128; if checks are pending or failing, report that state and end the milestone without polling
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
   lifecycle: ACTIVE
   progress_percent: 20
   progress_bar: "██░░░░░░░░"
-  evidence_ref: README.md@0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
+  evidence_ref: "README.md@parallel/integration-staging (runtime-resolved)"
 overall_progress:
   scope: repository-owned non-live canonical lanes
   accepted_or_integrated: 18
@@ -29,7 +32,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "PR #127 exact-head CI is pending after the ownership-correct PLAT-012 verifier repair and reconciliation carry-forward."
+  - "Control-plane identity semantic repair is not yet accepted back into parallel/integration-staging."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -41,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-21T21:47:29+05:00"
+last_reconciled_at: "2026-09-21T22:12:51+05:00"
