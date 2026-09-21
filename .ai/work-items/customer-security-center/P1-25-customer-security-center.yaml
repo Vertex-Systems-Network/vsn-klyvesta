@@ -37,7 +37,7 @@ acceptance_evidence:
     - customer-security-center-verifier
     - exact-head-ci
 instruction_drift_check: completed-2026-09-22-p1-25-implementation-no-contract-drift
-submission_pr: null
+submission_pr: 138
 integration_baseline_sha: null
 
 refresh_evidence:
@@ -49,7 +49,7 @@ refresh_evidence:
   runtime_integration_baseline_ancestor_verified: true
 
 implementation_evidence:
-  status: IMPLEMENTED
+  status: IMPLEMENTED_SUBMITTED
   consumed_assignment_merge_sha: 1530d3221524efe7584acf178f4a5486d4825405
   domain_model: src/Klyvesta.Domain/SecurityCenter/CustomerSecurityCenterModels.cs
   application_projector: src/Klyvesta.Application/SecurityCenter/DeterministicCustomerSecurityCenterProjector.cs
