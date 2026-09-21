@@ -207,3 +207,10 @@ Every Supervisor engineering response must end with this repository-derived stat
 `Next safe action: <one exact action>`
 
 Use `UNKNOWN / RECONCILIATION REQUIRED` instead of inventing progress. Module and overall percentages describe the canonical repository-owned non-live engineering scope only unless an explicitly different scope is named.
+
+
+### Auxiliary Supervisor review/recovery branches
+
+The canonical Supervisor working branch remains `parallel/supervisor-platform`. When repository evidence shows that branch cannot be safely used for a bounded review/recovery/governance milestone because it is materially stale or divergent, a temporary `supervisor/**` branch may be used only for shared governance/control-plane work.
+
+Such branches are CI-covered and ownership-enforced. They may modify only the shared paths configured by `.ai/agent-orchestration.yaml`; module implementation source under `src/**` is forbidden. They do not become canonical module branches, do not bypass the coordination queue, and grant no production, provider, migration, release, deployment, or real-money authority.
