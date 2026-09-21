@@ -48,7 +48,7 @@ branches:
   - {module: security-acceptance, branch: parallel/security-acceptance, agent_slot: agent-security-acceptance, status: BLOCKED, occupancy: UNAVAILABLE, agent_name: null, start_status: BLOCKED, reason: production-governance-provider-legal-runtime-evidence-required, merge_order_group: 80}
   - {module: performance-resilience, branch: parallel/performance-resilience, agent_slot: agent-performance-resilience, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: f8e948d3e937527a02d573548b423ecff39704d3, merge_order_group: 10}
   - {module: database-integration, branch: parallel/database-integration, agent_slot: agent-database-integration, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, merge_order_group: 90}
-  - {module: platform-ci, branch: parallel/platform-ci, agent_slot: agent-platform-ci, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-Platform-01, start_status: ASSIGNED, started_at: "2026-09-03T17:12:00Z", accepted_baseline_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f, merge_order_group: 10}
+  - {module: platform-ci, branch: parallel/platform-ci, agent_slot: agent-platform-ci, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-Platform-01, start_status: ASSIGNED, started_at: "2026-09-03T17:12:00Z", accepted_baseline_sha: 30de8c4c8daeff302cf1c669ef1d3b1a78f02c52, merge_order_group: 10}
   - {module: supervisor-platform, branch: parallel/supervisor-platform, agent_slot: supervisor, status: ACTIVE, occupancy: OCCUPIED, agent_name: Supervisor, start_status: ACTIVE, merge_order_group: 5}
 
 merge_strategy:
