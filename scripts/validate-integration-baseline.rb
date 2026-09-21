@@ -21,10 +21,15 @@ manifest = YAML.safe_load(File.read(MANIFEST), permitted_classes: [], aliases: f
 errors = []
 baseline_branch = manifest['baseline_branch']
 main_anchor = manifest['main_anchor_sha'].to_s
-recorded = manifest['last_verified_baseline_sha'].to_s
+verified_parent = manifest['verified_parent_baseline_sha'].to_s
+current_head_authority = manifest['current_head_authority'].to_s
+persisted_current_head_required = manifest['persisted_current_head_required']
+
 errors << 'baseline_branch must be parallel/integration-staging' unless baseline_branch == 'parallel/integration-staging'
 errors << 'main_anchor_sha must be a full SHA' unless main_anchor.match?(SHA)
-errors << 'last_verified_baseline_sha must be a full SHA' unless recorded.match?(SHA)
+errors << 'verified_parent_baseline_sha must be a full SHA' unless verified_parent.match?(SHA)
+errors << 'current_head_authority must be runtime_branch_resolution' unless current_head_authority == 'runtime_branch_resolution'
+errors << 'persisted_current_head_required must be false' unless persisted_current_head_required == false
 errors << 'generation must be a non-negative integer' unless manifest['generation'].is_a?(Integer) && manifest['generation'] >= 0
 
 remote_ref = "refs/remotes/origin/#{baseline_branch}"
@@ -40,14 +45,16 @@ if ref
   errors << 'unable to resolve integration baseline ref' unless ok && baseline_sha.match?(SHA)
   if ok
     errors << 'main anchor is not an ancestor of integration baseline' unless git('merge-base', '--is-ancestor', main_anchor, baseline_sha)[2]
+    errors << 'verified parent baseline is not an ancestor of runtime integration baseline' unless git('merge-base', '--is-ancestor', verified_parent, baseline_sha)[2]
+
     branch = head_branch
     if branch.start_with?('parallel/') && branch != baseline_branch
-      errors << "#{branch} is stale: current integration baseline #{baseline_sha} is not an ancestor of HEAD" unless git('merge-base', '--is-ancestor', baseline_sha, 'HEAD')[2]
+      errors << "#{branch} is stale: runtime integration baseline #{baseline_sha} is not an ancestor of HEAD" unless git('merge-base', '--is-ancestor', baseline_sha, 'HEAD')[2]
     end
-    if recorded != baseline_sha
-      puts "BASELINE_RECORD_NOTICE: manifest records #{recorded}; current #{baseline_branch} is #{baseline_sha}. Supervisor should refresh documentary SHA after accepted advance."
-    end
+
+    puts "VERIFIED_PARENT_BASELINE_SHA: #{verified_parent}"
     puts "CURRENT_BASELINE_SHA: #{baseline_sha}"
+    puts 'CURRENT_BASELINE_AUTHORITY: runtime branch resolution'
   end
 else
   puts 'BASELINE_REF_NOTICE: integration baseline remote ref is not present in this checkout; structural validation only.'
