@@ -1,18 +1,18 @@
-# Last Checkpoint — P1-24 Customer Scenarios Assignment
+# Last Checkpoint — P1-24 Canonical Lifecycle Closeout
 
-Status: VERIFYING
+Status: IMPLEMENTING
 
 Repository truth:
-- PR #133 P1-23 canonical closeout merged into `parallel/integration-staging` at `9ec5f70d4cd4a81a3d84d85d19b66b309976c077`.
-- P1-23 is now canonically INTEGRATED / COMPLETE and README overall progress is 19/24 = 79%.
-- Issue #82 refresh for the accepted closeout is comment #5767611704.
-- `parallel/customer-scenarios` and `parallel/platform-ci` were both non-force fast-forwarded to `9ec5f70d4cd4a81a3d84d85d19b66b309976c077`.
-- Portfolio dependency `ca8fac46...` and Risk dependency `abb8ebcd...` are both ancestors of the refreshed staging baseline.
+- PR #135 Customer Scenarios was accepted into staging at `73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14`.
+- exact-head orchestration and full .NET regression passed.
+- Customer Scenarios implementation includes a 33-case dedicated verifier and remains informational-only/non-live.
+- Issue #82 accepted-baseline refresh was published as comment #5767842518.
 
-P1-24 assignment candidate:
-- registry version 18 marks customer-scenarios ACTIVE/OCCUPIED and assigns ChatGPT-CustomerScenarios-01;
-- P1-24 work item records the exact accepted baseline and dependency ancestry;
-- README moves Customer Scenarios from 0% Ready to 20% Active while overall remains 19/24 = 79%;
-- no API/Infrastructure/migration/contracts/live/provider/trading authority is granted.
+Closeout candidate:
+- registry version 19 marks P1-24 INTEGRATED with exact integrated SHA `73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14`;
+- P1-24 work item becomes COMPLETE/INTEGRATED and exact-head CI moves to satisfied evidence;
+- README moves Customer Scenarios to 100% and overall repository-owned non-live progress to 20/24 = 83%;
+- PLAT-011 and PLAT-012 verify the integrated P1-24 lifecycle and README truth;
+- production/live authority remains blocked.
 
-PR #134 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
+Exact next safe action: open the Platform closeout PR, bind exact head, and perform one consolidated exact-head CI/review refresh.
