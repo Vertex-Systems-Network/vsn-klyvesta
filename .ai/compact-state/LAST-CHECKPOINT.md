@@ -1,6 +1,6 @@
 # Last Checkpoint — P1-23 Shared Registry Reconciliation
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth:
 - accepted integration ref: `parallel/integration-staging`
@@ -22,4 +22,4 @@ Current reconciliation:
 
 No product source, migration/model snapshot, provider/pyPSX, deployment/release, PII, or real-money authority is changed.
 
-Exact next safe action: open the ownership-correct reconciliation PR, bind its identity in durable state/work item, transition to VERIFYING, then perform one consolidated exact-head CI/status/review refresh.
+PR #130 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
