@@ -181,12 +181,12 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
         $"README accepted integration branch is stale; expected {acceptedBranch}");
     Require(readme.Contains($"Verified parent baseline: `{verifiedParentSha}`", StringComparison.Ordinal),
         $"README verified parent baseline is stale; expected {verifiedParentSha}");
-    Require(readme.Contains("18 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
+    Require(readme.Contains("19 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
         "README accepted-lane summary is stale");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Dashboard \\|.*Integrated —"),
         "README customer-dashboard row must be integrated");
-    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Alert Rules \\|.*Active — P1-23 assigned"),
-        "README customer-alert-rules row must be active");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Alert Rules \\|.*Integrated —"),
+        "README customer-alert-rules row must be integrated");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Risk Center \\|.*Ready — P1-26"),
         "README customer-risk-center row must be ready");
     Require(Regex.IsMatch(readme, "(?m)^\\| Database Integration \\|.*Ready —"),
