@@ -1,6 +1,6 @@
 # Last Checkpoint — Post-PR-125 Control-Plane Reconciliation
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth:
 - default branch: `main`
@@ -23,4 +23,4 @@ The branch registry is intentionally not mass-updated: active agent `accepted_ba
 
 No product module completion, production authority, live pyPSX/provider access, PII authority, deployment/release, destructive migration, or real-money authority is granted.
 
-Exact next safe action: open a PR from `supervisor/20260921-control-plane-reconcile` to `parallel/integration-staging`, persist its identity and VERIFYING state, then perform one consolidated exact-head CI/status refresh without polling.
+PR #126 is open from `supervisor/20260921-control-plane-reconcile` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
