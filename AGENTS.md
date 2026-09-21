@@ -6,24 +6,21 @@ If a generic engineering preference conflicts with a Klyvesta financial, regulat
 
 ## Mandatory start-of-session protocol
 
-Before engineering work:
+For every start, continue, resume, interrupted session, tool/connector failure, or prior message-delivery timeout, the Supervisor must follow this exact order before implementation:
 
-1. Read `AGENTS.md`.
-2. Read `.ai/MASTER_ENGINEERING_PROMPT.md`.
-3. Read `.ai/agent-orchestration.yaml`, `.ai/parallel-branch-registry.yaml`, `docs/PARALLEL_AGENT_DEVELOPMENT.md`, and `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`.
-4. Read `.ai/state.json`.
-5. Read `.ai/guardrails.md`.
-6. Read `.ai/acceptance-gates.yaml`.
-7. Read the active issue/work item and identify its module, assigned branch, agent slot/owner role, allowed paths, shared/forbidden paths, dependencies, expected acceptance evidence, and recorded base SHA.
-8. Inspect repository structure and relevant module documentation/contracts.
-9. Inspect current Git HEAD and branch and verify that the recorded base/dependency heads are still valid.
-10. Inspect recent Git history.
-11. Inspect open PRs/issues relevant to the active task and check for duplicate implementation or overlapping ownership.
-12. Inspect the Supervisor Coordination Feed (Issue #82) for accepted-baseline refresh events.
-13. Identify the current checkpoint and unfinished work.
-14. Inspect relevant implementation and available dev/test commands.
-15. Perform the mandatory instruction-drift check defined below.
-16. Only then plan or implement.
+1. Read `.ai/compact-state/CURRENT-STATE.yaml`.
+2. Read `.ai/compact-state/LAST-CHECKPOINT.md`.
+3. Resolve the exact current default branch and SHA; compare it with compact state and reconcile drift.
+4. Reconcile actionable OPEN Issues first. An Issue already represented by an accepted PR is one work path; do not duplicate it.
+5. Reconcile actionable OPEN PRs second, including exact head, review state, unresolved threads, ownership/dependency freshness, and CI state.
+6. Read `.ai/acceptance-gates.yaml`, `.ai/integration-baseline.yaml`, the active work-item acceptance evidence, `.ai/parallel-branch-registry.yaml`, Issue #82 coordination feed, and `.ai/runner-benchmark.yaml`.
+7. Read `AGENTS.md`, `.ai/MASTER_ENGINEERING_PROMPT.md`, `.ai/agent-orchestration.yaml`, `docs/PARALLEL_AGENT_DEVELOPMENT.md`, and `docs/MULTI_AGENT_REPOSITORY_WORKFLOW.md`.
+8. Read `.ai/state.json`, `.ai/guardrails.md`, relevant module documentation/contracts, and the active work item.
+9. Verify current branch/HEAD, accepted baseline, base SHA, dependency heads, recent Git history, duplicate/overlapping ownership, and available dev/test commands.
+10. Perform the instruction-drift check.
+11. Continue only the exact next unfinished safe milestone.
+
+Compact resume state is an index and never overrides current repository/runtime evidence. Never repeat a merge, deployment, destructive operation, migration, provider call, or formal runtime action merely because a previous chat response timed out.
 
 ## Supervisor-first branch bootstrap
 
@@ -183,3 +180,30 @@ If an important requirement remains unverified, report the work as PARTIALLY COM
 - `parallel/integration-staging` is the accepted technical baseline while `main` promotion is governance-blocked. A stale assigned branch must refresh before work/resume.
 - Final EF migrations and `*ModelSnapshot.cs` belong to `parallel/database-integration`; other parallel branches fail orchestration CI if they change them.
 - Orchestration CI validates onboarding behavior, work-item readiness, baseline ancestry, migration ownership, dependency-DAG/branch/occupancy consistency, concurrency capacity/overflow behavior, and module changed-path ownership.
+
+
+## Durable milestone, runner, and final-response contract
+
+- One user `continue`/resume turn is one bounded logical engineering milestone by default.
+- Batch related read-only calls where supported and perform at most one consolidated CI/status refresh per milestone unless a material security/merge/incident/provider transition requires one additional refresh.
+- Never tight-poll CI, deployments, providers, or workflow status.
+- Before reporting a milestone complete, blocked, verifying, or waiting, reconcile compact state, rolling journal, coordination queue when changed, and Runner Benchmark when changed.
+- Compact files must remain small: `CURRENT-STATE.yaml <= 12 KiB`, `LAST-CHECKPOINT.md <= 16 KiB`, `EXECUTION-JOURNAL.md <= 32 KiB`; archive older detail instead of growing the resume layer indefinitely.
+- New development is forbidden while an accepted actionable open Issue or PR is being bypassed.
+- Migrations require explicit review of idempotency, transaction boundaries, apply-success/marker-write-failure recovery, retries, rollback/restore, concurrency, partial execution, and backup/snapshot requirements.
+- CI/supply-chain changes use least privilege, immutable third-party action revisions where practical, no unnecessary credential persistence, and no unsafe untrusted lifecycle execution merely to generate security artifacts.
+- A running/pending/skipped/deferred check is never reported as PASS.
+- If durable state cannot be written, do not claim the milestone is fully complete.
+
+Every Supervisor engineering response must end with this repository-derived status shape:
+
+`Repository: <owner/name>`  
+`Current module: <work item/module> <progress bar> <percent or UNKNOWN>`  
+`Overall progress: <progress bar> <percent or UNKNOWN>`  
+`Milestone: <completed/active bounded milestone>`  
+`Evidence: <Issue/PR/commit/run identifiers>`  
+`CI: <PASS/FAIL/PENDING/NOT RUN with exact scope>`  
+`Blockers: <current blockers or none>`  
+`Next safe action: <one exact action>`
+
+Use `UNKNOWN / RECONCILIATION REQUIRED` instead of inventing progress. Module and overall percentages describe the canonical repository-owned non-live engineering scope only unless an explicitly different scope is named.
