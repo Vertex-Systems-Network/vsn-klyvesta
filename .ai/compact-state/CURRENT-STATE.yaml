@@ -9,19 +9,19 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 133
+active_pr: 134
 active_branch: parallel/platform-ci
-current_milestone: close P1-23 canonical lifecycle and advance README progress to 19/24
+current_milestone: assign P1-24 Customer Scenarios on the accepted P1-23-closeout baseline
 milestone_status: VERIFYING
-last_completed_milestone: PR #132 README progress-sync protocol integrated into parallel/integration-staging at 0859921f0fa7902c0555725c757d9961a5bcd227
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #133; if all authoritative gates pass and base remains fresh, persist MERGE-READY
+last_completed_milestone: PR #133 P1-23 canonical closeout integrated at 9ec5f70d4cd4a81a3d84d85d19b66b309976c077
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #134; if all authoritative gates pass and base remains fresh, persist MERGE-READY
 current_module:
-  work_item: P1-23
-  module: Customer Alert Rules
-  lifecycle: INTEGRATED_CLOSEOUT_CANDIDATE
-  progress_percent: 100
-  progress_bar: "██████████"
-  evidence_ref: "PR #131 accepted merge d134b2839ff1af3b6867f11b3304779a29b14b0b; closeout candidate on parallel/platform-ci"
+  work_item: P1-24
+  module: Customer Scenarios
+  lifecycle: ACTIVE_ASSIGNMENT_CANDIDATE
+  progress_percent: 20
+  progress_bar: "██░░░░░░░░"
+  evidence_ref: "branch refreshed non-force to 9ec5f70d4cd4a81a3d84d85d19b66b309976c077; portfolio/risk ancestry verified"
 overall_progress:
   scope: repository-owned non-live canonical lanes
   accepted_or_integrated: 19
@@ -32,7 +32,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "P1-23 19/24 progress is a closeout candidate until the Platform closeout PR passes exact-head CI and merges."
+  - "P1-24 assignment is a candidate until the shared registry/work-item/README PR passes exact-head CI and merges."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -44,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-22T01:53:00+05:00"
+last_reconciled_at: "2026-09-22T02:13:00+05:00"
