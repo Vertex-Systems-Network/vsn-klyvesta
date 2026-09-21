@@ -8,10 +8,10 @@ active_issue: 1
 related_issues: [82, 20, 8]
 active_pr: 125
 active_branch: supervisor/20260921-governance-resume-v2
-current_milestone: integrate durable AI Engineering Supervisor protocol and mandatory progress reporting
+current_milestone: repair Supervisor CI trigger and ownership enforcement for PR #125
 milestone_status: VERIFYING
 last_completed_milestone: P1-22 Customer Dashboard control-plane closeout and P1-23 activation on accepted staging baseline
-exact_next_safe_action: perform one consolidated exact-head CI/status refresh for PR #125; if checks or review are pending, report pending and end the milestone
+exact_next_safe_action: perform one consolidated exact-head CI/status refresh on the repaired PR #125 head; if checks are running or pending, report pending and end the milestone
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
@@ -29,6 +29,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
+  - "PR #125 exact-head CI pending after Supervisor trigger/ownership repair."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
