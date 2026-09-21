@@ -1,24 +1,25 @@
-# Last Checkpoint — P1-23 Refresh Unblock / PLAT-011
+# Last Checkpoint — P1-23 Shared Registry Reconciliation
 
-Status: VERIFYING
+Status: IMPLEMENTING
 
 Repository truth:
 - accepted integration ref: `parallel/integration-staging`
-- runtime-resolved accepted head: `e8b6d7efdb346688deb99fbb5fb50bfe390b9972`
+- runtime-resolved accepted head: `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`
 - main remains unprotected; Issue #1 remains open
-- P1-23 branch had 0 unique commits and was safely fast-forwarded from `9f47063e...` to the accepted head without force
-- P1-23 work item still records historical `ef1f9912...` consumption evidence and cannot be updated safely until PLAT-011 stops hardcoding that same historical value
-- current canonical customer module remains P1-23 Customer Alert Rules, 20%
+- PR #129 is merged and its exact-head orchestration/.NET gates passed
+- P1-23 branch consumed `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77` and recorded that consumption on its own work item at `a4c2c5453a2f73e5234dcc60fe2f5846e98b3b31`
+- P1-23 dependency ancestry and instruction-drift checks passed
+- current module remains P1-23 Customer Alert Rules at 20%
 - overall repository-owned non-live progress remains 18/24 = 75%
 
-Root cause:
-- PlatformVerifier PLAT-011 requires P1-23 `accepted_baseline_sha` to equal the P1-22 historical merge SHA.
-- The field is agent branch-consumption evidence and must be able to advance after a successful refresh.
+Current reconciliation:
+- shared registry still records historical P1-23 baseline `ef1f9912...`;
+- canonical platform branch has now consumed `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`;
+- registry version advances to 16;
+- only P1-23 and platform-ci consumption records advance to `9b6bf02d70f0338fa2d6235f2d2f950a9e493f77`;
+- other agent baseline records remain untouched;
+- Runner Benchmark gains the already-certified PR #128/#129 exact-head PASS evidence.
 
-Repair:
-- keep durable P1-22 historical integration checks intact;
-- for active P1-23, require exactly one full-SHA `accepted_baseline_sha` plus active assignment and `production_authority: false`;
-- do not require a fixed historical SHA;
-- no product source, migration, provider, release, or live-authority change.
+No product source, migration/model snapshot, provider/pyPSX, deployment/release, PII, or real-money authority is changed.
 
-PR #129 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh. If checks are pending or failing, report that state and end without polling.
+Exact next safe action: open the ownership-correct reconciliation PR, bind its identity in durable state/work item, transition to VERIFYING, then perform one consolidated exact-head CI/status/review refresh.
