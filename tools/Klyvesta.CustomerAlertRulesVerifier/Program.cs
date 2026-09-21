@@ -252,14 +252,14 @@ Run("AR-021", "evaluation ordering is stable by rule id", () =>
 
 Run("AR-022", "public alert payloads require no contact PII", () =>
 {
-    var publicTypes = new[]
+    var publicTypes = new List<Type>
     {
         typeof(CustomerAlertRule),
         typeof(CustomerAlertObservation),
         typeof(CustomerAlertCandidate),
         typeof(CustomerAlertEvaluationResult),
     };
-    var prohibited = new[]
+    var prohibited = new List<string>
     {
         "emailaddress", "phone", "mobile", "contact", "recipient", "address",
         "cnic", "passport", "iban", "bankaccount", "biometric",
@@ -288,7 +288,7 @@ Run("AR-023", "authority is configuration-only and non-live", () =>
 
 Run("AR-024", "service surface exposes no dispatch trading or provider action", () =>
 {
-    var prohibitedMethodFragments = new[] { "Dispatch", "Send", "Trade", "PlaceOrder", "Withdraw", "Deposit" };
+    var prohibitedMethodFragments = new List<string> { "Dispatch", "Send", "Trade", "PlaceOrder", "Withdraw", "Deposit" };
     var publicMethods = typeof(CustomerAlertRuleService)
         .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
         .Select(method => method.Name)
@@ -366,22 +366,13 @@ CustomerAlertObservation Observation(decimal value) =>
 
 CustomerAlertRuleService NewService(
     out InMemoryCustomerAlertRuleStore ruleStore,
-    out InMemoryCustomerPreferenceStore preferenceStore,
     out CustomerPreferenceService preferenceService,
     DateTimeOffset fixedNow)
 {
     ruleStore = new InMemoryCustomerAlertRuleStore();
-    preferenceStore = new InMemoryCustomerPreferenceStore();
+    var preferenceStore = new InMemoryCustomerPreferenceStore();
     preferenceService = new CustomerPreferenceService(preferenceStore, new FixedTimeProvider(fixedNow));
     return new CustomerAlertRuleService(ruleStore, preferenceService, new FixedTimeProvider(fixedNow));
-}
-
-CustomerAlertRuleService NewService(
-    out InMemoryCustomerAlertRuleStore ruleStore,
-    out InMemoryCustomerPreferenceStore preferenceStore,
-    DateTimeOffset fixedNow)
-{
-    return NewService(out ruleStore, out preferenceStore, out _, fixedNow);
 }
 
 static Guid CustomerA() => Guid.Parse("11111111-1111-1111-1111-111111111111");
