@@ -1,38 +1,32 @@
-# Last Checkpoint — AI Engineering Supervisor Governance v2
+# Last Checkpoint — Platform PLAT-012 Repair + Control-Plane Reconciliation
 
 Status: VERIFYING
 
-Repository truth reconciled before this change:
+Repository truth:
 - default branch: `main`
 - observed main SHA: `2d390013fec84064f4ce1f150caba7839940e53d`
 - main protection: disabled; Issue #1 remains open
-- accepted technical integration branch: `parallel/integration-staging`
-- accepted integration SHA: `9f47063eaf3092c449dcafd423cf1ec2657d99d6`
-- coordination feed: Issue #82
-- active canonical customer module: P1-23 Customer Alert Rules, 20%
-- repository-owned non-live canonical lanes: 18/24 accepted/integrated, 75%
-- open PRs observed before this governance work: #122 and #123 dependency maintenance
+- accepted integration branch: `parallel/integration-staging`
+- accepted integration SHA: `0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f`
+- PR #125 merged at that SHA from certified source head `67ed5ea5c15f3052c647ac8584d74fbada7674fb`
+- Issue #82 refresh alert: comment #5764166102
+- current canonical customer module: P1-23 Customer Alert Rules, 20%
+- repository-owned non-live canonical lanes: 18/24 = 75%
 
-This milestone adds the durable Supervisor resume/source-of-truth protocol, one-turn/one-milestone rule, timeout/remote-call budget, Issue/PR hard gate, state-drift recovery, Runner Benchmark schema, compact-state limits, migration/supply-chain fail-closed rules, and mandatory repository/module/overall progress reporting.
+This bounded reconciliation milestone corrects post-merge metadata drift only:
+- `.ai/integration-baseline.yaml` generation and last-integration evidence
+- `.ai/runner-benchmark.yaml` terminal PASS evidence for PR #125
+- `README.md` accepted staging marker
+- compact Supervisor state/checkpoint/journal
 
-No live pyPSX, production PII, broker/provider, deployment, release, destructive migration, or real-money authority is granted.
+The branch registry is intentionally not mass-updated: active agent `accepted_baseline_sha` fields must continue to represent the baseline each agent actually consumed, not the latest broadcast baseline.
 
-PR #125 is open from `supervisor/20260921-governance-resume-v2` to `parallel/integration-staging`.
+No product module completion, production authority, live pyPSX/provider access, PII authority, deployment/release, destructive migration, or real-money authority is granted.
 
-Implementation commit before compact-state PR binding: `6144a980a47a8d2021ba5102782e87a13ac9987d`.
+PR #126 was closed unmerged after its exact-head .NET regression isolated stale PlatformVerifier PLAT-012 logic. The canonical `parallel/platform-ci` branch had no unique commits, was safely fast-forwarded to the #126 lineage, and now carries the ownership-correct repair.
 
-Exact next safe action: perform one consolidated exact-head CI/status refresh for PR #125. If checks or review are still pending, report that state and end this milestone without polling.
+PR #127 is open from `parallel/platform-ci` to `parallel/integration-staging`.
 
+PLAT-012 now derives the README accepted staging baseline from `.ai/integration-baseline.yaml:last_verified_baseline_sha` instead of hardcoding historical SHA `ef1f9912cc2928771dee0d104a29dec0563c9323`.
 
-## 2026-09-21 — CI trigger repair milestone
-
-Root cause: PR #125 targets `parallel/integration-staging` from `supervisor/20260921-governance-resume-v2`, while accepted workflows only covered `parallel/**` pushes and `main`-targeted PRs. The ownership validator also skipped strict enforcement on non-`parallel/**` branches.
-
-Repair scope:
-- add `supervisor/**` push coverage to orchestration and .NET regression workflows;
-- add future `parallel/integration-staging` PR coverage;
-- include Supervisor governance/compact-state paths in workflow path filters;
-- enforce auxiliary Supervisor review branches as shared-governance-only and reject module `src/**` changes;
-- add ownership self-tests for allowed governance changes and forbidden module-source takeover.
-
-Status remains VERIFYING until exact-head CI evidence exists.
+Exact next safe action: perform one consolidated exact-head CI/status/review refresh for PR #127. If checks are pending or failing, report that state and end without polling.

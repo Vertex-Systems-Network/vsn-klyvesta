@@ -6,8 +6,8 @@ owner_role: platform-agent
 assigned_agent: ChatGPT-Platform-01
 start_status: ASSIGNED
 started_at: "2026-09-03T17:12:00Z"
-base_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
-accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323
+base_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
+accepted_baseline_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -39,7 +39,7 @@ shared_or_forbidden_paths:
   - contracts/**
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
-status: ACTIVE
+status: VERIFYING
 blockers: []
 acceptance_evidence:
   required:
@@ -49,6 +49,6 @@ acceptance_evidence:
     - platform-verifier
     - ownership-self-tests
     - concurrency-capacity
-instruction_drift_check: completed-p1-22-closeout-p1-23-activation-readme-sync-p1-26-capacity-2026-09-15
-submission_pr: null
+instruction_drift_check: refreshed-pr125-governance-baseline-and-plat012-canonical-baseline-2026-09-21
+submission_pr: 127
 integration_baseline_sha: null

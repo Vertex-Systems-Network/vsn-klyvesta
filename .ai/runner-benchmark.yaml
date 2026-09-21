@@ -27,4 +27,28 @@ task_schema:
     - status
     - terminal_evidence
 statuses: [REGISTERED, AUTHORIZED, RUNNING, PASS, FAIL, BLOCKED, CANCELLED, EXPIRED]
-tasks: []
+tasks:
+  - id: RB-125-ORCH-02
+    source: PR-125-ci-trigger-repair
+    command_or_workflow: agent-orchestration
+    exact_source_identity: 67ed5ea5c15f3052c647ac8584d74fbada7674fb
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-125 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: true
+    merge_blocking: true
+    expected_runner_time: "<= 8 minutes"
+    dedup_key: "PR125:67ed5ea5c15f3052c647ac8584d74fbada7674fb:agent-orchestration"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35627236438; exact-head orchestration PASS"
+  - id: RB-125-DOTNET-02
+    source: PR-125-ci-trigger-repair
+    command_or_workflow: dotnet-foundation
+    exact_source_identity: 67ed5ea5c15f3052c647ac8584d74fbada7674fb
+    environment_matrix_input_fixture: github-hosted-ubuntu / repository workflow / PR-125 head
+    authorization_state: REPOSITORY_POLICY_AUTOMATIC_CI
+    security_critical: false
+    merge_blocking: true
+    expected_runner_time: "<= 15 minutes"
+    dedup_key: "PR125:67ed5ea5c15f3052c647ac8584d74fbada7674fb:dotnet-foundation"
+    status: PASS
+    terminal_evidence: "GitHub Actions run 35627236477; restore/format/API graph/all verifier builds/all verifier runtimes PASS"

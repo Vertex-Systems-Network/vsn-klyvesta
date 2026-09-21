@@ -3,22 +3,22 @@ repository: Vertex-Systems-Network/vsn-klyvesta
 observed_main_sha: 2d390013fec84064f4ce1f150caba7839940e53d
 default_branch: main
 accepted_integration_branch: parallel/integration-staging
-accepted_integration_sha: 9f47063eaf3092c449dcafd423cf1ec2657d99d6
+accepted_integration_sha: 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 125
-active_branch: supervisor/20260921-governance-resume-v2
-current_milestone: repair Supervisor CI trigger and ownership enforcement for PR #125
+active_pr: 127
+active_branch: parallel/platform-ci
+current_milestone: repair stale PLAT-012 canonical-baseline invariant and complete post-PR-125 reconciliation
 milestone_status: VERIFYING
-last_completed_milestone: P1-22 Customer Dashboard control-plane closeout and P1-23 activation on accepted staging baseline
-exact_next_safe_action: perform one consolidated exact-head CI/status refresh on the repaired PR #125 head; if checks are running or pending, report pending and end the milestone
+last_completed_milestone: PR #125 governance protocol integrated into parallel/integration-staging at 0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #127; if checks are pending or failing, report that state and end the milestone without polling
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
   lifecycle: ACTIVE
   progress_percent: 20
   progress_bar: "██░░░░░░░░"
-  evidence_ref: README.md@9f47063eaf3092c449dcafd423cf1ec2657d99d6
+  evidence_ref: README.md@0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f
 overall_progress:
   scope: repository-owned non-live canonical lanes
   accepted_or_integrated: 18
@@ -29,7 +29,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "PR #125 exact-head CI pending after Supervisor trigger/ownership repair."
+  - "PR #127 exact-head CI is pending after the ownership-correct PLAT-012 verifier repair and reconciliation carry-forward."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -41,4 +41,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-21T21:24:35+05:00"
+last_reconciled_at: "2026-09-21T21:47:29+05:00"

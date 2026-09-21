@@ -24,3 +24,30 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Exact-head orchestration run RB-125-ORCH-01 failed in the ownership self-test because the configured generic `.ai/**` review path did not match nested `.ai/compact-state/CURRENT-STATE.yaml` under the current matcher.
 - Applied the minimum fail-closed repair by explicitly allowing `.ai/compact-state/**`; negative module-source takeover protection remains unchanged.
 - A new exact-head CI observation is required because the source head changed.
+
+## 2026-09-21 — PR #125 integration and control-plane reconciliation
+
+- PR #125 merged into `parallel/integration-staging` at `0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f` from certified source head `67ed5ea5c15f3052c647ac8584d74fbada7674fb`.
+- Required Issue #82 refresh alert published as comment #5764166102.
+- Post-merge reconciliation found stale integration-baseline, compact-state, README baseline marker, and machine-readable Runner Benchmark metadata.
+- Created `supervisor/20260921-control-plane-reconcile` from exact accepted staging SHA `0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f`.
+- Reconciled accepted-baseline generation to 8 and PR #125 integration evidence.
+- Persisted authoritative PR #125 Runner Benchmark tasks RB-125-ORCH-02 and RB-125-DOTNET-02 as PASS.
+- Synchronized README accepted staging marker while preserving P1-23 at 20% and overall repository-owned non-live progress at 75%.
+- Did not falsely advance active agent branch `accepted_baseline_sha` values before those agents consume the refresh.
+- Next action: open reconciliation PR, bind identity, transition VERIFYING, run one exact-head CI/status refresh.
+
+- Opened PR #126 from `supervisor/20260921-control-plane-reconcile` to `parallel/integration-staging`.
+- Bound active PR identity to #126 and transitioned reconciliation milestone from IMPLEMENTING to VERIFYING before exact-head CI observation.
+- Next action is one consolidated exact-head CI/status/review refresh; no tight polling is authorized.
+
+## 2026-09-21 — PLAT-012 ownership-correct repair
+
+- PR #126 exact-head .NET regression failed only at PlatformVerifier PLAT-012 because the verifier hardcoded historical accepted staging SHA `ef1f9912cc2928771dee0d104a29dec0563c9323`.
+- Confirmed `tools/Klyvesta.PlatformVerifier/**` is owned by canonical `parallel/platform-ci`.
+- Confirmed `parallel/platform-ci` had 0 unique commits and no open PR; safely fast-forwarded it without force to the #126 lineage.
+- Updated PLAT-012 to derive the expected README baseline from canonical `.ai/integration-baseline.yaml:last_verified_baseline_sha`.
+- Recorded platform consumed baseline `0fb9a3ab5c2d20b484dd9a2ec12f9249a2bf1f6f` in the platform work item and branch registry.
+- Opened ownership-correct PR #127 and closed #126 unmerged as superseded.
+- Transitioned platform work item to VERIFYING with submission PR #127.
+- Next action: one consolidated exact-head CI/status/review refresh for #127; no polling.
