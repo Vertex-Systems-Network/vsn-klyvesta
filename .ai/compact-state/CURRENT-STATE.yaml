@@ -9,19 +9,19 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 136
+active_pr: null
 active_branch: parallel/platform-ci
-current_milestone: close P1-24 canonical lifecycle and advance README progress to 20/24
-milestone_status: VERIFYING
-last_completed_milestone: PR #135 Customer Scenarios implementation integrated at 73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #136; if all authoritative gates pass and base remains fresh, persist MERGE-READY
+current_milestone: assign P1-25 Customer Security Center on the accepted P1-24-closeout baseline
+milestone_status: IMPLEMENTING
+last_completed_milestone: PR #136 P1-24 canonical closeout integrated at 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924
+exact_next_safe_action: open the P1-25 assignment PR, bind its exact head, and perform one consolidated exact-head CI/review refresh
 current_module:
-  work_item: P1-24
-  module: Customer Scenarios
-  lifecycle: INTEGRATED_CLOSEOUT_CANDIDATE
-  progress_percent: 100
-  progress_bar: "██████████"
-  evidence_ref: "PR #135 accepted merge 73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14; closeout candidate on parallel/platform-ci"
+  work_item: P1-25
+  module: Customer Security Center
+  lifecycle: ACTIVE_ASSIGNMENT_CANDIDATE
+  progress_percent: 20
+  progress_bar: "██░░░░░░░░"
+  evidence_ref: "branch refreshed non-force to 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924; identity-authorization ancestry verified"
 overall_progress:
   scope: repository-owned non-live canonical lanes
   accepted_or_integrated: 20
@@ -32,7 +32,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "P1-24 20/24 progress is a closeout candidate until the Platform closeout PR passes exact-head CI and merges."
+  - "P1-25 assignment is a candidate until the shared registry/work-item/README PR passes exact-head CI and merges."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -44,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-22T02:40:00+05:00"
+last_reconciled_at: "2026-09-22T02:50:00+05:00"
