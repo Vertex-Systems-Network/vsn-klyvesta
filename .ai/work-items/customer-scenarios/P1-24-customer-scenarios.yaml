@@ -3,8 +3,11 @@ module: customer-scenarios
 branch: parallel/customer-scenarios
 agent_slot: agent-customer-scenarios
 owner_role: module-agent
-base_sha: abd89374a8d339259a68252b5f44952f8a87e8e0
-accepted_baseline_sha: abd89374a8d339259a68252b5f44952f8a87e8e0
+assigned_agent: ChatGPT-CustomerScenarios-01
+start_status: ASSIGNED
+started_at: "2026-09-21T21:13:00Z"
+base_sha: 9ec5f70d4cd4a81a3d84d85d19b66b309976c077
+accepted_baseline_sha: 9ec5f70d4cd4a81a3d84d85d19b66b309976c077
 dependencies:
   - portfolio
   - risk
@@ -23,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: READY
+status: ACTIVE
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -34,6 +37,15 @@ acceptance_evidence:
     - no-advice-no-trading-authority
     - customer-scenarios-verifier
     - exact-head-ci
-instruction_drift_check: pending
+instruction_drift_check: completed-2026-09-22-assignment-baseline-refresh-no-contract-drift
 submission_pr: null
 integration_baseline_sha: null
+
+refresh_evidence:
+  coordination_issue: 82
+  coordination_comment: 5767611704
+  consumed_runtime_baseline_sha: 9ec5f70d4cd4a81a3d84d85d19b66b309976c077
+  non_force_ref_update: true
+  portfolio_dependency_ancestor_verified: true
+  risk_dependency_ancestor_verified: true
+  runtime_integration_baseline_ancestor_verified: true
