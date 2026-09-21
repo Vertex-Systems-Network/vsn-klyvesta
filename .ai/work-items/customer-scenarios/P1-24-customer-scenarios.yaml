@@ -4,7 +4,7 @@ branch: parallel/customer-scenarios
 agent_slot: agent-customer-scenarios
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerScenarios-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-21T21:13:00Z"
 base_sha: 0a914c15adb29788afca358ac901c635f3e88e02
 accepted_baseline_sha: 0a914c15adb29788afca358ac901c635f3e88e02
@@ -26,7 +26,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -43,11 +43,10 @@ acceptance_evidence:
     - risk-context-boundary
     - no-advice-no-trading-authority
     - customer-scenarios-verifier
-  pending:
     - exact-head-ci
-instruction_drift_check: completed-2026-09-22-p1-24-implementation-no-contract-drift
+instruction_drift_check: completed-2026-09-22-pr135-integrated-closeout
 submission_pr: 135
-integration_baseline_sha: null
+integration_baseline_sha: 73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14
 
 refresh_evidence:
   coordination_issue: 82
@@ -68,3 +67,12 @@ implementation_evidence:
   risk_dependency_ancestor_verified: true
   product_authority: informational-only
   production_authority: false
+
+integration_acceptance_evidence:
+  accepted_pr: 135
+  certified_head_sha: 9dbd68373f955832df73b3e9b9db361ee14dd388
+  integration_sha: 73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14
+  orchestration_run: 35657274391
+  dotnet_run: 35657274496
+  customer_scenarios_verifier_cases: 33
+  coordination_comment: 5767842518
