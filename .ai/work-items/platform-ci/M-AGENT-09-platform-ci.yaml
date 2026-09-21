@@ -39,7 +39,7 @@ shared_or_forbidden_paths:
   - contracts/**
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
-status: ACTIVE
+status: VERIFYING
 blockers: []
 acceptance_evidence:
   required:
@@ -50,5 +50,5 @@ acceptance_evidence:
     - ownership-self-tests
     - concurrency-capacity
 instruction_drift_check: refreshed-2026-09-22-pr133-integrated-p124-assignment
-submission_pr: null
+submission_pr: 134
 integration_baseline_sha: 9ec5f70d4cd4a81a3d84d85d19b66b309976c077
