@@ -1,6 +1,6 @@
 # Last Checkpoint — P1-24 Customer Scenarios Assignment
 
-Status: IMPLEMENTING
+Status: VERIFYING
 
 Repository truth:
 - PR #133 P1-23 canonical closeout merged into `parallel/integration-staging` at `9ec5f70d4cd4a81a3d84d85d19b66b309976c077`.
@@ -15,4 +15,4 @@ P1-24 assignment candidate:
 - README moves Customer Scenarios from 0% Ready to 20% Active while overall remains 19/24 = 79%;
 - no API/Infrastructure/migration/contracts/live/provider/trading authority is granted.
 
-Exact next safe action: open the ownership-correct assignment PR and perform one consolidated exact-head CI/review refresh.
+PR #134 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
