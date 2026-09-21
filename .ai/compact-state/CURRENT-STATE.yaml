@@ -9,30 +9,30 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 132
-active_branch: supervisor/20260922-readme-progress-sync
-current_milestone: persist mandatory README progress synchronization after PR #131 integration
+active_pr: 133
+active_branch: parallel/platform-ci
+current_milestone: close P1-23 canonical lifecycle and advance README progress to 19/24
 milestone_status: VERIFYING
-last_completed_milestone: PR #131 Customer Alert Rules integrated into parallel/integration-staging at d134b2839ff1af3b6867f11b3304779a29b14b0b
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #132; merge only if all authoritative gates are terminal PASS and base remains fresh
+last_completed_milestone: PR #132 README progress-sync protocol integrated into parallel/integration-staging at 0859921f0fa7902c0555725c757d9961a5bcd227
+exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #133; if all authoritative gates pass and base remains fresh, persist MERGE-READY
 current_module:
   work_item: P1-23
   module: Customer Alert Rules
-  lifecycle: ACTIVE_CLOSEOUT_PENDING
-  progress_percent: 20
-  progress_bar: "██░░░░░░░░"
-  evidence_ref: "PR #131 merged at d134b2839ff1af3b6867f11b3304779a29b14b0b; canonical lifecycle closeout pending"
+  lifecycle: INTEGRATED_CLOSEOUT_CANDIDATE
+  progress_percent: 100
+  progress_bar: "██████████"
+  evidence_ref: "PR #131 accepted merge d134b2839ff1af3b6867f11b3304779a29b14b0b; closeout candidate on parallel/platform-ci"
 overall_progress:
   scope: repository-owned non-live canonical lanes
-  accepted_or_integrated: 18
+  accepted_or_integrated: 19
   total: 24
-  progress_percent: 75
-  progress_bar: "███████░░░"
+  progress_percent: 79
+  progress_bar: "████████░░"
   live_production_status: BLOCKED
-pending_runner_ids: [RB-132-ORCH-01, RB-132-DOTNET-01]
+pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "P1-23 code is accepted, but registry/work-item/README canonical lifecycle closeout is still required before advancing to 19/24."
+  - "P1-23 19/24 progress is a closeout candidate until the Platform closeout PR passes exact-head CI and merges."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -44,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-22T01:00:00+05:00"
+last_reconciled_at: "2026-09-22T01:53:00+05:00"

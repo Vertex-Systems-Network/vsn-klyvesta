@@ -6,8 +6,8 @@ owner_role: platform-agent
 assigned_agent: ChatGPT-Platform-01
 start_status: ASSIGNED
 started_at: "2026-09-03T17:12:00Z"
-base_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
-accepted_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
+base_sha: 0859921f0fa7902c0555725c757d9961a5bcd227
+accepted_baseline_sha: 0859921f0fa7902c0555725c757d9961a5bcd227
 dependencies: []
 dependency_heads: {}
 allowed_paths:
@@ -49,6 +49,6 @@ acceptance_evidence:
     - platform-verifier
     - ownership-self-tests
     - concurrency-capacity
-instruction_drift_check: refreshed-pr129-integration-p123-registry-consumption-reconcile-2026-09-21
-submission_pr: 130
-integration_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77
+instruction_drift_check: refreshed-2026-09-22-pr132-readme-policy-p123-closeout
+submission_pr: 133
+integration_baseline_sha: 0859921f0fa7902c0555725c757d9961a5bcd227

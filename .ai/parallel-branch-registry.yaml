@@ -1,4 +1,4 @@
-version: 16
+version: 17
 created_by_role: supervisor
 created_from_ref: parallel/integration-staging
 created_from_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
@@ -37,7 +37,7 @@ branches:
   - {module: customer-planning, branch: parallel/customer-planning, agent_slot: agent-customer-planning, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: abd89374a8d339259a68252b5f44952f8a87e8e0, merge_order_group: 79}
   - {module: customer-activity, branch: parallel/customer-activity, agent_slot: agent-customer-activity, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80, merge_order_group: 79}
   - {module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: ef1f9912cc2928771dee0d104a29dec0563c9323, merge_order_group: 80}
-  - {module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerAlertRules-01, start_status: ASSIGNED, started_at: "2026-09-15T12:12:00Z", accepted_baseline_sha: 9b6bf02d70f0338fa2d6235f2d2f950a9e493f77, reason: api-independent-customer-scoped-alert-rule-configuration-without-dispatch-authority, merge_order_group: 81}
+  - {module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: d134b2839ff1af3b6867f11b3304779a29b14b0b, merge_order_group: 81}
   - {module: customer-scenarios, branch: parallel/customer-scenarios, agent_slot: agent-customer-scenarios, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: deterministic-paper-scenario-and-risk-view-without-advice-or-execution-authority, merge_order_group: 82}
   - {module: customer-security-center, branch: parallel/customer-security-center, agent_slot: agent-customer-security-center, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: read-only-customer-scoped-session-device-and-security-state-projection, merge_order_group: 83}
   - {module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: deterministic-customer-scoped-risk-visibility-without-advice-or-execution-authority, merge_order_group: 84}

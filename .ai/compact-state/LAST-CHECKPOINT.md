@@ -1,20 +1,18 @@
-# Last Checkpoint — README Progress Synchronization Contract
+# Last Checkpoint — P1-23 Canonical Lifecycle Closeout
 
 Status: VERIFYING
 
 Repository truth:
-- PR #131 Customer Alert Rules merged into `parallel/integration-staging` at `d134b2839ff1af3b6867f11b3304779a29b14b0b`.
-- exact-head orchestration and full .NET regression passed; dedicated Customer Alert Rules verifier passed 26/26.
-- Issue #82 accepted-baseline refresh was published as comment #5767254736.
-- P1-23 registry/work-item lifecycle still says ACTIVE, so canonical lane count remains 18/24 = 75% until the shared closeout is reviewed and accepted.
-- PR #132 now carries the mandatory README progress-sync protocol and immediate README status refresh.
+- PR #131 Customer Alert Rules was accepted into staging at `d134b2839ff1af3b6867f11b3304779a29b14b0b`.
+- exact-head orchestration and .NET regression passed; Customer Alert Rules verifier passed 26/26.
+- PR #132 README-progress synchronization protocol was accepted into staging at `0859921f0fa7902c0555725c757d9961a5bcd227`.
+- mandatory README progress-sync rule is now canonical.
 
-Mandatory rule introduced by PR #132:
-- every accepted integration updates README `Last status update`;
-- lifecycle/progress-changing closeouts update the overall lane count/progress bar and affected module rows in the same reviewed change;
-- accepted code with pending lifecycle closeout is reported explicitly and does not prematurely advance percentage;
-- delivery-changing milestones are not fully closed while README progress is stale.
+Closeout candidate:
+- registry version 17 marks P1-23 INTEGRATED with exact integrated SHA;
+- P1-23 work item is COMPLETE/INTEGRATED and exact-head CI is satisfied;
+- README moves P1-23 to 100% and overall repository-owned non-live progress to 19/24 = 79%;
+- PLAT-011 verifies both P1-22 and P1-23 integrated closeouts;
+- production/live authority remains blocked.
 
-No product source, migration/model snapshot, provider/pyPSX, deployment/release, PII, or real-money authority is changed.
-
-Exact next safe action: perform one consolidated exact-head CI/status/review refresh for PR #132. Merge only if all authoritative gates are PASS and the base remains current.
+PR #133 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.

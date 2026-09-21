@@ -16,13 +16,13 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-**Last status update:** `2026-09-22 — PR #131 Customer Alert Rules integrated at d134b2839ff1af3b6867f11b3304779a29b14b0b; P1-23 canonical lifecycle closeout/progress sync pending`
+**Last status update:** `2026-09-22 — P1-23 Customer Alert Rules canonically closed as INTEGRATED after PR #131; README progress-sync policy accepted via PR #132`
 
 Accepted integration branch: `parallel/integration-staging`
 
 Verified parent baseline: `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52` — this is the immutable parent for the current control-plane generation; the current accepted branch head is resolved at runtime and broadcast through Issue #82.
 
-**Repository-owned non-live product/verification lanes:** `███████░░░ 75%` — **18 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** PR #131 has merged the P1-23 implementation, but its canonical lifecycle closeout has not yet advanced the lane count; four additional lanes are READY, and Security Acceptance remains blocked by external production evidence.
+**Repository-owned non-live product/verification lanes:** `████████░░ 79%` — **19 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-23 Customer Alert Rules is integrated; Customer Scenarios, Customer Security Center, Customer Risk Center and Database Integration remain READY, while Security Acceptance remains blocked by external production evidence.
 
 **Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
 
@@ -58,7 +58,7 @@ The implementation foundation and non-live safety boundaries may be validated in
 | Customer Planning | `██████████ 100%` | P1-20 | Integrated — deterministic goal/contribution planning without advice authority |
 | Customer Activity | `██████████ 100%` | P1-21 | Integrated — sanitized customer-scoped order/ledger activity timeline |
 | Customer Dashboard | `██████████ 100%` | P1-22 | Integrated — deterministic read-only paper/informational composition |
-| Customer Alert Rules | `██░░░░░░░░ 20%` | P1-23 | Active — P1-23 assigned; customer-scoped rule configuration without dispatch authority |
+| Customer Alert Rules | `██████████ 100%` | P1-23 | Integrated — customer-scoped deterministic rule configuration/evaluation; no dispatch, live-market, trading or money-movement authority |
 | Customer Scenarios | `░░░░░░░░░░ 0%` | P1-24 | Ready — deterministic paper scenario/risk views without advice or execution authority |
 | Customer Security Center | `░░░░░░░░░░ 0%` | P1-25 | Ready — read-only customer-scoped session/device/security-state projection |
 | Customer Risk Center | `░░░░░░░░░░ 0%` | P1-26 | Ready — P1-26 deterministic customer-scoped risk visibility without advice/execution authority |
