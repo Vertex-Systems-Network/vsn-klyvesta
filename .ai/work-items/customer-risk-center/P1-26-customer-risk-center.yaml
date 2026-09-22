@@ -6,8 +6,8 @@ owner_role: module-agent
 assigned_agent: ChatGPT-CustomerRiskCenter-01
 start_status: ASSIGNED
 started_at: "2026-09-22T00:31:08Z"
-base_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b
-accepted_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b
+base_sha: fe25db8e75898876b3a02dc55fbc387400a48dc3
+accepted_baseline_sha: fe25db8e75898876b3a02dc55fbc387400a48dc3
 dependencies:
   - customer-data
   - portfolio
@@ -40,16 +40,35 @@ acceptance_evidence:
     - no-restricted-pii-output
     - customer-risk-center-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-22-assignment-baseline-refresh-no-contract-drift
+instruction_drift_check: completed-2026-09-22-p1-26-implementation-no-contract-drift
 submission_pr: null
 integration_baseline_sha: null
 
 refresh_evidence:
   coordination_issue: 82
-  coordination_comment: 5769545476
-  consumed_runtime_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b
+  coordination_comment: 5781812948
+  consumed_runtime_baseline_sha: fe25db8e75898876b3a02dc55fbc387400a48dc3
   non_force_ref_update: true
   customer_data_dependency_ancestor_verified: true
   portfolio_dependency_ancestor_verified: true
   risk_dependency_ancestor_verified: true
   runtime_integration_baseline_ancestor_verified: true
+
+implementation_evidence:
+  status: IMPLEMENTED
+  consumed_assignment_merge_sha: fe25db8e75898876b3a02dc55fbc387400a48dc3
+  domain_model: src/Klyvesta.Domain/RiskCenter/CustomerRiskCenterModels.cs
+  application_builder: src/Klyvesta.Application/RiskCenter/DeterministicCustomerRiskCenterBuilder.cs
+  verifier_project: tools/Klyvesta.CustomerRiskCenterVerifier/Klyvesta.CustomerRiskCenterVerifier.csproj
+  verifier_cases: 38
+  customer_scope_required: true
+  account_scope_required: true
+  risk_profile_age_bounded: true
+  risk_context_age_bounded: true
+  exact_decimal_exposure_summary: true
+  restricted_pii_output: forbidden
+  advice_authority: false
+  trading_authority: false
+  provider_authority: false
+  money_movement_authority: false
+  production_authority: false
