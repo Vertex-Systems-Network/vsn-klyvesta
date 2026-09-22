@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Klyvesta.CustomerSecurityCenterVerifier</RootNamespace>
+    <AssemblyName>Klyvesta.CustomerSecurityCenterVerifier</AssemblyName>
+    <Description>P1-25 customer-security-center acceptance verifier.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Klyvesta.Domain/Klyvesta.Domain.csproj" />
+    <ProjectReference Include="../../src/Klyvesta.Application/Klyvesta.Application.csproj" />
+  </ItemGroup>
+</Project>
