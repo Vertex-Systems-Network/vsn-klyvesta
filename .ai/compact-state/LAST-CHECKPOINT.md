@@ -16,4 +16,4 @@ Closeout candidate:
 - PLAT-011 and PLAT-012 verify the integrated P1-25 lifecycle and README truth;
 - production/live, provider, pyPSX, PII, trading and money-movement authority remain blocked.
 
-Exact next safe action: open the Platform closeout PR, bind its exact PR number on the source branch, then perform one consolidated exact-head CI/status/review refresh.
+PR #139 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.

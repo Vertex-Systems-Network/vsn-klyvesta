@@ -50,5 +50,5 @@ acceptance_evidence:
     - ownership-self-tests
     - concurrency-capacity
 instruction_drift_check: refreshed-2026-09-22-pr138-integrated-p125-closeout
-submission_pr: null
+submission_pr: 139
 integration_baseline_sha: 02c532252d3e67dc904c37254c0f13ff2d9c1a9f
