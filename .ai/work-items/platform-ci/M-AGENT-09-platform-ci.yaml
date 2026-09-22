@@ -50,5 +50,5 @@ acceptance_evidence:
     - ownership-self-tests
     - concurrency-capacity
 instruction_drift_check: refreshed-2026-09-22-pr139-integrated-p126-assignment
-submission_pr: null
+submission_pr: 140
 integration_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b

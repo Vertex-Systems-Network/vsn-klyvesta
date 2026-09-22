@@ -16,4 +16,4 @@ P1-26 assignment candidate:
 - implementation contract remains deterministic/customer-scoped and excludes restricted PII, advice, trading, provider and live authority;
 - PLAT-013 now verifies the ACTIVE assignment rather than the obsolete READY state.
 
-Exact next safe action: open the P1-26 assignment PR, bind its PR number, then perform one consolidated exact-head CI/status/review refresh.
+PR #140 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
