@@ -228,8 +228,8 @@ Check("PLAT-013", "P1-26 active assignment is durable and bounded", () =>
     Require(workItem.Contains("assigned_agent: ChatGPT-CustomerRiskCenter-01", StringComparison.Ordinal), "P1-26 assigned agent is missing");
     Require(workItem.Contains("start_status: ASSIGNED", StringComparison.Ordinal) && workItem.Contains("status: ACTIVE", StringComparison.Ordinal),
         "P1-26 work item must be durably assigned and active");
-    Require(workItem.Contains("accepted_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b", StringComparison.Ordinal),
-        "P1-26 accepted baseline must match the P1-25 closeout staging head");
+    Require(workItem.Contains("accepted_baseline_sha: fe25db8e75898876b3a02dc55fbc387400a48dc3", StringComparison.Ordinal),
+        "P1-26 accepted baseline must match the accepted P1-26 assignment staging head");
     Require(workItem.Contains("customer_data_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 customer-data ancestry evidence is missing");
     Require(workItem.Contains("portfolio_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 portfolio ancestry evidence is missing");
     Require(workItem.Contains("risk_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 risk ancestry evidence is missing");

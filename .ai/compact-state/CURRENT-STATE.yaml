@@ -9,19 +9,19 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 140
+active_pr: null
 active_branch: parallel/platform-ci
-current_milestone: assign P1-26 Customer Risk Center on the accepted P1-25-closeout baseline
-milestone_status: VERIFYING
-last_completed_milestone: PR #139 P1-25 canonical closeout integrated at 32fa999a69c93793c46dec525cef6f1ee23c746b
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #140; if all authoritative gates pass and base remains fresh, persist MERGE-READY
+current_milestone: reconcile stale PLAT-013 P1-26 assignment baseline assertion to unblock implementation PR #143
+milestone_status: IMPLEMENTING
+last_completed_milestone: PR #140 P1-26 Customer Risk Center assignment integrated at fe25db8e75898876b3a02dc55fbc387400a48dc3
+exact_next_safe_action: open the bounded Platform reconciliation PR, bind its identity, then perform one consolidated exact-head CI/status/review observation
 current_module:
   work_item: P1-26
   module: Customer Risk Center
-  lifecycle: ACTIVE_ASSIGNMENT_CANDIDATE
-  progress_percent: 20
-  progress_bar: "██░░░░░░░░"
-  evidence_ref: "branch refreshed non-force to 32fa999a69c93793c46dec525cef6f1ee23c746b; customer-data/portfolio/risk ancestry verified"
+  lifecycle: ACTIVE_IMPLEMENTATION_SUBMITTED
+  progress_percent: 80
+  progress_bar: "████████░░"
+  evidence_ref: "PR #143 head 4c9ab59cce39a9b8184a7f596608fbd13f8c88e5; dedicated verifier PASS 38/38; blocked only by stale PLAT-013 baseline assertion"
 overall_progress:
   scope: repository-owned non-live canonical lanes
   accepted_or_integrated: 21
@@ -32,7 +32,7 @@ overall_progress:
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "P1-26 assignment is a candidate until the shared registry/work-item/README PR passes exact-head CI and merges."
+  - "PR #143 implementation is blocked by stale PlatformVerifier PLAT-013 accepted-baseline expectation until this ownership-correct Platform reconciliation passes and merges."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -44,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-22T05:31:08+05:00"
+last_reconciled_at: "2026-09-23T01:57:00+05:00"

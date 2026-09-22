@@ -16,13 +16,13 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Current project status
 
-**Last status update:** `2026-09-22 — P1-25 canonical closeout accepted via PR #139; P1-26 Customer Risk Center assigned on refreshed staging baseline`
+**Last status update:** `2026-09-23 — P1-26 Customer Risk Center implementation PR #143 passes its 38-case module verifier; ownership-correct Platform baseline reconciliation is in progress; canonical progress remains 21/24`
 
 Accepted integration branch: `parallel/integration-staging`
 
 Verified parent baseline: `30de8c4c8daeff302cf1c669ef1d3b1a78f02c52` — this is the immutable parent for the current control-plane generation; the current accepted branch head is resolved at runtime and broadcast through Issue #82.
 
-**Repository-owned non-live product/verification lanes:** `█████████░ 88%` — **21 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-25 Customer Security Center is integrated; Customer Risk Center is ACTIVE, Database Integration remains READY, while Security Acceptance remains blocked by external production evidence.
+**Repository-owned non-live product/verification lanes:** `█████████░ 88%` — **21 of 24 canonical lanes are accepted/integrated on `parallel/integration-staging`.** P1-25 Customer Security Center is integrated; P1-26 Customer Risk Center implementation is submitted and module-verified but is not canonical until shared Platform verification and accepted integration complete; Database Integration remains READY; Security Acceptance remains blocked.nter is integrated; Customer Risk Center is ACTIVE, Database Integration remains READY, while Security Acceptance remains blocked by external production evidence.
 
 **Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
 
