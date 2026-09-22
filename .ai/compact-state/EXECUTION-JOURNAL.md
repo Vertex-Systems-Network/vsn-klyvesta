@@ -160,3 +160,14 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - README candidate advances Customer Security Center to 100% and overall non-live progress to 21/24 = 88%.
 - PLAT-011/PLAT-012 are updated to enforce P1-25 integrated lifecycle and README truth.
 - No live/provider/pyPSX/trading/money-movement/production-PII/deployment/migration authority is granted.
+
+## 2026-09-22 — P1-26 Customer Risk Center assignment candidate
+
+- PR #139 merged P1-25 canonical closeout into staging at `32fa999a69c93793c46dec525cef6f1ee23c746b`; canonical progress is 21/24 = 88%.
+- Issue #82 closeout refresh published as comment #5769545476.
+- Non-force fast-forwarded `parallel/platform-ci`, `parallel/customer-security-center`, and `parallel/customer-risk-center` to the accepted staging head.
+- Verified Customer Data, Portfolio, and Risk dependency heads are ancestors of the refreshed baseline.
+- Prepared registry version 22: P1-26 ACTIVE/OCCUPIED, assigned to ChatGPT-CustomerRiskCenter-01.
+- README candidate moves Customer Risk Center to 20% Active; overall remains 88% until integration.
+- PLAT-013 is retargeted from READY gating to the exact ACTIVE assignment baseline.
+- P1-26 excludes advice, trading, provider, restricted-PII and live authority.

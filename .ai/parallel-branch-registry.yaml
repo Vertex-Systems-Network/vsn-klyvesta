@@ -1,4 +1,4 @@
-version: 21
+version: 22
 created_by_role: supervisor
 created_from_ref: parallel/integration-staging
 created_from_sha: 549e8aff71cff0a1d6170c15028d1c6234685a80
@@ -40,7 +40,7 @@ branches:
   - {module: customer-alert-rules, branch: parallel/customer-alert-rules, agent_slot: agent-customer-alert-rules, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: d134b2839ff1af3b6867f11b3304779a29b14b0b, merge_order_group: 81}
   - {module: customer-scenarios, branch: parallel/customer-scenarios, agent_slot: agent-customer-scenarios, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14, merge_order_group: 82}
   - {module: customer-security-center, branch: parallel/customer-security-center, agent_slot: agent-customer-security-center, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 02c532252d3e67dc904c37254c0f13ff2d9c1a9f, merge_order_group: 83}
-  - {module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: READY, occupancy: OPEN, agent_name: null, start_status: AWAITING_AGENT, reason: deterministic-customer-scoped-risk-visibility-without-advice-or-execution-authority, merge_order_group: 84}
+  - {module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerRiskCenter-01, start_status: ASSIGNED, started_at: "2026-09-22T00:31:08Z", accepted_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b, reason: deterministic-customer-scoped-risk-visibility-without-advice-or-execution-authority, merge_order_group: 84}
   - {module: ledger, branch: parallel/ledger, agent_slot: agent-ledger, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: e18dc07e6f4af7afcaac2179ac0b5503ba8df8b6, merge_order_group: 10}
   - {module: identity-authorization, branch: parallel/identity-authorization, agent_slot: agent-identity-authorization, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f, merge_order_group: 10}
   - {module: notifications, branch: parallel/notifications, agent_slot: agent-notifications, status: INTEGRATED, occupancy: UNAVAILABLE, agent_name: null, start_status: COMPLETE, reason: accepted-into-integration-staging, integrated_sha: 7627c66d346bd68dcfe88839a7e35a86422825bc, merge_order_group: 10}
