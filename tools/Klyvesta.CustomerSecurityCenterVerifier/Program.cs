@@ -262,22 +262,7 @@ Check("SEC-031", "projection authority is strictly read only", () =>
 
 Check("SEC-032", "snapshot schema exposes no secret token principal or restricted pii fields", () =>
 {
-    var forbiddenFragments = new[]
-    {
-        "Token",
-        "Secret",
-        "Credential",
-        "Password",
-        "Email",
-        "Phone",
-        "Address",
-        "National",
-        "Cnic",
-        "PrincipalId",
-        "Roles",
-        "Scopes",
-        "StepUp",
-    };
+    var forbiddenFragments = CustomerSecurityCenterVerifierConstants.ForbiddenSnapshotFieldFragments;
     var names = typeof(CustomerSecurityCenterSnapshot).GetProperties()
         .Select(static property => property.Name)
         .ToArray();
@@ -293,7 +278,7 @@ Check("SEC-033", "projection does not leak principal identity roles or scopes th
 {
     var context = CreateContext(
         principalId: "sensitive-principal-reference",
-        scopes: new[] { "sensitive.scope" });
+        scopes: CustomerSecurityCenterVerifierConstants.SensitiveScopes);
     var result = projector.Project(CreateRequest(identityContext: context));
     Require(!result.Signals.Any(signal => signal.Contains("sensitive", StringComparison.OrdinalIgnoreCase)),
         "signals must not contain principal/scopes");
@@ -433,4 +418,26 @@ IdentitySecurityContext CreateContext(
         authenticationMethod,
         authenticationAssurance,
         StepUpGrant: null);
+}
+
+static class CustomerSecurityCenterVerifierConstants
+{
+    internal static readonly string[] ForbiddenSnapshotFieldFragments =
+    [
+        "Token",
+        "Secret",
+        "Credential",
+        "Password",
+        "Email",
+        "Phone",
+        "Address",
+        "National",
+        "Cnic",
+        "PrincipalId",
+        "Roles",
+        "Scopes",
+        "StepUp",
+    ];
+
+    internal static readonly string[] SensitiveScopes = ["sensitive.scope"];
 }
