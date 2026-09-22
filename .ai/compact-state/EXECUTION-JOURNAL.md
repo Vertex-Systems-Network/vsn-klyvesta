@@ -182,3 +182,13 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Refreshed Platform work-item and compact/README status to current #143 verification truth while keeping canonical progress at 21/24 = 88%.
 - Database Integration next-lane preflight identified one legitimate divergent historical audit commit that must be preserved during later reconciliation.
 - No main/live/provider/pyPSX/advice/trading/PII/money/deployment/migration authority granted.
+
+
+## 2026-09-23 — PLAT-013 semantic accepted-baseline repair
+
+- PR #144 exact-head orchestration passed.
+- .NET run `35785092254` passed formatting, API build and all verifier builds; module/product verifiers passed.
+- PlatformVerifier failed only because PLAT-013 hardcoded one P1-26 baseline SHA.
+- Replaced hardcoded equality with immutable-SHA + base/consumed-baseline consistency + ancestry-verification invariants.
+- Security/production authority checks were preserved unchanged.
+- New source head requires fresh exact-head CI; no stale run may authorize merge.
