@@ -29,8 +29,8 @@ cases = [
   ),
   Case.new(
     name: 'ready module rejects substantive implementation before assignment',
-    branch: 'parallel/customer-risk-center',
-    files: "src/Klyvesta.Application/RiskCenter/CustomerRiskCenterBuilder.cs\n",
+    branch: 'parallel/database-integration',
+    files: "src/Klyvesta.Infrastructure/Persistence/Migrations/AssignmentGateProbe.cs\n",
     expected_success: false
   ),
   Case.new(

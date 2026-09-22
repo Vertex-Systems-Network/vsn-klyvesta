@@ -207,33 +207,35 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
         "README customer-scenarios row must be integrated");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Security Center \\|.*Integrated —"),
         "README customer-security-center row must be integrated");
-    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Risk Center \\|.*Ready — P1-26"),
-        "README customer-risk-center row must be ready");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Risk Center \\|.*Active —"),
+        "README customer-risk-center row must reflect the active P1-26 assignment");
     Require(Regex.IsMatch(readme, "(?m)^\\| Database Integration \\|.*Ready —"),
         "README database-integration row must remain ready");
     Require(Regex.IsMatch(readme, "(?m)^\\| Security Acceptance \\|.*Blocked —"),
         "README security-acceptance row must remain blocked");
 });
 
-Check("PLAT-013", "P1-26 ready capacity lane is durable and assignment-gated", () =>
+Check("PLAT-013", "P1-26 active assignment is durable and bounded", () =>
 {
     var manifest = Read(".ai/agent-orchestration.yaml");
     var registry = Read(".ai/parallel-branch-registry.yaml");
     var workItem = Read(".ai/work-items/customer-risk-center/P1-26-customer-risk-center.yaml");
-    var ownershipValidator = Read("scripts/validate-agent-ownership.rb");
 
     Require(manifest.Contains("customer-risk-center:", StringComparison.Ordinal), "customer-risk-center orchestration module is missing");
     Require(manifest.Contains("canonical_branch: parallel/customer-risk-center", StringComparison.Ordinal), "customer-risk-center canonical branch is missing");
-    Require(registry.Contains("module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: READY, occupancy: OPEN", StringComparison.Ordinal),
-        "customer-risk-center must remain READY/OPEN before assignment");
-    Require(workItem.Contains("status: READY", StringComparison.Ordinal), "P1-26 work item must remain READY before assignment");
-    Require(workItem.Contains("accepted_baseline_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal),
-        "P1-26 accepted baseline must match current accepted staging");
+    Require(registry.Contains("module: customer-risk-center, branch: parallel/customer-risk-center, agent_slot: agent-customer-risk-center, status: ACTIVE, occupancy: OCCUPIED, agent_name: ChatGPT-CustomerRiskCenter-01", StringComparison.Ordinal),
+        "customer-risk-center must be ACTIVE/OCCUPIED by the assigned agent");
+    Require(workItem.Contains("assigned_agent: ChatGPT-CustomerRiskCenter-01", StringComparison.Ordinal), "P1-26 assigned agent is missing");
+    Require(workItem.Contains("start_status: ASSIGNED", StringComparison.Ordinal) && workItem.Contains("status: ACTIVE", StringComparison.Ordinal),
+        "P1-26 work item must be durably assigned and active");
+    Require(workItem.Contains("accepted_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b", StringComparison.Ordinal),
+        "P1-26 accepted baseline must match the P1-25 closeout staging head");
+    Require(workItem.Contains("customer_data_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 customer-data ancestry evidence is missing");
+    Require(workItem.Contains("portfolio_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 portfolio ancestry evidence is missing");
+    Require(workItem.Contains("risk_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 risk ancestry evidence is missing");
     Require(workItem.Contains("production_authority: false", StringComparison.Ordinal), "P1-26 must not claim production authority");
     Require(workItem.Contains("no-advice-no-trading-no-provider-authority", StringComparison.Ordinal),
         "P1-26 must retain the no-advice/no-trading/provider boundary");
-    Require(ownershipValidator.Contains("%w[BLOCKED READY RESERVED INTEGRATED].include?(status)", StringComparison.Ordinal),
-        "READY module branches must reject substantive implementation before assignment");
 });
 
 if (failures.Count > 0)
