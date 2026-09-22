@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Klyvesta.Domain.Customers;
 using Klyvesta.Domain.Portfolios;
 using Klyvesta.Domain.Risk;
@@ -301,7 +302,7 @@ public sealed class DeterministicCustomerRiskCenterBuilder : ICustomerRiskCenter
         return result;
     }
 
-    private static IReadOnlyList<string> BuildSignals(
+    private static ReadOnlyCollection<string> BuildSignals(
         decimal largestPositionFraction,
         decimal largestSectorFraction)
     {
