@@ -1,18 +1,19 @@
-# Last Checkpoint — P1-25 Customer Security Center Assignment
+# Last Checkpoint — P1-25 Canonical Lifecycle Closeout
 
 Status: VERIFYING
 
 Repository truth:
-- PR #136 P1-24 canonical closeout merged into `parallel/integration-staging` at `4d46d94c70e3aed9a6a66b94f7785a79bbbe3924`.
-- P1-24 is canonically INTEGRATED / COMPLETE; README overall progress is 20/24 = 83%.
-- Issue #82 refresh for the accepted closeout is comment #5767995307.
-- `parallel/customer-security-center` and `parallel/platform-ci` were non-force fast-forwarded to `4d46d94c70e3aed9a6a66b94f7785a79bbbe3924`.
-- Identity/authorization dependency `c8077cf13737034ae25a9a8a5bdb8d38c3bd2a2f` is an ancestor of the refreshed staging baseline.
+- PR #138 Customer Security Center was accepted into `parallel/integration-staging` at `02c532252d3e67dc904c37254c0f13ff2d9c1a9f`.
+- certified source head `22d04072e2af10e45c7e7f1c1400184c1deab365` passed exact-head agent-orchestration run `35670431368` and dotnet-foundation run `35670431395`.
+- Customer Security Center implementation includes a 35-case dedicated verifier and remains deterministic, read-only and non-live.
+- Issue #82 accepted-baseline refresh was published as comment #5769460346.
+- `parallel/customer-security-center` and `parallel/platform-ci` were non-force fast-forwarded to the accepted staging head.
 
-P1-25 assignment candidate:
-- registry version 20 marks customer-security-center ACTIVE/OCCUPIED and assigns ChatGPT-CustomerSecurityCenter-01;
-- P1-25 work item records exact accepted baseline and dependency ancestry;
-- README moves Customer Security Center from 0% Ready to 20% Active while overall remains 20/24 = 83%;
-- implementation contract is read-only/customer-scoped and excludes secrets, tokens, restricted PII, revocation/provider/live authority.
+Closeout candidate:
+- registry version 21 marks P1-25 INTEGRATED/COMPLETE with exact integrated SHA `02c532252d3e67dc904c37254c0f13ff2d9c1a9f`;
+- P1-25 work item becomes COMPLETE/INTEGRATED and exact-head CI moves to satisfied evidence;
+- README moves Customer Security Center to 100% and overall repository-owned non-live progress to 21/24 = 88%;
+- PLAT-011 and PLAT-012 verify the integrated P1-25 lifecycle and README truth;
+- production/live, provider, pyPSX, PII, trading and money-movement authority remain blocked.
 
-PR #137 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
+PR #139 is open from `parallel/platform-ci` to `parallel/integration-staging`. Exact next safe action: perform one consolidated exact-head CI/status/review refresh; if all authoritative gates pass and base remains fresh, persist MERGE-READY.
