@@ -41,7 +41,7 @@ acceptance_evidence:
     - customer-risk-center-verifier
     - exact-head-ci
 instruction_drift_check: completed-2026-09-22-p1-26-implementation-no-contract-drift
-submission_pr: null
+submission_pr: 143
 integration_baseline_sha: null
 
 refresh_evidence:
@@ -55,7 +55,7 @@ refresh_evidence:
   runtime_integration_baseline_ancestor_verified: true
 
 implementation_evidence:
-  status: IMPLEMENTED
+  status: IMPLEMENTED_SUBMITTED
   consumed_assignment_merge_sha: fe25db8e75898876b3a02dc55fbc387400a48dc3
   domain_model: src/Klyvesta.Domain/RiskCenter/CustomerRiskCenterModels.cs
   application_builder: src/Klyvesta.Application/RiskCenter/DeterministicCustomerRiskCenterBuilder.cs
