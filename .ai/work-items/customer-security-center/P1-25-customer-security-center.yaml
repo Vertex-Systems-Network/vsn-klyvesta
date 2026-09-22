@@ -4,7 +4,7 @@ branch: parallel/customer-security-center
 agent_slot: agent-customer-security-center
 owner_role: module-agent
 assigned_agent: ChatGPT-CustomerSecurityCenter-01
-start_status: ASSIGNED
+start_status: COMPLETE
 started_at: "2026-09-22T02:50:00+05:00"
 base_sha: 1530d3221524efe7584acf178f4a5486d4825405
 accepted_baseline_sha: 1530d3221524efe7584acf178f4a5486d4825405
@@ -24,7 +24,7 @@ shared_or_forbidden_paths:
   - '**/Migrations/**'
   - '**/*ModelSnapshot.cs'
   - contracts/**
-status: ACTIVE
+status: INTEGRATED
 blockers: []
 production_authority: false
 acceptance_evidence:
@@ -36,9 +36,17 @@ acceptance_evidence:
     - no-revocation-provider-or-live-authority
     - customer-security-center-verifier
     - exact-head-ci
-instruction_drift_check: completed-2026-09-22-p1-25-implementation-no-contract-drift
+  satisfied:
+    - deterministic-read-only-security-center-projection
+    - customer-session-and-device-scope-validation
+    - identity-security-state-authority-propagation
+    - no-secret-token-or-restricted-pii-output
+    - no-revocation-provider-or-live-authority
+    - customer-security-center-verifier
+    - exact-head-ci
+instruction_drift_check: completed-2026-09-22-pr138-integrated-closeout
 submission_pr: 138
-integration_baseline_sha: null
+integration_baseline_sha: 02c532252d3e67dc904c37254c0f13ff2d9c1a9f
 
 refresh_evidence:
   coordination_issue: 82
@@ -64,3 +72,12 @@ implementation_evidence:
   trading_authority: false
   money_movement_authority: false
   production_authority: false
+
+integration_acceptance_evidence:
+  accepted_pr: 138
+  certified_head_sha: 22d04072e2af10e45c7e7f1c1400184c1deab365
+  integration_sha: 02c532252d3e67dc904c37254c0f13ff2d9c1a9f
+  orchestration_run: 35670431368
+  dotnet_run: 35670431395
+  customer_security_center_verifier_cases: 35
+  coordination_comment: 5769460346

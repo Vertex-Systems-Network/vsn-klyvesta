@@ -149,3 +149,14 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - Prepared registry version 20: P1-25 ACTIVE/OCCUPIED, assigned to ChatGPT-CustomerSecurityCenter-01.
 - README candidate moves Customer Security Center to 20% Active; overall remains 83% until integration.
 - P1-25 is read-only and excludes secret/token/restricted-PII output plus revocation/provider/live authority.
+
+## 2026-09-22 — P1-25 canonical lifecycle closeout candidate
+
+- PR #138 Customer Security Center merged into staging at `02c532252d3e67dc904c37254c0f13ff2d9c1a9f`.
+- Exact-head agent-orchestration run `35670431368` and dotnet-foundation run `35670431395` passed after verifier-only CA1861 repair `22d04072e2af10e45c7e7f1c1400184c1deab365`.
+- Issue #82 accepted-baseline refresh published as comment #5769460346.
+- Registry version advances to 21 and P1-25 moves to INTEGRATED/COMPLETE with exact integrated SHA.
+- P1-25 exact-head CI evidence is satisfied; dedicated verifier covers 35 fail-closed cases.
+- README candidate advances Customer Security Center to 100% and overall non-live progress to 21/24 = 88%.
+- PLAT-011/PLAT-012 are updated to enforce P1-25 integrated lifecycle and README truth.
+- No live/provider/pyPSX/trading/money-movement/production-PII/deployment/migration authority is granted.

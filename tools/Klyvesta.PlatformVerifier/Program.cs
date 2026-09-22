@@ -134,12 +134,13 @@ Check("PLAT-010", "no-slot and refresh safety signals are preserved", () =>
         "refresh safety alert drifted");
 });
 
-Check("PLAT-011", "P1-22 through P1-24 customer-lane closeouts are durable", () =>
+Check("PLAT-011", "P1-22 through P1-25 customer-lane closeouts are durable", () =>
 {
     var registry = Read(".ai/parallel-branch-registry.yaml");
     var dashboard = Read(".ai/work-items/customer-dashboard/P1-22-customer-dashboard.yaml");
     var alerts = Read(".ai/work-items/customer-alert-rules/P1-23-customer-alert-rules.yaml");
     var scenarios = Read(".ai/work-items/customer-scenarios/P1-24-customer-scenarios.yaml");
+    var securityCenter = Read(".ai/work-items/customer-security-center/P1-25-customer-security-center.yaml");
 
     Require(registry.Contains("module: customer-dashboard, branch: parallel/customer-dashboard, agent_slot: agent-customer-dashboard, status: INTEGRATED", StringComparison.Ordinal), "customer-dashboard must be integrated in the registry");
     Require(registry.Contains("integrated_sha: ef1f9912cc2928771dee0d104a29dec0563c9323", StringComparison.Ordinal), "customer-dashboard integration SHA must match the accepted merge");
@@ -159,6 +160,13 @@ Check("PLAT-011", "P1-22 through P1-24 customer-lane closeouts are durable", () 
     Require(scenarios.Contains("integration_baseline_sha: 73bc0b9deaf2fbf1bb44d0c1ee17d1f97d59cc14", StringComparison.Ordinal), "P1-24 integration baseline must match PR #135 accepted staging");
     Require(scenarios.Contains("- exact-head-ci", StringComparison.Ordinal), "P1-24 exact-head CI acceptance evidence must be satisfied");
     Require(scenarios.Contains("production_authority: false", StringComparison.Ordinal), "P1-24 must remain non-production after integration");
+
+    Require(registry.Contains("module: customer-security-center, branch: parallel/customer-security-center, agent_slot: agent-customer-security-center, status: INTEGRATED", StringComparison.Ordinal), "customer-security-center must be integrated in the registry");
+    Require(registry.Contains("integrated_sha: 02c532252d3e67dc904c37254c0f13ff2d9c1a9f", StringComparison.Ordinal), "customer-security-center integration SHA must match PR #138 accepted merge");
+    Require(securityCenter.Contains("start_status: COMPLETE", StringComparison.Ordinal) && securityCenter.Contains("status: INTEGRATED", StringComparison.Ordinal), "P1-25 work item must be durably complete and integrated");
+    Require(securityCenter.Contains("integration_baseline_sha: 02c532252d3e67dc904c37254c0f13ff2d9c1a9f", StringComparison.Ordinal), "P1-25 integration baseline must match accepted staging");
+    Require(securityCenter.Contains("- exact-head-ci", StringComparison.Ordinal), "P1-25 exact-head CI acceptance evidence must be satisfied");
+    Require(securityCenter.Contains("production_authority: false", StringComparison.Ordinal), "P1-25 must remain non-production after integration");
 });
 
 Check("PLAT-012", "README module delivery table tracks canonical lifecycle state", () =>
@@ -189,7 +197,7 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
         $"README accepted integration branch is stale; expected {acceptedBranch}");
     Require(readme.Contains($"Verified parent baseline: `{verifiedParentSha}`", StringComparison.Ordinal),
         $"README verified parent baseline is stale; expected {verifiedParentSha}");
-    Require(readme.Contains("20 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
+    Require(readme.Contains("21 of 24 canonical lanes are accepted/integrated", StringComparison.Ordinal),
         "README accepted-lane summary is stale");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Dashboard \\|.*Integrated —"),
         "README customer-dashboard row must be integrated");
@@ -197,6 +205,8 @@ Check("PLAT-012", "README module delivery table tracks canonical lifecycle state
         "README customer-alert-rules row must be integrated");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Scenarios \\|.*Integrated —"),
         "README customer-scenarios row must be integrated");
+    Require(Regex.IsMatch(readme, "(?m)^\\| Customer Security Center \\|.*Integrated —"),
+        "README customer-security-center row must be integrated");
     Require(Regex.IsMatch(readme, "(?m)^\\| Customer Risk Center \\|.*Ready — P1-26"),
         "README customer-risk-center row must be ready");
     Require(Regex.IsMatch(readme, "(?m)^\\| Database Integration \\|.*Ready —"),

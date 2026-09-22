@@ -9,30 +9,30 @@ durable_current_head_surface: "issue:82"
 persisted_current_head_required: false
 active_issue: 1
 related_issues: [82, 20, 8]
-active_pr: 137
+active_pr: null
 active_branch: parallel/platform-ci
-current_milestone: assign P1-25 Customer Security Center on the accepted P1-24-closeout baseline
+current_milestone: close P1-25 canonical lifecycle and advance README progress to 21/24
 milestone_status: VERIFYING
-last_completed_milestone: PR #136 P1-24 canonical closeout integrated at 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924
-exact_next_safe_action: perform one consolidated exact-head CI/status/review refresh for PR #137; if all authoritative gates pass and base remains fresh, persist MERGE-READY
+last_completed_milestone: PR #138 Customer Security Center implementation integrated at 02c532252d3e67dc904c37254c0f13ff2d9c1a9f
+exact_next_safe_action: open the Platform P1-25 canonical closeout PR, bind its PR number, then perform one consolidated exact-head CI/status/review refresh
 current_module:
   work_item: P1-25
   module: Customer Security Center
-  lifecycle: ACTIVE_ASSIGNMENT_CANDIDATE
-  progress_percent: 20
-  progress_bar: "██░░░░░░░░"
-  evidence_ref: "branch refreshed non-force to 4d46d94c70e3aed9a6a66b94f7785a79bbbe3924; identity-authorization ancestry verified"
+  lifecycle: INTEGRATED_CLOSEOUT_CANDIDATE
+  progress_percent: 100
+  progress_bar: "██████████"
+  evidence_ref: "PR #138 accepted merge 02c532252d3e67dc904c37254c0f13ff2d9c1a9f; closeout candidate on parallel/platform-ci"
 overall_progress:
   scope: repository-owned non-live canonical lanes
-  accepted_or_integrated: 20
+  accepted_or_integrated: 21
   total: 24
-  progress_percent: 83
-  progress_bar: "████████░░"
+  progress_percent: 88
+  progress_bar: "█████████░"
   live_production_status: BLOCKED
 pending_runner_ids: []
 blocked_runner_ids: []
 current_blockers:
-  - "P1-25 assignment is a candidate until the shared registry/work-item/README PR passes exact-head CI and merges."
+  - "P1-25 21/24 progress is a closeout candidate until the Platform closeout PR passes exact-head CI and merges."
   - "Issue #1: main branch protection/ruleset is not enabled; main promotion remains blocked."
   - "Live/real-money production remains separately blocked by pyPSX/provider/regulatory/privacy/runtime acceptance gates."
 timeout_control:
@@ -44,4 +44,4 @@ compact_state_limits:
   current_state_max_kib: 12
   last_checkpoint_max_kib: 16
   execution_journal_max_kib: 32
-last_reconciled_at: "2026-09-22T02:50:00+05:00"
+last_reconciled_at: "2026-09-22T05:04:00+05:00"
