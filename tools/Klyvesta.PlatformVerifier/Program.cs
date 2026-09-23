@@ -228,8 +228,18 @@ Check("PLAT-013", "P1-26 active assignment is durable and bounded", () =>
     Require(workItem.Contains("assigned_agent: ChatGPT-CustomerRiskCenter-01", StringComparison.Ordinal), "P1-26 assigned agent is missing");
     Require(workItem.Contains("start_status: ASSIGNED", StringComparison.Ordinal) && workItem.Contains("status: ACTIVE", StringComparison.Ordinal),
         "P1-26 work item must be durably assigned and active");
-    Require(workItem.Contains("accepted_baseline_sha: 32fa999a69c93793c46dec525cef6f1ee23c746b", StringComparison.Ordinal),
-        "P1-26 accepted baseline must match the P1-25 closeout staging head");
+    var acceptedBaselineMatch = Regex.Match(
+        workItem,
+        "(?m)^accepted_baseline_sha:\\s*([0-9a-f]{40})\\s*$");
+    Require(acceptedBaselineMatch.Success,
+        "P1-26 accepted baseline must be one full immutable SHA");
+    var acceptedBaseline = acceptedBaselineMatch.Groups[1].Value;
+    Require(workItem.Contains($"base_sha: {acceptedBaseline}", StringComparison.Ordinal),
+        "P1-26 base SHA must match its accepted baseline consumption record");
+    Require(workItem.Contains($"consumed_runtime_baseline_sha: {acceptedBaseline}", StringComparison.Ordinal),
+        "P1-26 runtime-consumed baseline must match its accepted baseline record");
+    Require(workItem.Contains("runtime_integration_baseline_ancestor_verified: true", StringComparison.Ordinal),
+        "P1-26 runtime integration baseline ancestry must be verified");
     Require(workItem.Contains("customer_data_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 customer-data ancestry evidence is missing");
     Require(workItem.Contains("portfolio_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 portfolio ancestry evidence is missing");
     Require(workItem.Contains("risk_dependency_ancestor_verified: true", StringComparison.Ordinal), "P1-26 risk ancestry evidence is missing");

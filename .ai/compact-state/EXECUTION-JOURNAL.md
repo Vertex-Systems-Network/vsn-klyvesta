@@ -171,3 +171,24 @@ Rolling compact journal. Archive older detail before this file exceeds 32 KiB.
 - README candidate moves Customer Risk Center to 20% Active; overall remains 88% until integration.
 - PLAT-013 is retargeted from READY gating to the exact ACTIVE assignment baseline.
 - P1-26 excludes advice, trading, provider, restricted-PII and live authority.
+
+
+## 2026-09-23 — P1-26 Platform baseline reconciliation candidate
+
+- PR #143 Customer Risk Center exact-head build and dedicated verifier succeeded; Customer Risk Center verifier passed 38/38.
+- Full .NET run failed only at PlatformVerifier PLAT-013 because the shared verifier retained pre-assignment baseline `32fa999a69c93793c46dec525cef6f1ee23c746b`.
+- Confirmed `parallel/platform-ci` exactly matches accepted staging `fe25db8e75898876b3a02dc55fbc387400a48dc3`, so ownership-correct repair can proceed without branch divergence.
+- Updated PLAT-013 expected P1-26 accepted baseline to `fe25db8e75898876b3a02dc55fbc387400a48dc3`.
+- Refreshed Platform work-item and compact/README status to current #143 verification truth while keeping canonical progress at 21/24 = 88%.
+- Database Integration next-lane preflight identified one legitimate divergent historical audit commit that must be preserved during later reconciliation.
+- No main/live/provider/pyPSX/advice/trading/PII/money/deployment/migration authority granted.
+
+
+## 2026-09-23 — PLAT-013 semantic accepted-baseline repair
+
+- PR #144 exact-head orchestration passed.
+- .NET run `35785092254` passed formatting, API build and all verifier builds; module/product verifiers passed.
+- PlatformVerifier failed only because PLAT-013 hardcoded one P1-26 baseline SHA.
+- Replaced hardcoded equality with immutable-SHA + base/consumed-baseline consistency + ancestry-verification invariants.
+- Security/production authority checks were preserved unchanged.
+- New source head requires fresh exact-head CI; no stale run may authorize merge.
