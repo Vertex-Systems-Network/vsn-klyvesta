@@ -67,3 +67,10 @@ Every meaningful engineering session must end with:
 - exact next action
 
 If an important requirement remains unverified, report the work as PARTIALLY COMPLETE rather than DONE.
+
+
+## VSN organization next-action handoff
+
+Before every user-facing development handoff, read and follow `.ai/NEXT-ACTION-OPTIONS.md`.
+
+If the user sends only this repository's GitHub URL, perform the policy's read-only bootstrap and return shuffled numbered next-action options. A URL-only message never authorizes a repository mutation. A later numeric selection must revalidate live repository state before acting.
