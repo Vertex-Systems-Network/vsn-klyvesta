@@ -42,6 +42,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [ANPOS Batch 7 security/CI acceptance](docs/ANPOS_BATCH_7_SECURITY_CI_ACCEPTANCE_2026-09-30.md)
 - [ANPOS Batch 8 certification/go-no-go](docs/ANPOS_BATCH_8_CERTIFICATION_GO_NO_GO_2026-09-30.md)
 - [Security Acceptance evidence — `70%` `███████░░░`](docs/SECURITY_ACCEPTANCE_EVIDENCE_2026-09-30.md)
+- [Cross-batch truth evidence register](docs/CROSS_BATCH_TRUTH_EVIDENCE_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
@@ -53,13 +54,13 @@ This plan separates PyPSX work into independently verifiable batches. It does no
 | --- | --- | --- | --- |
 | 0. Evidence recovery | `██████████ 100%` | Repository state, governance, roadmap, issues, branches, CI and broker contracts baseline. | Complete — baseline recorded |
 | 1. Documentation reconciliation | `██████████ 100%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Complete — full endpoint reconciliation recorded |
-| 2. Partner and regulatory gate | `█████░░░░░ 50%` | Public API evidence, controlled sandbox order/fill/reconciliation, negative auth and non-provider evidence closure. | Repository-owned evidence indexed; provider defect and partner/legal gates blocked |
+| 2. Partner and regulatory gate | `█████░░░░░ 50%` | Public API evidence, controlled sandbox order/fill/reconciliation, negative auth and non-provider evidence closure. | Repository-owned evidence indexed in the [cross-batch truth register](docs/CROSS_BATCH_TRUTH_EVIDENCE_2026-09-30.md); provider defect and partner/legal gates blocked |
 | 3. Credential and environment boundary | `██████████ 100%` | Sandbox-only acceptance workflow, URL allowlist, secret masking and production fail-closed guard. | Complete — sandbox passed; production target failed closed as designed |
-| 4. Sandbox adapter | `█████░░░░░ 50%` | Sandbox-only adapter boundary, normalized read-only results and guarded HTTP/order client. | Read-only + order adapter merged; quotes, fees and streaming pending |
+| 4. Sandbox adapter | `█████░░░░░ 50%` | Sandbox-only adapter boundary, normalized read-only results and guarded HTTP/order client. | Implemented adapter slices and provider-independent guards evidenced; provider response certification pending |
 | 5. Reliability and reconciliation | `██████████ 100%` | Idempotency/replay boundary, stale-data guard, outage/retry policy and deterministic reconciliation comparison. | Complete — repository-owned non-live scope closed; provider-side semantics remain separately gated |
 | 6. Panel and operations workflow | `███████░░░ 70%` | Deny-by-default access matrix, sensitive-operation separation, two-person approval and audit requirements. | Repository-owned control package complete; hosted admin enforcement pending |
 | 7. Security and CI acceptance | `███████░░░ 70%` | CI/CodeQL/security evidence, promotion gates and secret-safe boundaries. | Repository-owned scope complete; GitHub admin/ruleset evidence pending |
-| 8. Sandbox certification and production decision | `█████░░░░░ 50%` | Certification package, fail-closed go/no-go and rollback decision framework. | Framework complete; sandbox/provider/legal evidence pending |
+| 8. Sandbox certification and production decision | `█████░░░░░ 50%` | Certification package, fail-closed go/no-go and rollback decision framework. | Framework and evidence register complete; final sandbox/provider/legal evidence pending |
 
 Implementation order is **0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8**. A blocked batch cannot be marked complete by documentation alone.
 
