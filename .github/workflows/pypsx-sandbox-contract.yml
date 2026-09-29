@@ -8,6 +8,11 @@ on:
         required: false
         default: false
         type: boolean
+      run_negative_tests:
+        description: "Verify auth and invalid-order error boundaries"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -102,7 +107,36 @@ jobs:
           test -s statement.json
           echo "Reconciliation reads completed with order status $ORDER_STATUS."
 
+      - name: Verify negative API boundaries
+        if: ${ inputs.run_negative_tests == true }
+        shell: bash
+        run: |
+          set +e
+          auth_status=$(curl --silent --show-error --output invalid-auth.json --write-out "%{http_code}" \
+            -H "PYPSX-ORG-API-KEY-ID: invalid-key-id" \
+            -H "PYPSX-ORG-API-SECRET-KEY: invalid-secret" \
+            "$BASE_URL/v1/partner-api/config")
+          test "$auth_status" = "401" || test "$auth_status" = "403" || {
+            echo "::error::Invalid-auth boundary returned HTTP $auth_status; expected 401 or 403."
+            exit 1
+          }
+          echo "Invalid-auth boundary returned expected HTTP $auth_status."
+
+          printf '{"sub_account_id":"%s","symbol":"OGDC","side":"BUY","quantity":0}\n' "$ACCOUNT_ID" > invalid-order-request.json
+          invalid_order_status=$(curl --silent --show-error --output invalid-order.json --write-out "%{http_code}" \
+            -X POST "$BASE_URL/v1/partner-api/orders" \
+            -H "Content-Type: application/json" \
+            -H "PYPSX-ORG-API-KEY-ID: $KEY_ID" \
+            -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET" \
+            --data-binary @invalid-order-request.json)
+          test "$invalid_order_status" -ge 400 || {
+            echo "::error::Invalid-order boundary returned HTTP $invalid_order_status; expected 4xx."
+            exit 1
+          }
+          echo "Invalid-order boundary returned expected HTTP $invalid_order_status."
+          set -e
+
       - name: Secret-safe cleanup
         if: always()
         run: |
-          rm -f config.json account-request.json account.json portfolio-before.json portfolio-after.json statement.json order-request.json order.json order-status.json cancel.json
+          rm -f config.json account-request.json account.json portfolio-before.json portfolio-after.json statement.json order-request.json order.json order-status.json cancel.json invalid-auth.json invalid-order-request.json invalid-order.json
