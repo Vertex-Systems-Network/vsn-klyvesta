@@ -23,6 +23,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Repository model](#repository-model)
 - [Engineering governance](#engineering-governance)
 - [Core planning documents](#core-planning-documents)
+- [UI/UX delivery batch plan](docs/UI_UX_DELIVERY_BATCH_PLAN_V1.md)
 - [Implementation foundation V1](#implementation-foundation-v1)
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
 - [ANPOS project adoption — `100%` `██████████`](#anpos-project-adoption)
