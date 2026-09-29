@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "defaultDecision": "deny",
+  "gates": [
+    {"id":"provider-contract","requiredFor":["live"],"status":"blocked","owner":"provider"},
+    {"id":"legal-regulatory","requiredFor":["live"],"status":"blocked","owner":"legal"},
+    {"id":"sandbox-evidence","requiredFor":["sandbox-certification"],"status":"pending","owner":"engineering"},
+    {"id":"security-ci","requiredFor":["merge"],"status":"enforced","owner":"repository"},
+    {"id":"two-person-approval","requiredFor":["production-promotion"],"status":"defined","owner":"operations"}
+  ]
+}
