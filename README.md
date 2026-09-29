@@ -80,14 +80,14 @@ Batch 2 evidence-gate status: `████░░░░░░ 40%` — official 
 
 ### Overall repository delivery
 
-- Repository-owned non-live engineering: `█████████░ 86%`
+- Repository-owned non-live engineering: `█████████░ 93%`
 - ANPOS/PyPSX batch program: `████░░░░░░ 44%` — 4 of 9 batches complete
 - Live/real-money production authority: `░░░░░░░░░░ 0%` — intentionally fail-closed
 
 
-**Last status update:** `2026-09-14 — demo UI preview added`
+**Last status update:** `2026-09-30 — module delivery audit and Database Integration acceptance reconciled`
 
-**Repository-owned non-live engineering:** `█████████░ 86%` — **12 of 14 canonical module lanes are accepted/integrated on `parallel/integration-staging`.**
+**Repository-owned non-live engineering:** `█████████░ 93%` — **13 of 14 canonical module lanes are accepted/integrated on `parallel/integration-staging`.**
 
 **Overall delivery status:** **NON-LIVE STAGING ACTIVE / LIVE PRODUCTION BLOCKED**
 
@@ -95,9 +95,10 @@ API-independent, **non-live engineering is active and integrated through `parall
 
 **Live/real-money pyPSX operation is not authorized.** Production brokerage remains fail-closed until direct pyPSX partner API/contract evidence, credentials and exact provider semantics are available; required legal/regulatory/provider approvals are complete; and repository governance permits production promotion.
 
-The two remaining repository-owned canonical module lanes are:
-- **Database Integration** — ready, not yet started/integrated.
+The remaining repository-owned canonical module lane is:
 - **Security Acceptance** — blocked pending production governance/provider/legal/runtime evidence.
+
+Database Integration is now technically accepted for the repository-owned non-live boundary; see the [module delivery audit](docs/MODULE_DELIVERY_AUDIT_2026-09-30.md).
 
 The first production acceptance gate remains regulatory + broker fit:
 - pyPSX Broker API production capabilities confirmed.
@@ -267,7 +268,7 @@ Database credentials, broker credentials and production secrets must be supplied
 | Observability | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — structured secret-safe boundary; production telemetry provider pending |
 | Performance & Resilience | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — deterministic acceptance contract; production SLO evidence pending |
 | Platform / CI | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — multi-agent ownership, verifier and CI control plane |
-| Database Integration | `░░░░░░░░░░ 0%` | — | — | Ready — canonical lane available, work not yet started/integrated |
+| Database Integration | `██████████ 100%` | 2026-08-25 | 2026-09-30 | Complete — PostgreSQL persistence, migrations, constraints, rollback/reapply and CI evidence accepted for non-live scope |
 | Security Acceptance | `░░░░░░░░░░ 0%` | — | — | Blocked — production governance/provider/legal/runtime evidence required |
 | pyPSX Live Integration | `░░░░░░░░░░ 0%` | — | — | External blocker — partner API/contract not yet available |
 
