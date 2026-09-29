@@ -108,7 +108,7 @@ jobs:
           echo "Reconciliation reads completed with order status $ORDER_STATUS."
 
       - name: Verify negative API boundaries
-        if: ${ inputs.run_negative_tests == true }
+        if: ${{ inputs.run_negative_tests == true }}
         shell: bash
         run: |
           set +e
