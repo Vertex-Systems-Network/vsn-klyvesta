@@ -16,7 +16,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Table of contents
 
-- [PyPSX integration batch plan — `33%` `███░░░░░░░`](#pypsx-integration-batch-plan)
+- [PyPSX integration batch plan — `44%` `████░░░░░░`](#pypsx-integration-batch-plan)
 - [Current project status — `86%` `█████████░`](#current-project-status)
 - [Demo UI preview](#demo-ui-preview--db--pypsx-bypass)
 - [Module delivery table](#module-delivery-table)
@@ -33,12 +33,16 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [ANPOS Batch 3 credential/environment boundary — `██████████ 100%`](docs/ANPOS_BATCH_3_CREDENTIAL_ENVIRONMENT_BOUNDARY_2026-09-30.md)
 - [ANPOS Batch 4 sandbox adapter — `█████░░░░░ 50%`](docs/ANPOS_BATCH_4_SANDBOX_ADAPTER_2026-09-30.md)
 - [ANPOS Batch 4 order adapter slice](docs/ANPOS_BATCH_4_ORDER_ADAPTER_SLICE_2026-09-30.md)
+- [ANPOS Batch 4 market-data adapter slice](docs/ANPOS_BATCH_4_MARKET_DATA_SLICE_2026-09-30.md)
+- [ANPOS Batch 4 fees adapter slice](docs/ANPOS_BATCH_4_FEES_ADAPTER_SLICE_2026-09-30.md)
+- [ANPOS Batch 4 provider-independent pending closure](docs/ANPOS_BATCH_4_PENDING_WORK_CLOSURE_2026-09-30.md)
+- [ANPOS Batch 5 reliability and reconciliation — `100%` `██████████`](docs/ANPOS_BATCH_5_RELIABILITY_RECONCILIATION_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
 This plan separates PyPSX work into independently verifiable batches. It does not authorize live trading, customer KYC, custody, funding, or production promotion. Every batch must preserve the repository's fail-closed non-live boundary.
 
-**Program progress:** `███░░░░░░░ 33%` — **3/9 batches complete**
+**Program progress:** `████░░░░░░ 44%` — **4/9 batches complete**
 
 | Batch | Progress | Scope | Status |
 | --- | --- | --- | --- |
@@ -47,7 +51,7 @@ This plan separates PyPSX work into independently verifiable batches. It does no
 | 2. Partner and regulatory gate | `████░░░░░░ 40%` | Public API evidence and controlled sandbox order/fill/reconciliation plus negative auth test. | Technical evidence recorded; invalid-order provider defect remains open — partner/legal gates blocked |
 | 3. Credential and environment boundary | `██████████ 100%` | Sandbox-only acceptance workflow, URL allowlist, secret masking and production fail-closed guard. | Complete — sandbox passed; production target failed closed as designed |
 | 4. Sandbox adapter | `█████░░░░░ 50%` | Sandbox-only adapter boundary, normalized read-only results and guarded HTTP/order client. | Read-only + order adapter merged; quotes, fees and streaming pending |
-| 5. Reliability and reconciliation | `░░░░░░░░░░ 0%` | Idempotency, replay, stale data, outage, retry and reconciliation tests. | Planned |
+| 5. Reliability and reconciliation | `██████████ 100%` | Idempotency/replay boundary, stale-data guard, outage/retry policy and deterministic reconciliation comparison. | Complete — repository-owned non-live scope closed; provider-side semantics remain separately gated |
 | 6. Panel and operations workflow | `░░░░░░░░░░ 0%` | Backend-only panel operations, access matrix and audit trail. | Planned |
 | 7. Security and CI acceptance | `░░░░░░░░░░ 0%` | Protected-main, review, security and promotion evidence. | Blocked — ruleset/admin evidence |
 | 8. Sandbox certification and production decision | `░░░░░░░░░░ 0%` | Sandbox certification and separate production go/no-go decision. | Planned |
@@ -66,14 +70,14 @@ See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/ma
 
 ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
-Batch 2 evidence-gate status: `████░░░░░░ 40%` — official public API evidence plus sandbox order/fill/reconciliation and invalid-auth evidence are recorded; invalid-order handling exposed a provider HTTP 500 defect; cancel execution, direct partner contract and legal/regulatory evidence remain pending. Batch 3 boundary implementation: `██████████ 100%` — sandbox acceptance passed and production-target fail-closed proof passed (expected guard failure). Batch 4 adapter: `█████░░░░░ 50%` — sandbox-only read + order adapter merged; provider-dependent market-data, fees and streaming remain unverified.
+Batch 2 evidence-gate status: `████░░░░░░ 40%` — official public API evidence plus sandbox order/fill/reconciliation and invalid-auth evidence are recorded; invalid-order handling exposed a provider HTTP 500 defect; cancel execution, direct partner contract and legal/regulatory evidence remain pending. Batch 3 boundary implementation: `██████████ 100%` — sandbox acceptance passed and production-target fail-closed proof passed (expected guard failure). Batch 4 adapter: `█████░░░░░ 50%` — sandbox-only read, order, market-data and fees adapters plus provider-independent stream/reliability guards merged; provider evidence remains unverified. Batch 5 reliability/reconciliation: `██████████ 100%` — repository-owned non-live scope complete; provider-side idempotency and settlement semantics remain unverified.
 
 ## Current project status
 
 ### Overall repository delivery
 
 - Repository-owned non-live engineering: `█████████░ 86%`
-- ANPOS/PyPSX batch program: `██░░░░░░░░ 22%` — 2 of 9 batches complete
+- ANPOS/PyPSX batch program: `████░░░░░░ 44%` — 4 of 9 batches complete
 - Live/real-money production authority: `░░░░░░░░░░ 0%` — intentionally fail-closed
 
 
