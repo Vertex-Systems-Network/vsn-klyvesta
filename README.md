@@ -41,7 +41,7 @@ This plan separates PyPSX work into independently verifiable batches. It does no
 | --- | --- | --- | --- |
 | 0. Evidence recovery | `██████████ 100%` | Repository state, governance, roadmap, issues, branches, CI and broker contracts baseline. | Complete — baseline recorded |
 | 1. Documentation reconciliation | `██████████ 100%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Complete — full endpoint reconciliation recorded |
-| 2. Partner and regulatory gate | `███░░░░░░░ 30%` | Public API evidence and controlled sandbox order/fill/reconciliation evidence. | Technical evidence recorded — partner/legal gates still blocked |
+| 2. Partner and regulatory gate | `████░░░░░░ 40%` | Public API evidence and controlled sandbox order/fill/reconciliation plus negative auth test. | Technical evidence recorded; invalid-order provider defect remains open — partner/legal gates blocked |
 | 3. Credential and environment boundary | `░░░░░░░░░░ 0%` | Sandbox/live separation and backend-only credential handling. | Planned |
 | 4. Sandbox adapter | `░░░░░░░░░░ 0%` | Approved sandbox accounts, quotes, fees, orders, fills and streaming. | Blocked — sandbox access |
 | 5. Reliability and reconciliation | `░░░░░░░░░░ 0%` | Idempotency, replay, stale data, outage, retry and reconciliation tests. | Planned |
@@ -63,7 +63,7 @@ See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/ma
 
 ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
-Batch 2 evidence-gate status: `███░░░░░░░ 30%` — official public API evidence plus sandbox order/fill/reconciliation evidence are recorded; cancel execution, direct partner contract and legal/regulatory evidence remain pending.
+Batch 2 evidence-gate status: `████░░░░░░ 40%` — official public API evidence plus sandbox order/fill/reconciliation and invalid-auth evidence are recorded; invalid-order handling exposed a provider HTTP 500 defect; cancel execution, direct partner contract and legal/regulatory evidence remain pending.
 
 ## Current project status
 
