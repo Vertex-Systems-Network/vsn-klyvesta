@@ -90,7 +90,11 @@ jobs:
         run: |
           curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/portfolio" > portfolio-after.json
           test -s portfolio-after.json
-          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/statement" > statement.json
+          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             TODAY=$(date -u +%F)
+          curl --fail-with-body --silent --show-error \
+            -H "PYPSX-ORG-API-KEY-ID: $KEY_ID" \
+            -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET" \
+            "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/statement?from=$TODAY&to=$TODAY" > statement.json
           test -s statement.json
           echo "Reconciliation reads completed for account $ACCOUNT_ID with order status $ORDER_STATUS."
 
