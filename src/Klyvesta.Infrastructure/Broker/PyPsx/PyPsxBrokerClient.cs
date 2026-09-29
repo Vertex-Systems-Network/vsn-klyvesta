@@ -241,8 +241,12 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
                     yield break;
                 }
             }
-            catch (HttpRequestException) when (attempt < maxReconnectAttempts)
+            catch (HttpRequestException)
             {
+                if (attempt >= maxReconnectAttempts)
+                {
+                    yield break;
+                }
             }
 
             var delay = TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempt)));
