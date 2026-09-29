@@ -24,6 +24,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Engineering governance](#engineering-governance)
 - [Core planning documents](#core-planning-documents)
 - [UI/UX delivery batch plan](docs/UI_UX_DELIVERY_BATCH_PLAN_V1.md)
+- [UI batch truth evidence audit](docs/UI_BATCH_TRUTH_EVIDENCE_AUDIT_2026-09-30.md)
 - [Implementation foundation V1](#implementation-foundation-v1)
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
 - [ANPOS project adoption — `100%` `██████████`](#anpos-project-adoption)
