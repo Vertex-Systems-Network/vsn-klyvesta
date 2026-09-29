@@ -43,7 +43,9 @@ These are public web documents checked on 2026-09-30. They are evidence of publi
 
 ## Executed sandbox evidence
 
-GitHub Actions run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36631970370
+GitHub Actions core run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36631970370
+
+GitHub Actions order run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36632255774
 
 Result: **SUCCESS** on 2026-09-29.
 
@@ -101,4 +103,4 @@ Issue #20 remains open because public documentation cannot satisfy the direct pa
 - `C`: current partner contract/authoritative response — none recorded.
 - `L`: legal/regulatory confirmation — none recorded.
 
-Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio passed; order/fill/cancel/reconciliation T = pending; C = 0; L = 0.**
+Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio passed; order submission T = passed; fill/cancel/reconciliation T = pending; C = 0; L = 0.**
