@@ -25,6 +25,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Core planning documents](#core-planning-documents)
 - [Implementation foundation V1](#implementation-foundation-v1)
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
+- [ANPOS project adoption](#anpos-project-adoption)
 
 ## PyPSX integration batch plan
 
@@ -43,6 +44,18 @@ This plan separates PyPSX work into independently verifiable batches. It does no
 | 8. Sandbox certification and production decision | Certify the sandbox integration and produce a separate production go/no-go decision. | Certification packet; production remains blocked unless legal, provider and runtime gates are closed. | Batches 2–7 | Planned |
 
 Implementation order is **0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8**. A blocked batch cannot be marked complete by documentation alone, and API documentation alone cannot be treated as legal, licensing, custody, production-access or commercial approval evidence.
+
+## ANPOS project adoption
+
+This repository adopts the **AI Native Project Operating System (ANPOS) 1.4.0** as a project-local engineering and governance protocol. The adoption aligns AI work around evidence-first planning, role-aware context routing, protected control-plane paths, traceability, security review and explicit release gates.
+
+This is a child-project adoption of the canonical blueprint. It does **not** copy or activate the blueprint's commercial service, Marketplace assets, live PM mappings, external AI pools, credentials, GitHub Rules or canonical-source-only workflows.
+
+Project-specific behavior remains governed by `AI-PLAN.md`, `.ai/MASTER_ENGINEERING_PROMPT.md`, `.ai/state.json`, `.ai/guardrails.md`, `.ai/acceptance-gates.yaml`, accepted ADRs, contracts, tests and Git history.
+
+See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/manifest.json), [config/protocol/instance.json](config/protocol/instance.json) and [config/protocol/version.json](config/protocol/version.json).
+
+ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
 ## Current project status
 
