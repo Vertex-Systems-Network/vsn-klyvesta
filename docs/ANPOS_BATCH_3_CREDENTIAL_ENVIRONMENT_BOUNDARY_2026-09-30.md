@@ -2,7 +2,7 @@
 
 Date: 2026-09-30 (Asia/Karachi)
 Repository: `Vertex-Systems-Network/vsn-klyvesta`
-Status: **IMPLEMENTED — SANDBOX-ONLY ACCEPTANCE; PRODUCTION FAIL-CLOSED**
+Status: **SANDBOX ACCEPTANCE PASSED; PRODUCTION FAIL-CLOSED TEST PENDING**
 
 ## Scope
 
@@ -43,4 +43,4 @@ Production credentials, idempotency/retry/timeout, rate limits/SLA, KYC/CDC, leg
 5. Confirm the old key no longer authenticates.
 6. Store the dated evidence URL privately.
 
-The acceptance run URL must be added here after execution.
+Sandbox acceptance run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36636897470\n\nVerified steps: fail-closed guard, sandbox URL/health, masked credentials, production URL exclusion and cleanup all passed.\n\nA separate production-target run is still required to capture the expected failure as evidence.
