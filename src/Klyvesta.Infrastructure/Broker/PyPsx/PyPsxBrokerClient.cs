@@ -53,6 +53,102 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
         return SendAsync(HttpMethod.Post, "/v1/partner-api/orders", "SubmitOrder", authenticated: true, body, cancellationToken);
     }
 
+    public Task<PyPsxBrokerResult<JsonElement?>> GetQuoteAsync(
+        string symbol,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateSymbol(symbol);
+        return SendAsync(
+            HttpMethod.Get,
+            $"/v1/partner-api/market/quote/{Uri.EscapeDataString(symbol)}",
+            "GetQuote",
+            authenticated: true,
+            body: null,
+            cancellationToken);
+    }
+
+    public Task<PyPsxBrokerResult<JsonElement?>> GetQuotesAsync(
+        IEnumerable<string> symbols,
+        CancellationToken cancellationToken = default)
+    {
+        var normalizedSymbols = symbols
+            .Select(symbol => symbol?.Trim().ToUpperInvariant())
+            .Where(symbol => !string.IsNullOrWhiteSpace(symbol))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+
+        if (normalizedSymbols.Length == 0)
+        {
+            throw new ArgumentException("At least one symbol is required.", nameof(symbols));
+        }
+
+        return SendAsync(
+            HttpMethod.Get,
+            $"/v1/partner-api/market/quotes?symbols={Uri.EscapeDataString(string.Join(",", normalizedSymbols))}",
+            "GetQuotes",
+            authenticated: true,
+            body: null,
+            cancellationToken);
+    }
+
+    public Task<PyPsxBrokerResult<JsonElement?>> GetMarketDepthAsync(
+        string symbol,
+        int levels = 5,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateSymbol(symbol);
+        if (levels is < 1 or > 50)
+        {
+            throw new ArgumentOutOfRangeException(nameof(levels), "Depth levels must be between 1 and 50.");
+        }
+
+        return SendAsync(
+            HttpMethod.Get,
+            $"/v1/partner-api/market/depth/{Uri.EscapeDataString(symbol)}?levels={levels}",
+            "GetMarketDepth",
+            authenticated: true,
+            body: null,
+            cancellationToken);
+    }
+
+    public Task<PyPsxBrokerResult<JsonElement?>> GetKlinesAsync(
+        string symbol,
+        int limit = 30,
+        CancellationToken cancellationToken = default)
+    {
+        ValidateSymbol(symbol);
+        if (limit is < 1 or > 200)
+        {
+            throw new ArgumentOutOfRangeException(nameof(limit), "Kline limit must be between 1 and 200.");
+        }
+
+        return SendAsync(
+            HttpMethod.Get,
+            $"/v1/partner-api/market/klines/{Uri.EscapeDataString(symbol)}?limit={limit}",
+            "GetKlines",
+            authenticated: true,
+            body: null,
+            cancellationToken);
+    }
+
+    public Task<PyPsxBrokerResult<JsonElement?>> GetInstrumentsAsync(
+        CancellationToken cancellationToken = default)
+        => SendAsync(
+            HttpMethod.Get,
+            "/v1/partner-api/market/instruments",
+            "GetInstruments",
+            authenticated: true,
+            body: null,
+            cancellationToken);
+
+    private static void ValidateSymbol(string symbol)
+    {
+        if (string.IsNullOrWhiteSpace(symbol))
+        {
+            throw new ArgumentException("A market symbol is required.", nameof(symbol));
+        }
+    }
+
     public Task<PyPsxBrokerResult<JsonElement?>> GetOrderAsync(
         string orderId,
         CancellationToken cancellationToken = default)
