@@ -196,3 +196,22 @@ Safety:
 - hallucinated execution facts = 0
 - unversioned model decisions = 0
 - missing decision audit trail = 0
+
+
+## 12. UI/UX delivery plan
+
+The current demo UI is a non-live foundation, not the complete investor product. UI work follows the evidence-gated batch plan in `docs/UI_UX_DELIVERY_BATCH_PLAN_V1.md`.
+
+The UI must be:
+- beginner-first and calm rather than casino-like;
+- premium, clear and emotionally engaging without manipulative urgency;
+- explicit about synthetic/demo state, risk and data freshness;
+- accessible by keyboard, readable at high contrast and usable with reduced motion;
+- structured around investor journeys rather than one long dashboard;
+- unable to grant execution authority to AI or unlock live money movement.
+
+UI batch order:
+
+**UI-0 → UI-1 → UI-2 → UI-3 → UI-4 → UI-5 → UI-6 → UI-7**
+
+Each batch requires implementation, responsive and accessibility checks, empty/loading/error states, deterministic evidence, CI and README progress reconciliation. UI quality does not override P0 regulatory, provider, security or production gates.
