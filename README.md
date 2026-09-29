@@ -41,6 +41,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [ANPOS Batch 6 operations workflow](docs/ANPOS_BATCH_6_OPERATIONS_WORKFLOW_2026-09-30.md)
 - [ANPOS Batch 7 security/CI acceptance](docs/ANPOS_BATCH_7_SECURITY_CI_ACCEPTANCE_2026-09-30.md)
 - [ANPOS Batch 8 certification/go-no-go](docs/ANPOS_BATCH_8_CERTIFICATION_GO_NO_GO_2026-09-30.md)
+- [Security Acceptance evidence — `70%` `███████░░░`](docs/SECURITY_ACCEPTANCE_EVIDENCE_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
@@ -96,7 +97,7 @@ API-independent, **non-live engineering is active and integrated through `parall
 **Live/real-money pyPSX operation is not authorized.** Production brokerage remains fail-closed until direct pyPSX partner API/contract evidence, credentials and exact provider semantics are available; required legal/regulatory/provider approvals are complete; and repository governance permits production promotion.
 
 The remaining repository-owned canonical module lane is:
-- **Security Acceptance** — blocked pending production governance/provider/legal/runtime evidence.
+- **Security Acceptance — 70%** — repository-owned foundation evidenced; hosted ruleset, runtime, provider and legal gates pending. See the [security acceptance evidence matrix](docs/SECURITY_ACCEPTANCE_EVIDENCE_2026-09-30.md).
 
 Database Integration is now technically accepted for the repository-owned non-live boundary; see the [module delivery audit](docs/MODULE_DELIVERY_AUDIT_2026-09-30.md).
 
@@ -269,7 +270,7 @@ Database credentials, broker credentials and production secrets must be supplied
 | Performance & Resilience | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — deterministic acceptance contract; production SLO evidence pending |
 | Platform / CI | `██████████ 100%` | 2026-09-03 | 2026-09-14 | Integrated — multi-agent ownership, verifier and CI control plane |
 | Database Integration | `██████████ 100%` | 2026-08-25 | 2026-09-30 | Complete — PostgreSQL persistence, migrations, constraints, rollback/reapply and CI evidence accepted for non-live scope |
-| Security Acceptance | `░░░░░░░░░░ 0%` | — | — | Blocked — production governance/provider/legal/runtime evidence required |
+| Security Acceptance | `███████░░░ 70%` | 2026-09-30 | — | Repository-owned foundation evidenced; hosted ruleset, runtime, provider and legal gates pending |
 | pyPSX Live Integration | `░░░░░░░░░░ 0%` | — | — | External blocker — partner API/contract not yet available |
 
 ## Today’s close plan — 2026-09-14
