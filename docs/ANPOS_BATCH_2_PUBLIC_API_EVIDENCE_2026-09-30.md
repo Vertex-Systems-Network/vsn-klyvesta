@@ -37,7 +37,7 @@ These are public web documents checked on 2026-09-30. They are evidence of publi
 | Portfolio/reports | Official docs publish portfolio, statements and order-history surfaces. | **Publicly documented; financial integrity and settlement semantics unverified** |
 | Market data | Official docs publish Broker API market-data documentation and separate unauthenticated public data tooling. | **Publicly documented; source/licensing/redistribution rights unverified** |
 | Streaming | Official docs publish Broker API streaming documentation and the wider platform documents WebSocket/live-feed capabilities. | **Publicly documented; signing, replay, ordering and production rights unverified** |
-| Errors | Official docs publish structured HTTP/code error handling and an errors guide. | **Publicly documented; negative/rate-limit tests not run** |
+| Errors | Official docs publish structured HTTP/code error handling and an errors guide. | **Publicly documented; negative boundary workflow added, rate-limit test pending** |
 | KYC/account opening | Official docs publish an account-opening/KYC guide and describe CDC/Alpha Capital account flow in the Broker API overview. | **Publicly documented; legal responsibility and data-processing terms unverified** |
 | Live activation | Official docs say production order access is switched on per organisation and may return a disabled-order error until enabled. | **Publicly documented; Klyvesta production approval absent** |
 
@@ -58,7 +58,7 @@ Verified by the run:
 - the sandbox portfolio endpoint was read successfully;
 - secrets were supplied through GitHub Actions and were not printed.
 
-The manual order test executed successfully. The run verified authenticated order submission, lifecycle polling to `FILLED`, and portfolio/statement reconciliation with the required statement date window. A separate cancel execution was not claimed because the order filled before cancellation could be exercised.
+The manual order test executed successfully. The run verified authenticated order submission, lifecycle polling to `FILLED`, and portfolio/statement reconciliation with the required statement date window. A separate cancel execution was not claimed because the order filled before cancellation could be exercised. Negative tests are now available as an explicit workflow input: invalid credentials must return 401/403 and a zero-quantity order must return 4xx. Idempotency, timeout/retry and rate-limit behavior remain pending until the partner contract confirms the supported semantics.
 
 ## What public docs do not prove
 
@@ -103,4 +103,4 @@ Issue #20 remains open because public documentation cannot satisfy the direct pa
 - `C`: current partner contract/authoritative response — none recorded.
 - `L`: legal/regulatory confirmation — none recorded.
 
-Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio/order/fill/reconciliation passed; cancel execution = not evidenced; C = 0; L = 0.**
+Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio/order/fill/reconciliation passed; negative boundary workflow implemented but not yet executed; cancel execution/idempotency/timeout-retry/rate-limit = not evidenced; C = 0; L = 0.**
