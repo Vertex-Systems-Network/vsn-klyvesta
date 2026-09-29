@@ -98,3 +98,26 @@ Acceptance:
 6. limited customer cohort
 7. progressive rollout
 8. continuous drift/risk monitoring
+
+
+## Phase 1A — Lovable Investor UI
+
+The UI is delivered as evidence-gated batches and remains demo/paper-only until the existing regulatory, provider, security and production gates are accepted.
+
+- UI-0 — evidence audit and information architecture
+- UI-1 — design system and visual identity
+- UI-2 — onboarding, investor profile, risk and goals
+- UI-3 — investor home, portfolio, performance, risk and notifications
+- UI-4 — market discovery, instrument detail and paper trading
+- UI-5 — AI assistant and explainable recommendation experience
+- UI-6 — Guarded Auto controls and operations/risk surfaces
+- UI-7 — cross-device QA, accessibility and release certification
+
+Acceptance:
+- all required routes/screens have deterministic entry and exit states;
+- implementation, empty/loading/error states and responsive behavior are committed;
+- accessibility, reduced-motion and visual regression checks pass;
+- screenshots/browser evidence is attached;
+- no UI work unlocks live trading, KYC, custody, funding, withdrawals or production AI authority.
+
+Detailed plan: `docs/UI_UX_DELIVERY_BATCH_PLAN_V1.md`.
