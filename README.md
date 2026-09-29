@@ -30,7 +30,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [ANPOS Batch 1 reconciliation — `100%` `██████████`](docs/ANPOS_BATCH_1_PYPSX_RECONCILIATION_2026-09-30.md)
 - [ANPOS Batch 2 evidence gate — `0%` `░░░░░░░░░░`](docs/ANPOS_BATCH_2_PARTNER_REGULATORY_GATE_2026-09-30.md)
 - [ANPOS Batch 2 public API evidence — `D/T` sandbox evidence complete / `C-L` pending](docs/ANPOS_BATCH_2_PUBLIC_API_EVIDENCE_2026-09-30.md)
-- [ANPOS Batch 3 credential/environment boundary — `████░░░░░░ 40%`](docs/ANPOS_BATCH_3_CREDENTIAL_ENVIRONMENT_BOUNDARY_2026-09-30.md)
+- [ANPOS Batch 3 credential/environment boundary — `██████████ 100%`](docs/ANPOS_BATCH_3_CREDENTIAL_ENVIRONMENT_BOUNDARY_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
@@ -43,7 +43,7 @@ This plan separates PyPSX work into independently verifiable batches. It does no
 | 0. Evidence recovery | `██████████ 100%` | Repository state, governance, roadmap, issues, branches, CI and broker contracts baseline. | Complete — baseline recorded |
 | 1. Documentation reconciliation | `██████████ 100%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Complete — full endpoint reconciliation recorded |
 | 2. Partner and regulatory gate | `████░░░░░░ 40%` | Public API evidence and controlled sandbox order/fill/reconciliation plus negative auth test. | Technical evidence recorded; invalid-order provider defect remains open — partner/legal gates blocked |
-| 3. Credential and environment boundary | `███████░░░ 70%` | Sandbox-only acceptance workflow, URL allowlist, secret masking and production fail-closed guard. | Sandbox proof passed — production fail-closed proof pending |
+| 3. Credential and environment boundary | `██████████ 100%` | Sandbox-only acceptance workflow, URL allowlist, secret masking and production fail-closed guard. | Complete — sandbox passed; production target failed closed as designed |
 | 4. Sandbox adapter | `░░░░░░░░░░ 0%` | Approved sandbox accounts, quotes, fees, orders, fills and streaming. | Blocked — sandbox access |
 | 5. Reliability and reconciliation | `░░░░░░░░░░ 0%` | Idempotency, replay, stale data, outage, retry and reconciliation tests. | Planned |
 | 6. Panel and operations workflow | `░░░░░░░░░░ 0%` | Backend-only panel operations, access matrix and audit trail. | Planned |
@@ -64,7 +64,7 @@ See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/ma
 
 ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
-Batch 2 evidence-gate status: `████░░░░░░ 40%` — official public API evidence plus sandbox order/fill/reconciliation and invalid-auth evidence are recorded; invalid-order handling exposed a provider HTTP 500 defect; cancel execution, direct partner contract and legal/regulatory evidence remain pending. Batch 3 boundary implementation: `███████░░░ 70%` — sandbox acceptance run passed; production-target fail-closed proof remains pending.
+Batch 2 evidence-gate status: `████░░░░░░ 40%` — official public API evidence plus sandbox order/fill/reconciliation and invalid-auth evidence are recorded; invalid-order handling exposed a provider HTTP 500 defect; cancel execution, direct partner contract and legal/regulatory evidence remain pending. Batch 3 boundary implementation: `██████████ 100%` — sandbox acceptance passed and production-target fail-closed proof passed (expected guard failure).
 
 ## Current project status
 
