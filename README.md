@@ -63,7 +63,7 @@ See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/ma
 
 ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
-Batch 2 evidence-gate status: `░░░░░░░░░░ 0%` — official public API evidence and core sandbox test are recorded; order/fill/reconciliation, direct partner contract and legal/regulatory evidence remain pending.
+Batch 2 evidence-gate status: `░░░░░░░░░░ 0%` — official public API evidence, core sandbox test and sandbox order submission are recorded; fill/cancel/reconciliation, direct partner contract and legal/regulatory evidence remain pending.
 
 ## Current project status
 
