@@ -41,7 +41,7 @@ public static class PyPsxReconciliation
     }
 
     private static void AddIfOutsideTolerance(
-        ICollection<PyPsxReconciliationDifference> differences,
+        List<PyPsxReconciliationDifference> differences,
         string field,
         decimal expected,
         decimal actual,
