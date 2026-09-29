@@ -2,7 +2,7 @@
 
 Date: 2026-09-30 (Asia/Karachi)
 Repository: `Vertex-Systems-Network/vsn-klyvesta`
-Status: **SANDBOX ACCEPTANCE PASSED; PRODUCTION FAIL-CLOSED TEST PENDING**
+Status: **COMPLETE — SANDBOX ACCEPTANCE PASSED; PRODUCTION FAIL-CLOSED VERIFIED**
 
 ## Scope
 
@@ -43,4 +43,4 @@ Production credentials, idempotency/retry/timeout, rate limits/SLA, KYC/CDC, leg
 5. Confirm the old key no longer authenticates.
 6. Store the dated evidence URL privately.
 
-Sandbox acceptance run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36636897470\n\nVerified steps: fail-closed guard, sandbox URL/health, masked credentials, production URL exclusion and cleanup all passed.\n\nA separate production-target run is still required to capture the expected failure as evidence.
+Sandbox acceptance run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36636897470\n\nProduction fail-closed run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36637787747\n\nVerified steps: sandbox URL/health, masked credentials, production URL exclusion and cleanup all passed. The production-target run failed at the intentional guard with: `Production target is blocked until partner, legal and security acceptance gates are evidenced.` This failure is the expected positive security evidence.
