@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "protocol": "ANPOS",
+  "protocol_name": "AI Native Project Operating System",
+  "version": "1.4.0",
+  "compatibility": "1.x",
+  "upstream_repository": "Vertex-Systems-Network/ai-native-project-operating-system",
+  "adoption_mode": "project_local_child_adoption",
+  "last_reconciled": "2026-09-30",
+  "migration_rule": "Protocol upgrades must be reconciled against Klyvesta implementation, financial-safety gates and existing project state; never overwrite project architecture blindly."
+}
