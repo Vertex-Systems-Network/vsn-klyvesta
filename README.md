@@ -16,7 +16,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Table of contents
 
-- [PyPSX integration batch plan — `11%` `█░░░░░░░░░`](#pypsx-integration-batch-plan)
+- [PyPSX integration batch plan — `22%` `██░░░░░░░░`](#pypsx-integration-batch-plan)
 - [Current project status — `86%` `█████████░`](#current-project-status)
 - [Demo UI preview](#demo-ui-preview--db--pypsx-bypass)
 - [Module delivery table](#module-delivery-table)
@@ -27,18 +27,18 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
 - [ANPOS project adoption — `100%` `██████████`](#anpos-project-adoption)
 - [ANPOS Batch 0 baseline — `100%` `██████████`](docs/ANPOS_BATCH_0_BASELINE_2026-09-30.md)
-- [ANPOS Batch 1 reconciliation — `25%` `███░░░░░░░`](docs/ANPOS_BATCH_1_PYPSX_RECONCILIATION_2026-09-30.md)
+- [ANPOS Batch 1 reconciliation — `100%` `██████████`](docs/ANPOS_BATCH_1_PYPSX_RECONCILIATION_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
 This plan separates PyPSX work into independently verifiable batches. It does not authorize live trading, customer KYC, custody, funding, or production promotion. Every batch must preserve the repository's fail-closed non-live boundary.
 
-**Program progress:** `█░░░░░░░░░ 14%` — **Batch 0 complete; Batch 1 active**
+**Program progress:** `██░░░░░░░░ 22%` — **2/9 batches complete**
 
 | Batch | Progress | Scope | Status |
 | --- | --- | --- | --- |
 | 0. Evidence recovery | `██████████ 100%` | Repository state, governance, roadmap, issues, branches, CI and broker contracts baseline. | Complete — baseline recorded |
-| 1. Documentation reconciliation | `███░░░░░░░ 25%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Active — reconciliation matrix recorded |
+| 1. Documentation reconciliation | `██████████ 100%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Complete — full endpoint reconciliation recorded |
 | 2. Partner and regulatory gate | `░░░░░░░░░░ 0%` | Written answers on broker/licence, custody, KYC, funding, data rights, SLA and production approval. | Blocked — partner evidence |
 | 3. Credential and environment boundary | `░░░░░░░░░░ 0%` | Sandbox/live separation and backend-only credential handling. | Planned |
 | 4. Sandbox adapter | `░░░░░░░░░░ 0%` | Approved sandbox accounts, quotes, fees, orders, fills and streaming. | Blocked — sandbox access |
@@ -66,7 +66,7 @@ ANPOS adoption does not authorize live trading, customer KYC, custody, funding, 
 ### Overall repository delivery
 
 - Repository-owned non-live engineering: `█████████░ 86%`
-- ANPOS/PyPSX batch program: `█░░░░░░░░░ 14%` — Batch 0 complete; Batch 1 active
+- ANPOS/PyPSX batch program: `██░░░░░░░░ 22%` — 2 of 9 batches complete
 - Live/real-money production authority: `░░░░░░░░░░ 0%` — intentionally fail-closed
 
 
