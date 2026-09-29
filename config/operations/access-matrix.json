@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "defaultDecision": "deny",
+  "roles": {
+    "viewer": ["read:status", "read:evidence"],
+    "operator": ["read:status", "read:evidence", "run:sandbox-diagnostics"],
+    "reviewer": ["read:status", "read:evidence", "approve:non-production-evidence"],
+    "owner": ["read:status", "read:evidence", "run:sandbox-diagnostics", "approve:non-production-evidence", "approve:production-go-no-go"]
+  },
+  "sensitiveOperations": {
+    "submitOrder": "owner",
+    "cancelOrder": "owner",
+    "changeEnvironment": "owner",
+    "promoteProduction": "owner"
+  },
+  "requirements": {
+    "twoPersonApproval": ["promoteProduction", "changeEnvironment"],
+    "auditRequired": ["run:sandbox-diagnostics", "submitOrder", "cancelOrder", "changeEnvironment", "promoteProduction"],
+    "liveTrading": "disabled-until-explicit-production-gate"
+  }
+}
