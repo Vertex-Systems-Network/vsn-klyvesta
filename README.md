@@ -16,8 +16,8 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Table of contents
 
-- [PyPSX integration batch plan](#pypsx-integration-batch-plan)
-- [Current project status](#current-project-status)
+- [PyPSX integration batch plan — `11%` `█░░░░░░░░░`](#pypsx-integration-batch-plan)
+- [Current project status — `86%` `█████████░`](#current-project-status)
 - [Demo UI preview](#demo-ui-preview--db--pypsx-bypass)
 - [Module delivery table](#module-delivery-table)
 - [Repository model](#repository-model)
@@ -25,26 +25,28 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Core planning documents](#core-planning-documents)
 - [Implementation foundation V1](#implementation-foundation-v1)
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
-- [ANPOS project adoption](#anpos-project-adoption)
+- [ANPOS project adoption — `100%` `██████████`](#anpos-project-adoption)
 - [ANPOS Batch 0 baseline](docs/ANPOS_BATCH_0_BASELINE_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
 This plan separates PyPSX work into independently verifiable batches. It does not authorize live trading, customer KYC, custody, funding, or production promotion. Every batch must preserve the repository's fail-closed non-live boundary.
 
-| Batch | Scope | Exit evidence | Dependency | Status |
-| --- | --- | --- | --- | --- |
-| 0. Evidence recovery | Re-read repository state, governance, roadmap, issues, branches, CI and existing broker contracts. | Baseline report with immutable commit, open blockers and ownership map. | None | Planned |
-| 1. Documentation reconciliation | Map the PyPSX API documentation to `BROKER_ADAPTER_V1.md`, OpenAPI and capability matrix; record documented, tested, contractually confirmed and unknown claims. | Reconciliation matrix and sanitized evidence record; confidential raw docs excluded from the public repo. | Batch 0 | Planned |
-| 2. Partner and regulatory gate | Obtain written answers on broker/licence identity, custody, KYC, funding, withdrawals, market-data rights, SLA, fees, rate limits and production approval. | Signed/traceable partner responses and explicit P0 disposition. | Batches 0–1 | Blocked pending partner evidence |
-| 3. Credential and environment boundary | Define sandbox/live separation and backend-only handling for trading keys, portal JWT and CDC KYC credentials. | Secret/config contract, rotation rules, masked-log checks and no-credential repository scan. | Batches 0–2 | Planned |
-| 4. Sandbox adapter | Implement only the approved sandbox surface: accounts, portfolio, quotes, fees, orders, cancellation, partial fills and streaming through the existing broker contract. | Contract tests, sandbox smoke evidence and no real-money/production side effects. | Batches 1–3 | Blocked until sandbox access is confirmed |
-| 5. Reliability and reconciliation | Test idempotency, replay protection, duplicate orders, stale data, retries, timeouts, outages, partial fills and ledger reconciliation. | Deterministic test report with fail-closed behavior. | Batch 4 | Planned |
-| 6. Panel and operations workflow | Document and integrate only the required backend operational use of the PyPSX panel; keep secrets and management JWT out of clients. | Operator runbook, access matrix and audit trail. | Batches 2–4 | Planned |
-| 7. Security and CI acceptance | Enforce protected-main/review gates, secret scanning, security checks and evidence-based promotion controls. | Required checks and branch/ruleset read-back at the target commit. | Batches 0–6 | Planned |
-| 8. Sandbox certification and production decision | Certify the sandbox integration and produce a separate production go/no-go decision. | Certification packet; production remains blocked unless legal, provider and runtime gates are closed. | Batches 2–7 | Planned |
+**Program progress:** `█░░░░░░░░░ 11%` — **1/9 batches complete**
 
-Implementation order is **0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8**. A blocked batch cannot be marked complete by documentation alone, and API documentation alone cannot be treated as legal, licensing, custody, production-access or commercial approval evidence.
+| Batch | Progress | Scope | Status |
+| --- | --- | --- | --- |
+| 0. Evidence recovery | `██████████ 100%` | Repository state, governance, roadmap, issues, branches, CI and broker contracts baseline. | Complete — baseline recorded |
+| 1. Documentation reconciliation | `░░░░░░░░░░ 0%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Active |
+| 2. Partner and regulatory gate | `░░░░░░░░░░ 0%` | Written answers on broker/licence, custody, KYC, funding, data rights, SLA and production approval. | Blocked — partner evidence |
+| 3. Credential and environment boundary | `░░░░░░░░░░ 0%` | Sandbox/live separation and backend-only credential handling. | Planned |
+| 4. Sandbox adapter | `░░░░░░░░░░ 0%` | Approved sandbox accounts, quotes, fees, orders, fills and streaming. | Blocked — sandbox access |
+| 5. Reliability and reconciliation | `░░░░░░░░░░ 0%` | Idempotency, replay, stale data, outage, retry and reconciliation tests. | Planned |
+| 6. Panel and operations workflow | `░░░░░░░░░░ 0%` | Backend-only panel operations, access matrix and audit trail. | Planned |
+| 7. Security and CI acceptance | `░░░░░░░░░░ 0%` | Protected-main, review, security and promotion evidence. | Blocked — ruleset/admin evidence |
+| 8. Sandbox certification and production decision | `░░░░░░░░░░ 0%` | Sandbox certification and separate production go/no-go decision. | Planned |
+
+Implementation order is **0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8**. A blocked batch cannot be marked complete by documentation alone.
 
 ## ANPOS project adoption
 
@@ -59,6 +61,13 @@ See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/ma
 ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
 ## Current project status
+
+### Overall repository delivery
+
+- Repository-owned non-live engineering: `█████████░ 86%`
+- ANPOS/PyPSX batch program: `█░░░░░░░░░ 11%` — 1 of 9 batches complete
+- Live/real-money production authority: `░░░░░░░░░░ 0%` — intentionally fail-closed
+
 
 **Last status update:** `2026-09-14 — demo UI preview added`
 
