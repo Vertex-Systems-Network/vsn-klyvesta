@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "instance_status": "active_project",
+  "instance_id": "vsn-klyvesta",
+  "project_name": "Klyvesta",
+  "repository": "Vertex-Systems-Network/vsn-klyvesta",
+  "repository_owner": "Vertex-Systems-Network",
+  "initialized_at": "2026-09-30",
+  "initialized_by": "Codex",
+  "source_protocol_version": "1.4.0",
+  "source_template_repository": "Vertex-Systems-Network/ai-native-project-operating-system",
+  "bootstrap_completed": true,
+  "pm_provider": "not_selected",
+  "development_ai_selection": "host_runtime_not_recorded_as_external_agent",
+  "production_authority": false,
+  "live_broker_authority": false,
+  "notes": "Project-local adoption metadata. Existing Klyvesta architecture, state, guardrails and acceptance gates remain authoritative for domain behavior. No PM connection, AI pool, GitHub Rules, secret, deployment, commercial or pyPSX live capability is implied by this file."
+}
