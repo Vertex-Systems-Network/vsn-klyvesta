@@ -180,13 +180,11 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
             throw new ArgumentException("At least one stream channel is required.", nameof(channels));
         }
 
-        if (maxReconnectAttempts < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(maxReconnectAttempts));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(maxReconnectAttempts);
 
         for (var attempt = 0; ; attempt++)
         {
+            var events = new List<PyPsxStreamEvent>();
             try
             {
                 options.Validate();
@@ -222,16 +220,11 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
 
                     if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
                     {
-                        yield return new PyPsxStreamEvent(
+                        events.Add(new PyPsxStreamEvent(
                             eventName ?? "message",
                             line["data:".Length..].Trim(),
-                            DateTimeOffset.UtcNow);
+                            DateTimeOffset.UtcNow));
                     }
-                }
-
-                if (attempt >= maxReconnectAttempts)
-                {
-                    yield break;
                 }
             }
             catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
@@ -247,6 +240,16 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
                 {
                     yield break;
                 }
+            }
+
+            foreach (var streamEvent in events)
+            {
+                yield return streamEvent;
+            }
+
+            if (attempt >= maxReconnectAttempts)
+            {
+                yield break;
             }
 
             var delay = TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempt)));
