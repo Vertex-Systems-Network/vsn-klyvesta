@@ -58,7 +58,7 @@ Verified by the run:
 - the sandbox portfolio endpoint was read successfully;
 - secrets were supplied through GitHub Actions and were not printed.
 
-The manual order test executed successfully. The run verified authenticated order submission, lifecycle polling to `FILLED`, and portfolio/statement reconciliation with the required statement date window. A separate cancel execution was not claimed because the order filled before cancellation could be exercised. Negative tests are now available as an explicit workflow input: invalid credentials must return 401/403 and a zero-quantity order must return 4xx. Idempotency, timeout/retry and rate-limit behavior remain pending until the partner contract confirms the supported semantics.
+The manual order test executed successfully. The run verified authenticated order submission, lifecycle polling to `FILLED`, and portfolio/statement reconciliation with the required statement date window. A separate cancel execution was not claimed because the order filled before cancellation could be exercised. Negative tests are now available as an explicit workflow input: invalid credentials must return 401/403 and a zero-quantity order must return 4xx. The run also tested invalid credentials and a zero-quantity order. Invalid credentials correctly returned 401. The zero-quantity order returned HTTP 500, so this is recorded as a provider-side validation defect rather than a passing 4xx validation response. Idempotency, timeout/retry and rate-limit behavior remain pending until the partner contract confirms the supported semantics.
 
 ## What public docs do not prove
 
@@ -103,4 +103,4 @@ Issue #20 remains open because public documentation cannot satisfy the direct pa
 - `C`: current partner contract/authoritative response — none recorded.
 - `L`: legal/regulatory confirmation — none recorded.
 
-Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio/order/fill/reconciliation passed; negative boundary workflow implemented but not yet executed; cancel execution/idempotency/timeout-retry/rate-limit = not evidenced; C = 0; L = 0.**
+Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio/order/fill/reconciliation passed; invalid-auth boundary returned 401; invalid-order boundary returned 500 (provider error, not accepted validation); cancel execution/idempotency/timeout-retry/rate-limit = not evidenced; C = 0; L = 0.**
