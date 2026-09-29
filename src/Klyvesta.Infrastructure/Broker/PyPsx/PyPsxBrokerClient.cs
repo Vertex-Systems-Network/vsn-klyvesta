@@ -53,6 +53,16 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
         return SendAsync(HttpMethod.Post, "/v1/partner-api/orders", "SubmitOrder", authenticated: true, body, cancellationToken);
     }
 
+    public Task<PyPsxBrokerResult<JsonElement?>> GetFeesAsync(
+        CancellationToken cancellationToken = default)
+        => SendAsync(
+            HttpMethod.Get,
+            "/v1/partner-api/fees",
+            "GetFees",
+            authenticated: true,
+            body: null,
+            cancellationToken);
+
     public Task<PyPsxBrokerResult<JsonElement?>> GetQuoteAsync(
         string symbol,
         CancellationToken cancellationToken = default)
