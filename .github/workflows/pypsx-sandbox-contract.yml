@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       run_order_test:
-        description: "Place one small sandbox order after account/config checks"
+        description: "Submit one unit and verify order lifecycle"
         required: false
         default: false
         type: boolean
@@ -15,56 +15,86 @@ permissions:
 jobs:
   pypsx-sandbox:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       BASE_URL: https://brokerapi-paper.pypsx.com
       KEY_ID: ${{ secrets.PYPSX_SANDBOX_KEY_ID }}
       KEY_SECRET: ${{ secrets.PYPSX_SANDBOX_SECRET }}
     steps:
       - name: Validate required secrets
-        shell: bash
         run: |
           test -n "$KEY_ID" || { echo "::error::Missing PYPSX_SANDBOX_KEY_ID"; exit 1; }
           test -n "$KEY_SECRET" || { echo "::error::Missing PYPSX_SANDBOX_SECRET"; exit 1; }
 
       - name: Public health check
-        shell: bash
         run: |
           curl --fail-with-body --silent --show-error --retry 2 "$BASE_URL/health"
 
       - name: Authenticated config check
-        shell: bash
         run: |
-          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/config" | tee config.json
-          grep -q '"environment"[[:space:]]*:[[:space:]]*"sandbox"' config.json
+          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/config" > config.json
+          jq -e '.environment == "sandbox"' config.json
 
       - name: Create sandbox account
-        shell: bash
         run: |
           REF="klyvesta-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           jq -n --arg ref "$REF"             '{full_name:"Klyvesta CI Sandbox",email:("ci-"+$ref+"@example.invalid"),partner_reference_id:$ref}' > account-request.json
-          curl --fail-with-body --silent --show-error --retry 2             -X POST "$BASE_URL/v1/partner-api/accounts"             -H "Content-Type: application/json"             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             --data-binary @account-request.json | tee account.json
-          test -s account.json
+          curl --fail-with-body --silent --show-error --retry 2             -X POST "$BASE_URL/v1/partner-api/accounts"             -H "Content-Type: application/json"             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             --data-binary @account-request.json > account.json
           jq -e '.account_id' account.json >/dev/null
           echo "ACCOUNT_ID=$(jq -r '.account_id' account.json)" >> "$GITHUB_ENV"
 
-      - name: Read sandbox portfolio
-        shell: bash
+      - name: Read initial portfolio
         run: |
-          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/portfolio" | tee portfolio.json
-          test -s portfolio.json
+          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/portfolio" > portfolio-before.json
+          test -s portfolio-before.json
 
-      - name: Optional small sandbox order
+      - name: Submit and verify sandbox order lifecycle
         if: ${{ inputs.run_order_test == true }}
         shell: bash
         run: |
           jq -n --arg account "$ACCOUNT_ID"             '{sub_account_id:$account,symbol:"OGDC",side:"BUY",quantity:1}' > order-request.json
-          curl --fail-with-body --silent --show-error             -X POST "$BASE_URL/v1/partner-api/orders"             -H "Content-Type: application/json"             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             --data-binary @order-request.json | tee order.json
-          test -s order.json
-          jq -e '.order_id // .id' order.json >/dev/null
+          curl --fail-with-body --silent --show-error             -X POST "$BASE_URL/v1/partner-api/orders"             -H "Content-Type: application/json"             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             --data-binary @order-request.json > order.json
+          ORDER_ID=$(jq -r '.order_id // .id // empty' order.json)
+          test -n "$ORDER_ID" || { echo "::error::Order ID missing"; exit 1; }
+          echo "Order submission returned an order identifier."
+
+          status=""
+          for attempt in 1 2 3 4 5 6; do
+            curl --fail-with-body --silent --show-error               -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"               -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"               "$BASE_URL/v1/partner-api/orders/$ORDER_ID" > order-status.json
+            status=$(jq -r '.status // .state // empty' order-status.json | tr '[:lower:]' '[:upper:]')
+            echo "Order lifecycle status: $status"
+            case "$status" in
+              FILLED|PARTIALLY_FILLED|CANCELED|CANCELLED|REJECTED|EXPIRED) break ;;
+            esac
+            sleep 5
+          done
+          test -n "$status" || { echo "::error::No order lifecycle status returned"; exit 1; }
+
+          case "$status" in
+            FILLED|PARTIALLY_FILLED)
+              echo "Fill state observed: $status"
+              ;;
+            CANCELED|CANCELLED|REJECTED|EXPIRED)
+              echo "Terminal non-fill state observed: $status"
+              ;;
+            *)
+              curl --fail-with-body --silent --show-error                 -X DELETE "$BASE_URL/v1/partner-api/orders/$ORDER_ID"                 -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"                 -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET" > cancel.json
+              echo "Cancel request submitted for non-terminal order."
+              ;;
+          esac
+          echo "ORDER_STATUS=$status" >> "$GITHUB_ENV"
+
+      - name: Re-read portfolio and statement
+        if: ${{ inputs.run_order_test == true }}
+        shell: bash
+        run: |
+          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/portfolio" > portfolio-after.json
+          test -s portfolio-after.json
+          curl --fail-with-body --silent --show-error             -H "PYPSX-ORG-API-KEY-ID: $KEY_ID"             -H "PYPSX-ORG-API-SECRET-KEY: $KEY_SECRET"             "$BASE_URL/v1/partner-api/accounts/$ACCOUNT_ID/statement" > statement.json
+          test -s statement.json
+          echo "Reconciliation reads completed for account $ACCOUNT_ID with order status $ORDER_STATUS."
 
       - name: Secret-safe cleanup
         if: always()
-        shell: bash
         run: |
-          rm -f config.json account-request.json account.json portfolio.json order-request.json order.json
+          rm -f config.json account-request.json account.json portfolio-before.json portfolio-after.json statement.json order-request.json order.json order-status.json cancel.json
