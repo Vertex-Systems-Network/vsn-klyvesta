@@ -43,6 +43,10 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [ANPOS Batch 8 certification/go-no-go](docs/ANPOS_BATCH_8_CERTIFICATION_GO_NO_GO_2026-09-30.md)
 - [Security Acceptance evidence — `70%` `███████░░░`](docs/SECURITY_ACCEPTANCE_EVIDENCE_2026-09-30.md)
 - [Cross-batch truth evidence register](docs/CROSS_BATCH_TRUTH_EVIDENCE_2026-09-30.md)
+- [Security regression evidence](docs/SECURITY_REGRESSION_EVIDENCE_2026-09-30.md)
+- [Incident/DR tabletop evidence](docs/INCIDENT_DR_TABLETOP_EVIDENCE_2026-09-30.md)
+- [Batch 4 adapter hardening evidence](docs/ANPOS_BATCH_4_ADAPTER_HARDENING_EVIDENCE_2026-09-30.md)
+- [Batch 8 go/no-go evidence](docs/ANPOS_BATCH_8_GO_NO_GO_EVIDENCE_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
