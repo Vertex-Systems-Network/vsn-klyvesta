@@ -2,7 +2,7 @@
 
 Date: 2026-09-30 (Asia/Karachi)
 Repository: `Vertex-Systems-Network/vsn-klyvesta`
-Batch status: **PUBLIC-EVIDENCE PORTION COMPLETE; PARTNER/LEGAL GATES STILL BLOCKED**
+Batch status: **PUBLIC EVIDENCE COMPLETE; SANDBOX CORE TEST PASSED; PARTNER/LEGAL GATES STILL BLOCKED**
 Related issue: #20
 
 ## Sources reviewed
@@ -40,6 +40,23 @@ These are public web documents checked on 2026-09-30. They are evidence of publi
 | Errors | Official docs publish structured HTTP/code error handling and an errors guide. | **Publicly documented; negative/rate-limit tests not run** |
 | KYC/account opening | Official docs publish an account-opening/KYC guide and describe CDC/Alpha Capital account flow in the Broker API overview. | **Publicly documented; legal responsibility and data-processing terms unverified** |
 | Live activation | Official docs say production order access is switched on per organisation and may return a disabled-order error until enabled. | **Publicly documented; Klyvesta production approval absent** |
+
+## Executed sandbox evidence
+
+GitHub Actions run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36631970370
+
+Result: **SUCCESS** on 2026-09-29.
+
+Verified by the run:
+
+- public sandbox health endpoint responded successfully;
+- authenticated \/config request succeeded;
+- returned environment was confirmed as `sandbox`;
+- a sandbox sub-account was created;
+- the sandbox portfolio endpoint was read successfully;
+- secrets were supplied through GitHub Actions and were not printed.
+
+Not yet executed in this run: order placement/fill/cancel/reconciliation. The workflow keeps the order test as an explicit manual input so no order is submitted accidentally.
 
 ## What public docs do not prove
 
@@ -84,4 +101,4 @@ Issue #20 remains open because public documentation cannot satisfy the direct pa
 - `C`: current partner contract/authoritative response — none recorded.
 - `L`: legal/regulatory confirmation — none recorded.
 
-Current Batch 2 evidence state: **D = partial/strong for published API surface; T = 0; C = 0; L = 0.**
+Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio passed; order/fill/cancel/reconciliation T = pending; C = 0; L = 0.**
