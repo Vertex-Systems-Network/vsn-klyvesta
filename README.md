@@ -26,6 +26,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Implementation foundation V1](#implementation-foundation-v1)
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
 - [ANPOS project adoption](#anpos-project-adoption)
+- [ANPOS Batch 0 baseline](docs/ANPOS_BATCH_0_BASELINE_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
