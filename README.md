@@ -29,7 +29,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [ANPOS Batch 0 baseline — `100%` `██████████`](docs/ANPOS_BATCH_0_BASELINE_2026-09-30.md)
 - [ANPOS Batch 1 reconciliation — `100%` `██████████`](docs/ANPOS_BATCH_1_PYPSX_RECONCILIATION_2026-09-30.md)
 - [ANPOS Batch 2 evidence gate — `0%` `░░░░░░░░░░`](docs/ANPOS_BATCH_2_PARTNER_REGULATORY_GATE_2026-09-30.md)
-- [ANPOS Batch 2 public API evidence — `D` complete / `T-C-L` pending](docs/ANPOS_BATCH_2_PUBLIC_API_EVIDENCE_2026-09-30.md)
+- [ANPOS Batch 2 public API evidence — `D/T` sandbox evidence complete / `C-L` pending](docs/ANPOS_BATCH_2_PUBLIC_API_EVIDENCE_2026-09-30.md)
 
 ## PyPSX integration batch plan
 
@@ -41,7 +41,7 @@ This plan separates PyPSX work into independently verifiable batches. It does no
 | --- | --- | --- | --- |
 | 0. Evidence recovery | `██████████ 100%` | Repository state, governance, roadmap, issues, branches, CI and broker contracts baseline. | Complete — baseline recorded |
 | 1. Documentation reconciliation | `██████████ 100%` | Map PyPSX docs to broker adapter, OpenAPI and capability matrix. | Complete — full endpoint reconciliation recorded |
-| 2. Partner and regulatory gate | `░░░░░░░░░░ 0%` | Public API evidence reviewed; partner contract, sandbox test and legal/regulatory evidence still required. | Public evidence portion complete — overall batch blocked |
+| 2. Partner and regulatory gate | `███░░░░░░░ 30%` | Public API evidence and controlled sandbox order/fill/reconciliation evidence. | Technical evidence recorded — partner/legal gates still blocked |
 | 3. Credential and environment boundary | `░░░░░░░░░░ 0%` | Sandbox/live separation and backend-only credential handling. | Planned |
 | 4. Sandbox adapter | `░░░░░░░░░░ 0%` | Approved sandbox accounts, quotes, fees, orders, fills and streaming. | Blocked — sandbox access |
 | 5. Reliability and reconciliation | `░░░░░░░░░░ 0%` | Idempotency, replay, stale data, outage, retry and reconciliation tests. | Planned |
@@ -63,7 +63,7 @@ See [docs/ANPOS_ADOPTION.md](docs/ANPOS_ADOPTION.md), [.ai/manifest.json](.ai/ma
 
 ANPOS adoption does not authorize live trading, customer KYC, custody, funding, withdrawals, production deployment or regulatory claims. PyPSX integration remains governed by the evidence-gated batch plan above.
 
-Batch 2 evidence-gate status: `░░░░░░░░░░ 0%` — official public API evidence, core sandbox test and sandbox order submission are recorded; fill/cancel/reconciliation, direct partner contract and legal/regulatory evidence remain pending.
+Batch 2 evidence-gate status: `███░░░░░░░ 30%` — official public API evidence plus sandbox order/fill/reconciliation evidence are recorded; cancel execution, direct partner contract and legal/regulatory evidence remain pending.
 
 ## Current project status
 
