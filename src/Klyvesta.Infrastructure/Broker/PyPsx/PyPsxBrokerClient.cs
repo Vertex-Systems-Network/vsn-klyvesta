@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Klyvesta.Infrastructure.Broker.PyPsx;
@@ -168,6 +169,86 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
         string orderId,
         CancellationToken cancellationToken = default)
         => SendAsync(HttpMethod.Delete, $"/v1/partner-api/orders/{Uri.EscapeDataString(orderId)}", "CancelOrder", authenticated: true, body: null, cancellationToken);
+
+    public async IAsyncEnumerable<PyPsxStreamEvent> StreamAsync(
+        string channels = "prices,fills",
+        int maxReconnectAttempts = 3,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(channels))
+        {
+            throw new ArgumentException("At least one stream channel is required.", nameof(channels));
+        }
+
+        if (maxReconnectAttempts < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxReconnectAttempts));
+        }
+
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                options.Validate();
+                using var request = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    $"/v1/partner-api/stream?channels={Uri.EscapeDataString(channels)}");
+                request.Headers.Add("PYPSX-ORG-API-KEY-ID", options.KeyId);
+                request.Headers.Add("PYPSX-ORG-API-SECRET-KEY", options.KeySecret);
+                request.Headers.Add("Accept", "text/event-stream");
+
+                using var response = await httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseHeadersRead,
+                    cancellationToken);
+                response.EnsureSuccessStatusCode();
+
+                await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                using var reader = new StreamReader(stream);
+                string? eventName = null;
+                while (await reader.ReadLineAsync(cancellationToken) is { } line)
+                {
+                    if (line.Length == 0)
+                    {
+                        eventName = null;
+                        continue;
+                    }
+
+                    if (line.StartsWith("event:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        eventName = line["event:".Length..].Trim();
+                        continue;
+                    }
+
+                    if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return new PyPsxStreamEvent(
+                            eventName ?? "message",
+                            line["data:".Length..].Trim(),
+                            DateTimeOffset.UtcNow);
+                    }
+                }
+
+                if (attempt >= maxReconnectAttempts)
+                {
+                    yield break;
+                }
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                if (attempt >= maxReconnectAttempts)
+                {
+                    yield break;
+                }
+            }
+            catch (HttpRequestException) when (attempt < maxReconnectAttempts)
+            {
+            }
+
+            var delay = TimeSpan.FromSeconds(Math.Min(30, Math.Pow(2, attempt)));
+            await Task.Delay(delay, cancellationToken);
+        }
+    }
 
     private async Task<PyPsxBrokerResult<JsonElement?>> SendAsync(
         HttpMethod method,
