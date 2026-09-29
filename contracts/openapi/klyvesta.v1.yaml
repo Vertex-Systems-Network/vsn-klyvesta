@@ -349,7 +349,11 @@ components:
         instrumentId: { $ref: '#/components/schemas/UuidV7' }
         side: { type: string, enum: [BUY, SELL] }
         orderType: { type: string, enum: [MARKET, LIMIT] }
-        quantity: { $ref: '#/components/schemas/DecimalString' }
+        quantity:
+          type: string
+          pattern: '^[0-9]+(\\.[0-9]+)?$'
+          description: Positive decimal quantity; zero and negative values must be rejected by the execution validator before broker submission.
+          x-klyvesta-validation: positive-decimal
         limitPrice:
           oneOf:
             - { $ref: '#/components/schemas/DecimalString' }
