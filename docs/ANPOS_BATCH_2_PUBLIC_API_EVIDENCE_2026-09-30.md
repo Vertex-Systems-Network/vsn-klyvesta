@@ -2,7 +2,7 @@
 
 Date: 2026-09-30 (Asia/Karachi)
 Repository: `Vertex-Systems-Network/vsn-klyvesta`
-Batch status: **PUBLIC EVIDENCE COMPLETE; SANDBOX CORE TEST PASSED; PARTNER/LEGAL GATES STILL BLOCKED**
+Batch status: **PUBLIC EVIDENCE COMPLETE; SANDBOX ORDER/FILL/RECONCILIATION TEST PASSED; PARTNER/LEGAL GATES STILL BLOCKED**
 Related issue: #20
 
 ## Sources reviewed
@@ -45,9 +45,9 @@ These are public web documents checked on 2026-09-30. They are evidence of publi
 
 GitHub Actions core run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36631970370
 
-GitHub Actions order run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36632255774
+GitHub Actions order/lifecycle/reconciliation run: https://github.com/Vertex-Systems-Network/vsn-klyvesta/actions/runs/36633264168
 
-Result: **SUCCESS** on 2026-09-29.
+Result: **SUCCESS** on 2026-09-30 (Asia/Karachi).
 
 Verified by the run:
 
@@ -58,7 +58,7 @@ Verified by the run:
 - the sandbox portfolio endpoint was read successfully;
 - secrets were supplied through GitHub Actions and were not printed.
 
-Not yet executed in this run: order placement/fill/cancel/reconciliation. The workflow keeps the order test as an explicit manual input so no order is submitted accidentally.
+The manual order test executed successfully. The run verified authenticated order submission, lifecycle polling to `FILLED`, and portfolio/statement reconciliation with the required statement date window. A separate cancel execution was not claimed because the order filled before cancellation could be exercised.
 
 ## What public docs do not prove
 
@@ -103,4 +103,4 @@ Issue #20 remains open because public documentation cannot satisfy the direct pa
 - `C`: current partner contract/authoritative response — none recorded.
 - `L`: legal/regulatory confirmation — none recorded.
 
-Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio passed; order submission T = passed; fill/cancel/reconciliation T = pending; C = 0; L = 0.**
+Current Batch 2 evidence state: **D = strong for published API surface; T = core sandbox connectivity/account/portfolio/order/fill/reconciliation passed; cancel execution = not evidenced; C = 0; L = 0.**
