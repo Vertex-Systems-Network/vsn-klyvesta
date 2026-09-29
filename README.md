@@ -17,7 +17,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 ## Table of contents
 
 - [PyPSX integration batch plan — `44%` `████░░░░░░`](#pypsx-integration-batch-plan)
-- [Current project status — `86%` `█████████░`](#current-project-status)
+- [Current project status — `93%` `█████████░`](#current-project-status)
 - [Demo UI preview](#demo-ui-preview--db--pypsx-bypass)
 - [Module delivery table](#module-delivery-table)
 - [Repository model](#repository-model)
