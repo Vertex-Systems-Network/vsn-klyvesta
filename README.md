@@ -16,7 +16,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 ## Table of contents
 
-- [PyPSX integration batch plan — `22%` `██░░░░░░░░`](#pypsx-integration-batch-plan)
+- [PyPSX integration batch plan — `33%` `███░░░░░░░`](#pypsx-integration-batch-plan)
 - [Current project status — `86%` `█████████░`](#current-project-status)
 - [Demo UI preview](#demo-ui-preview--db--pypsx-bypass)
 - [Module delivery table](#module-delivery-table)
@@ -36,7 +36,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 
 This plan separates PyPSX work into independently verifiable batches. It does not authorize live trading, customer KYC, custody, funding, or production promotion. Every batch must preserve the repository's fail-closed non-live boundary.
 
-**Program progress:** `██░░░░░░░░ 22%` — **2/9 batches complete**
+**Program progress:** `███░░░░░░░ 33%` — **3/9 batches complete**
 
 | Batch | Progress | Scope | Status |
 | --- | --- | --- | --- |
