@@ -1,0 +1,60 @@
+name: pyPSX environment boundary acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: "Only sandbox is permitted until partner/legal gates close"
+        required: true
+        default: sandbox
+        type: choice
+        options:
+          - sandbox
+          - production
+
+permissions:
+  contents: read
+
+jobs:
+  environment-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TARGET_ENVIRONMENT: ${{ inputs.target_environment }}
+      SANDBOX_BASE_URL: https://brokerapi-paper.pypsx.com
+      PRODUCTION_BASE_URL: https://brokerapi.pypsx.com
+      SANDBOX_KEY_ID: ${{ secrets.PYPSX_SANDBOX_KEY_ID }}
+      SANDBOX_KEY_SECRET: ${{ secrets.PYPSX_SANDBOX_SECRET }}
+    steps:
+      - name: Fail closed for non-sandbox target
+        run: |
+          test "$TARGET_ENVIRONMENT" = "sandbox" || {
+            echo "::error::Production target is blocked until partner, legal and security acceptance gates are evidenced."
+            exit 1
+          }
+
+      - name: Validate sandbox URL and environment identity
+        run: |
+          test "$SANDBOX_BASE_URL" = "https://brokerapi-paper.pypsx.com"
+          test "$SANDBOX_BASE_URL" != "$PRODUCTION_BASE_URL"
+          response=$(curl --fail-with-body --silent --show-error --retry 2 "$SANDBOX_BASE_URL/health")
+          echo "$response" | jq -e '.status == "ok"'
+
+      - name: Validate sandbox credentials are present and masked
+        run: |
+          test -n "$SANDBOX_KEY_ID" || { echo "::error::Missing PYPSX_SANDBOX_KEY_ID"; exit 1; }
+          test -n "$SANDBOX_KEY_SECRET" || { echo "::error::Missing PYPSX_SANDBOX_SECRET"; exit 1; }
+          echo "::add-mask::$SANDBOX_KEY_ID"
+          echo "::add-mask::$SANDBOX_KEY_SECRET"
+          echo "Sandbox credentials are present and masked; values are never printed."
+
+      - name: Prove production endpoint is not selected
+        run: |
+          test "$TARGET_ENVIRONMENT" = "sandbox"
+          test "$SANDBOX_BASE_URL" != "$PRODUCTION_BASE_URL"
+          echo "Fail-closed production boundary verified."
+
+      - name: Secret-safe cleanup
+        if: always()
+        run: |
+          unset SANDBOX_KEY_ID SANDBOX_KEY_SECRET
