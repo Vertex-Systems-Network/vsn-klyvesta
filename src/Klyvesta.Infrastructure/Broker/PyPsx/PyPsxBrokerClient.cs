@@ -7,30 +7,30 @@ public sealed class PyPsxBrokerClient(HttpClient httpClient, PyPsxBrokerOptions 
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    public async Task<PyPsxBrokerResult<JsonElement>> GetHealthAsync(CancellationToken cancellationToken = default)
+    public async Task<PyPsxBrokerResult<JsonElement?>> GetHealthAsync(CancellationToken cancellationToken = default)
         => await GetAsync("/health", "Health", authenticated: false, cancellationToken);
 
-    public async Task<PyPsxBrokerResult<JsonElement>> GetConfigAsync(CancellationToken cancellationToken = default)
+    public async Task<PyPsxBrokerResult<JsonElement?>> GetConfigAsync(CancellationToken cancellationToken = default)
         => await GetAsync("/v1/partner-api/config", "GetConfig", authenticated: true, cancellationToken);
 
-    public async Task<PyPsxBrokerResult<JsonElement>> GetAccountAsync(
+    public async Task<PyPsxBrokerResult<JsonElement?>> GetAccountAsync(
         string accountId,
         CancellationToken cancellationToken = default)
         => await GetAsync($"/v1/partner-api/accounts/{Uri.EscapeDataString(accountId)}", "GetAccount", authenticated: true, cancellationToken);
 
-    public async Task<PyPsxBrokerResult<JsonElement>> GetPortfolioAsync(
+    public async Task<PyPsxBrokerResult<JsonElement?>> GetPortfolioAsync(
         string accountId,
         CancellationToken cancellationToken = default)
         => await GetAsync($"/v1/partner-api/accounts/{Uri.EscapeDataString(accountId)}/portfolio", "GetPortfolio", authenticated: true, cancellationToken);
 
-    public async Task<PyPsxBrokerResult<JsonElement>> GetStatementAsync(
+    public async Task<PyPsxBrokerResult<JsonElement?>> GetStatementAsync(
         string accountId,
         DateOnly from,
         DateOnly to,
         CancellationToken cancellationToken = default)
         => await GetAsync($"/v1/partner-api/accounts/{Uri.EscapeDataString(accountId)}/statement?from={from:yyyy-MM-dd}&to={to:yyyy-MM-dd}", "GetStatement", authenticated: true, cancellationToken);
 
-    private async Task<PyPsxBrokerResult<JsonElement>> GetAsync(
+    private async Task<PyPsxBrokerResult<JsonElement?>> GetAsync(
         string path,
         string operation,
         bool authenticated,
