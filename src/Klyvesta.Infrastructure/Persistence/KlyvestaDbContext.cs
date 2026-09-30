@@ -136,20 +136,20 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.ToTable("identity_user", "security");
             entity.HasKey(item => item.Id).HasName("pk_identity_user");
             entity.HasIndex(item => item.NormalizedEmail).IsUnique().HasDatabaseName("ux_identity_user_normalized_email");
-            entity.Property(item => item.Email).HasMaxLength(320).IsRequired();
-            entity.Property(item => item.NormalizedEmail).HasMaxLength(320).IsRequired();
-            entity.Property(item => item.PasswordHash).HasMaxLength(512).IsRequired();
-            entity.Property(item => item.Status).HasMaxLength(32).IsRequired();
-            entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
-            entity.Property(item => item.DisabledAt).HasColumnType("timestamp with time zone");
+            entity.Property(item => item.Email).HasColumnName("email").HasMaxLength(320).IsRequired();
+            entity.Property(item => item.NormalizedEmail).HasColumnName("normalized_email").HasMaxLength(320).IsRequired();
+            entity.Property(item => item.PasswordHash).HasColumnName("password_hash").HasMaxLength(512).IsRequired();
+            entity.Property(item => item.Status).HasColumnName("status").HasMaxLength(32).IsRequired();
+            entity.Property(item => item.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.DisabledAt).HasColumnName("disabled_at").HasColumnType("timestamp with time zone");
         });
 
         modelBuilder.Entity<IdentityRoleRecord>(entity =>
         {
             entity.ToTable("identity_role", "security");
             entity.HasKey(item => new { item.UserId, item.Role }).HasName("pk_identity_role");
-            entity.Property(item => item.Role).HasMaxLength(64).IsRequired();
-            entity.Property(item => item.GrantedAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.Role).HasColumnName("role").HasMaxLength(64).IsRequired();
+            entity.Property(item => item.GrantedAt).HasColumnName("granted_at").HasColumnType("timestamp with time zone").IsRequired();
         });
 
         modelBuilder.Entity<IdentitySessionRecord>(entity =>
@@ -157,11 +157,11 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.ToTable("identity_session", "security");
             entity.HasKey(item => item.Id).HasName("pk_identity_session");
             entity.HasIndex(item => item.TokenHash).IsUnique().HasDatabaseName("ux_identity_session_token_hash");
-            entity.Property(item => item.TokenHash).HasMaxLength(128).IsRequired();
-            entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
-            entity.Property(item => item.ExpiresAt).HasColumnType("timestamp with time zone").IsRequired();
-            entity.Property(item => item.IpAddress).HasMaxLength(64);
-            entity.Property(item => item.UserAgent).HasMaxLength(512);
+            entity.Property(item => item.TokenHash).HasColumnName("token_hash").HasMaxLength(128).IsRequired();
+            entity.Property(item => item.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.ExpiresAt).HasColumnName("expires_at").HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.IpAddress).HasColumnName("ip_address").HasMaxLength(64);
+            entity.Property(item => item.UserAgent).HasColumnName("user_agent").HasMaxLength(512);
         });
 
         modelBuilder.Entity<IdentityRecoveryTokenRecord>(entity =>
@@ -169,20 +169,20 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.ToTable("identity_recovery_token", "security");
             entity.HasKey(item => item.Id).HasName("pk_identity_recovery_token");
             entity.HasIndex(item => item.TokenHash).IsUnique().HasDatabaseName("ux_identity_recovery_token_token_hash");
-            entity.Property(item => item.TokenHash).HasMaxLength(128).IsRequired();
-            entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
-            entity.Property(item => item.ExpiresAt).HasColumnType("timestamp with time zone").IsRequired();
-            entity.Property(item => item.UsedAt).HasColumnType("timestamp with time zone");
+            entity.Property(item => item.TokenHash).HasColumnName("token_hash").HasMaxLength(128).IsRequired();
+            entity.Property(item => item.CreatedAt).HasColumnName("created_at").HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.ExpiresAt).HasColumnName("expires_at").HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.UsedAt).HasColumnName("used_at").HasColumnType("timestamp with time zone");
         });
 
         modelBuilder.Entity<IdentityAuditEventRecord>(entity =>
         {
             entity.ToTable("identity_audit_event", "security");
             entity.HasKey(item => item.Id).HasName("pk_identity_audit_event");
-            entity.Property(item => item.EventType).HasMaxLength(128).IsRequired();
-            entity.Property(item => item.Outcome).HasMaxLength(32).IsRequired();
-            entity.Property(item => item.OccurredAt).HasColumnType("timestamp with time zone").IsRequired();
-            entity.Property(item => item.MetadataJson).HasColumnType("jsonb");
+            entity.Property(item => item.EventType).HasColumnName("event_type").HasMaxLength(128).IsRequired();
+            entity.Property(item => item.Outcome).HasColumnName("outcome").HasMaxLength(32).IsRequired();
+            entity.Property(item => item.OccurredAt).HasColumnName("occurred_at").HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.MetadataJson).HasColumnName("metadata_json").HasColumnType("jsonb");
         });
     }
 }
