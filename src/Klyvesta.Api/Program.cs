@@ -1,3 +1,4 @@
+using Klyvesta.Api;
 using Klyvesta.Infrastructure.Persistence;
 using Klyvesta.Infrastructure.Persistence.Identity;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
