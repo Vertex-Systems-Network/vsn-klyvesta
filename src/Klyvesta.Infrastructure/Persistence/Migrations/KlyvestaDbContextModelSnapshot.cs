@@ -82,6 +82,70 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
                             t.HasCheckConstraint("ck_outbox_attempt_count", "attempt_count >= 0");
                         });
                 });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Identity.IdentityAuditEventRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<string>("EventType").IsRequired().HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("event_type");
+                    b.Property<string>("MetadataJson").HasColumnType("jsonb").HasColumnName("metadata_json");
+                    b.Property<DateTimeOffset>("OccurredAt").HasColumnType("timestamp with time zone").HasColumnName("occurred_at");
+                    b.Property<string>("Outcome").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("outcome");
+                    b.Property<Guid?>("UserId").HasColumnType("uuid").HasColumnName("user_id");
+                    b.HasKey("Id").HasName("pk_identity_audit_event");
+                    b.ToTable("identity_audit_event", "security");
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Identity.IdentityRecoveryTokenRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<DateTimeOffset>("CreatedAt").HasColumnType("timestamp with time zone").HasColumnName("created_at");
+                    b.Property<DateTimeOffset>("ExpiresAt").HasColumnType("timestamp with time zone").HasColumnName("expires_at");
+                    b.Property<string>("TokenHash").IsRequired().HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("token_hash");
+                    b.Property<DateTimeOffset?>("UsedAt").HasColumnType("timestamp with time zone").HasColumnName("used_at");
+                    b.Property<Guid>("UserId").HasColumnType("uuid").HasColumnName("user_id");
+                    b.HasKey("Id").HasName("pk_identity_recovery_token");
+                    b.HasIndex("TokenHash").IsUnique().HasDatabaseName("ux_identity_recovery_token_token_hash");
+                    b.ToTable("identity_recovery_token", "security");
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Identity.IdentityRoleRecord", b =>
+                {
+                    b.Property<Guid>("UserId").HasColumnType("uuid").HasColumnName("user_id");
+                    b.Property<string>("Role").IsRequired().HasMaxLength(64).HasColumnType("character varying(64)").HasColumnName("role");
+                    b.Property<DateTimeOffset>("GrantedAt").HasColumnType("timestamp with time zone").HasColumnName("granted_at");
+                    b.HasKey("UserId", "Role").HasName("pk_identity_role");
+                    b.ToTable("identity_role", "security");
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Identity.IdentitySessionRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<DateTimeOffset>("CreatedAt").HasColumnType("timestamp with time zone").HasColumnName("created_at");
+                    b.Property<DateTimeOffset>("ExpiresAt").HasColumnType("timestamp with time zone").HasColumnName("expires_at");
+                    b.Property<string>("IpAddress").HasMaxLength(64).HasColumnType("character varying(64)").HasColumnName("ip_address");
+                    b.Property<DateTimeOffset?>("RevokedAt").HasColumnType("timestamp with time zone").HasColumnName("revoked_at");
+                    b.Property<string>("TokenHash").IsRequired().HasMaxLength(128).HasColumnType("character varying(128)").HasColumnName("token_hash");
+                    b.Property<Guid>("UserId").HasColumnType("uuid").HasColumnName("user_id");
+                    b.Property<string>("UserAgent").HasMaxLength(512).HasColumnType("character varying(512)").HasColumnName("user_agent");
+                    b.HasKey("Id").HasName("pk_identity_session");
+                    b.HasIndex("TokenHash").IsUnique().HasDatabaseName("ux_identity_session_token_hash");
+                    b.ToTable("identity_session", "security");
+                });
+
+            modelBuilder.Entity("Klyvesta.Infrastructure.Persistence.Identity.IdentityUserRecord", b =>
+                {
+                    b.Property<Guid>("Id").HasColumnType("uuid").HasColumnName("id");
+                    b.Property<DateTimeOffset>("CreatedAt").HasColumnType("timestamp with time zone").HasColumnName("created_at");
+                    b.Property<DateTimeOffset?>("DisabledAt").HasColumnType("timestamp with time zone").HasColumnName("disabled_at");
+                    b.Property<string>("Email").IsRequired().HasMaxLength(320).HasColumnType("character varying(320)").HasColumnName("email");
+                    b.Property<string>("NormalizedEmail").IsRequired().HasMaxLength(320).HasColumnType("character varying(320)").HasColumnName("normalized_email");
+                    b.Property<string>("PasswordHash").IsRequired().HasMaxLength(512).HasColumnType("character varying(512)").HasColumnName("password_hash");
+                    b.Property<string>("Status").IsRequired().HasMaxLength(32).HasColumnType("character varying(32)").HasColumnName("status");
+                    b.HasKey("Id").HasName("pk_identity_user");
+                    b.HasIndex("NormalizedEmail").IsUnique().HasDatabaseName("ux_identity_user_normalized_email");
+                    b.ToTable("identity_user", "security");
+                });
+
 #pragma warning restore 612, 618
         }
     }
