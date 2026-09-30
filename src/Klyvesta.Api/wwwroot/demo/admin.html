@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Klyvesta Admin Control Plane</title>
+  <link rel="stylesheet" href="/demo/app.css">
+</head>
+<body class="dashboard-body">
+  <div class="demo-banner">ADMIN UI STRUCTURE — CONTROL-PLANE PREVIEW — NO LIVE AUTHORITY</div>
+  <main class="main-content standalone-page">
+    <header class="topbar">
+      <div><p class="eyebrow">OWNER / ADMIN CONTROL PLANE</p><h1>Klyvesta operations</h1><p class="muted">Environment, provider and user controls are separated from the investor workspace.</p></div>
+      <div class="topbar-actions"><span class="mode-badge">FAIL-CLOSED</span><a class="secondary-button" href="/demo/dashboard.html">User preview</a></div>
+    </header>
+    <section class="metric-grid">
+      <article class="metric-card"><span>Selected environment</span><strong>Sandbox</strong><small>Live requires approval gates</small></article>
+      <article class="metric-card"><span>PyPSX connection</span><strong>Not connected</strong><small>Credentials are not in demo</small></article>
+      <article class="metric-card"><span>Users</span><strong>0 live-enabled</strong><small>Approval status required</small></article>
+      <article class="metric-card"><span>Trading authority</span><strong>Disabled</strong><small>Kill switch is active</small></article>
+    </section>
+    <section class="content-grid equal">
+      <article class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">ENVIRONMENT</p><h2>Sandbox / Live control</h2></div><span class="subtle-badge">Preview</span></div>
+        <p>Changing the environment never grants live access by itself. Each user must have approved KYC, broker linkage and a mapped live account.</p>
+        <div class="stack-list">
+          <div class="stack-row"><div><strong>Sandbox</strong><small>Demo accounts and paper trading</small></div><span class="status-badge">Available</span></div>
+          <div class="stack-row"><div><strong>Live</strong><small>Requires provider, legal and user approval gates</small></div><span class="status-badge">Blocked</span></div>
+        </div>
+        <button class="primary-button compact-button" disabled>Enable live (blocked by acceptance gates)</button>
+      </article>
+      <article class="panel">
+        <div class="panel-heading"><div><p class="eyebrow">PROVIDER CONFIG</p><h2>PyPSX / KYC</h2></div><span class="subtle-badge">Server-only</span></div>
+        <div class="stack-list">
+          <div class="stack-row"><div><strong>Partner API key</strong><small>Stored in approved secret manager</small></div><span class="status-badge">Not configured</span></div>
+          <div class="stack-row"><div><strong>KYC provider</strong><small>Separate from trading credentials</small></div><span class="status-badge">Not configured</span></div>
+          <div class="stack-row"><div><strong>Commission policy</strong><small>Must match provider effective config</small></div><span class="status-badge">Read-only preview</span></div>
+        </div>
+      </article>
+    </section>
+    <section class="panel">
+      <div class="panel-heading"><div><p class="eyebrow">USER GOVERNANCE</p><h2>User account readiness</h2></div><span class="subtle-badge">No real users loaded</span></div>
+      <div class="table-wrap"><table><thead><tr><th>User</th><th>Demo</th><th>KYC</th><th>Live mapping</th><th>Trading</th></tr></thead><tbody><tr><td>No production users</td><td>Not provisioned</td><td>Not started</td><td>Not linked</td><td>Disabled</td></tr></tbody></table></div>
+    </section>
+    <section class="panel safeguards-panel"><div class="panel-heading"><div><p class="eyebrow">SAFETY</p><h2>Admin boundaries</h2></div></div><div class="safeguard-grid"><div><strong>Secrets</strong><span>Never sent to browser</span></div><div><strong>Live access</strong><span>Approval-gated per user</span></div><div><strong>Audit</strong><span>Every privileged action recorded</span></div><div><strong>Kill switch</strong><span>Default disabled</span></div></div></section>
+  </main>
+</body>
+</html>
