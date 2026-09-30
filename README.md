@@ -25,6 +25,7 @@ Klyvesta must never claim or imply that losses are impossible, that investing is
 - [Core planning documents](#core-planning-documents)
 - [UI/UX delivery batch plan](docs/UI_UX_DELIVERY_BATCH_PLAN_V1.md)
 - [UI batch truth evidence audit](docs/UI_BATCH_TRUTH_EVIDENCE_AUDIT_2026-09-30.md)
+- [Admin/User UI implementation V1](docs/ADMIN_USER_UI_IMPLEMENTATION_V1.md)
 - [Implementation foundation V1](#implementation-foundation-v1)
 - [Canonical AI engineering state](#canonical-ai-engineering-state)
 - [ANPOS project adoption — `100%` `██████████`](#anpos-project-adoption)
@@ -118,6 +119,8 @@ The first production acceptance gate remains regulatory + broker fit:
 The implementation foundation and non-live safety boundaries may be validated independently, but no real-money capability is unlocked until the canonical acceptance gates are satisfied.
 
 ## Demo UI preview — DB + pyPSX bypass
+
+Separate **admin control-plane and investor workspace UI structure previews** are now available alongside the demo-only investor UI. They are intentionally non-live and fail-closed; see [Admin/User UI implementation V1](docs/ADMIN_USER_UI_IMPLEMENTATION_V1.md).
 
 A **demo-only investor UI** is available so the current product experience can be reviewed without PostgreSQL, pyPSX credentials, live market data, real customer records, or real-money execution.
 
