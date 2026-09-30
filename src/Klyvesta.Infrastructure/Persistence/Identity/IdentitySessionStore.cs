@@ -14,17 +14,14 @@ public sealed class IdentitySessionStore(
         string? userAgent,
         CancellationToken cancellationToken)
     {
-        if (lifetime <= TimeSpan.Zero)
-        {
-            throw new ArgumentOutOfRangeException(nameof(lifetime));
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(lifetime, TimeSpan.Zero);
 
         var token = tokenService.CreateToken();
         dbContext.IdentitySessions.Add(new IdentitySessionRecord
         {
             Id = Guid.CreateVersion7(),
             UserId = userId,
-            TokenHash = tokenService.HashToken(token),
+            TokenHash = OpaqueSessionTokenService.HashToken(token),
             CreatedAt = now,
             ExpiresAt = now.Add(lifetime),
             IpAddress = ipAddress,
@@ -40,7 +37,7 @@ public sealed class IdentitySessionStore(
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
-        var tokenHash = tokenService.HashToken(token);
+        var tokenHash = OpaqueSessionTokenService.HashToken(token);
         var session = await dbContext.IdentitySessions
             .AsNoTracking()
             .SingleOrDefaultAsync(
@@ -57,7 +54,7 @@ public sealed class IdentitySessionStore(
         DateTimeOffset now,
         CancellationToken cancellationToken)
     {
-        var tokenHash = tokenService.HashToken(token);
+        var tokenHash = OpaqueSessionTokenService.HashToken(token);
         var session = await dbContext.IdentitySessions
             .SingleOrDefaultAsync(item => item.TokenHash == tokenHash, cancellationToken);
 
