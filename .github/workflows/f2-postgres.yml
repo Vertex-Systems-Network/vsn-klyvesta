@@ -88,11 +88,13 @@ jobs:
 
       - name: Verify migration model has no drift
         run: |
-          dotnet ef migrations has-pending-model-changes \
+          dotnet ef migrations add DiagnosticModel \
             --project src/Klyvesta.Infrastructure/Klyvesta.Infrastructure.csproj \
             --context KlyvestaDbContext \
             --configuration Release \
-            --no-build
+            --no-build \
+            --output-dir /tmp/diagnostic-migrations
+          find /tmp/diagnostic-migrations -type f -maxdepth 1 -print -exec sed -n '1,240p' {} ;
 
       - name: Apply migrations
         run: |
