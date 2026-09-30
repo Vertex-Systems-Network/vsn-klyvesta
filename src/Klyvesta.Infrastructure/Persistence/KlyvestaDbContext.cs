@@ -158,6 +158,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         {
             entity.ToTable("identity_session", "security");
             entity.Property(item => item.Id).HasColumnName("id");
+            entity.Property(item => item.UserId).HasColumnName("user_id");
             entity.HasKey(item => item.Id).HasName("pk_identity_session");
             entity.HasIndex(item => item.TokenHash).IsUnique().HasDatabaseName("ux_identity_session_token_hash");
             entity.Property(item => item.TokenHash).HasColumnName("token_hash").HasMaxLength(128).IsRequired();
@@ -171,6 +172,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         {
             entity.ToTable("identity_recovery_token", "security");
             entity.Property(item => item.Id).HasColumnName("id");
+            entity.Property(item => item.UserId).HasColumnName("user_id");
             entity.HasKey(item => item.Id).HasName("pk_identity_recovery_token");
             entity.HasIndex(item => item.TokenHash).IsUnique().HasDatabaseName("ux_identity_recovery_token_token_hash");
             entity.Property(item => item.TokenHash).HasColumnName("token_hash").HasMaxLength(128).IsRequired();
@@ -183,6 +185,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         {
             entity.ToTable("identity_audit_event", "security");
             entity.Property(item => item.Id).HasColumnName("id");
+            entity.Property(item => item.UserId).HasColumnName("user_id");
             entity.HasKey(item => item.Id).HasName("pk_identity_audit_event");
             entity.Property(item => item.EventType).HasColumnName("event_type").HasMaxLength(128).IsRequired();
             entity.Property(item => item.Outcome).HasColumnName("outcome").HasMaxLength(32).IsRequired();
