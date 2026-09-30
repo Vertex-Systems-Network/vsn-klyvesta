@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Klyvesta Investor Workspace</title>
+  <link rel="stylesheet" href="/demo/app.css">
+</head>
+<body class="dashboard-body">
+  <div class="demo-banner">USER WORKSPACE STRUCTURE — DEMO PREVIEW — SYNTHETIC DATA ONLY</div>
+  <main class="main-content standalone-page">
+    <header class="topbar">
+      <div><p class="eyebrow">INVESTOR WORKSPACE</p><h1>Account readiness</h1><p class="muted">One Klyvesta login; sandbox and live readiness are shown as separate states.</p></div>
+      <div class="topbar-actions"><span class="mode-badge">DEMO</span><a class="secondary-button" href="/demo/dashboard.html">Dashboard</a></div>
+    </header>
+    <section class="metric-grid">
+      <article class="metric-card"><span>Klyvesta account</span><strong>Active</strong><small>Application login</small></article>
+      <article class="metric-card"><span>Demo trading</span><strong>Ready</strong><small>Sandbox account is automatic</small></article>
+      <article class="metric-card"><span>Live readiness</span><strong>Not started</strong><small>KYC and approval required</small></article>
+      <article class="metric-card"><span>Live trading</span><strong>Disabled</strong><small>No provider authority</small></article>
+    </section>
+    <section class="content-grid equal">
+      <article class="panel"><div class="panel-heading"><div><p class="eyebrow">DEMO ACCOUNT</p><h2>Start testing</h2></div><span class="status-badge">Available</span></div><p>Your sandbox account is provisioned by the backend after user signup. No separate PyPSX registration is shown to the user.</p><button class="primary-button compact-button" type="button">Open demo workspace</button></article>
+      <article class="panel"><div class="panel-heading"><div><p class="eyebrow">LIVE ACCOUNT</p><h2>Live onboarding</h2></div><span class="status-badge">Required</span></div><p>Live access requires identity/KYC verification, broker approval and a mapped live account. The environment switch alone cannot enable trading.</p><button class="primary-button compact-button" disabled>Start live KYC (provider not configured)</button></article>
+    </section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow">ACCOUNT MAPPING</p><h2>Account status</h2></div></div><div class="table-wrap"><table><thead><tr><th>Record</th><th>Status</th><th>Purpose</th></tr></thead><tbody><tr><td>Klyvesta user</td><td>Active</td><td>Login and profile</td></tr><tr><td>Sandbox account</td><td>Demo-only</td><td>Paper portfolio and orders</td></tr><tr><td>CDC/KYC application</td><td>Not started</td><td>Live eligibility</td></tr><tr><td>Live PyPSX account</td><td>Not linked</td><td>Live trading after approval</td></tr></tbody></table></div></section>
+    <section class="panel safeguards-panel"><div class="panel-heading"><div><p class="eyebrow">USER SAFETY</p><h2>What this UI does not claim</h2></div></div><div class="safeguard-grid"><div><strong>No fake approval</strong><span>Live remains blocked</span></div><div><strong>No CDC password in demo</strong><span>Only live KYC requires it</span></div><div><strong>No real order</strong><span>Demo data is synthetic</span></div><div><strong>One app login</strong><span>Provider mappings stay backend-only</span></div></div></section>
+  </main>
+</body>
+</html>
