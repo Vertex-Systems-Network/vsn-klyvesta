@@ -129,6 +129,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         });
     }
 
+
     private static void ConfigureIdentity(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<IdentityUserRecord>(entity =>
