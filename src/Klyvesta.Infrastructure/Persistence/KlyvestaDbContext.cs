@@ -1,5 +1,5 @@
-using Klyvesta.Infrastructure.Persistence.Records;
 using Klyvesta.Infrastructure.Persistence.Identity;
+using Klyvesta.Infrastructure.Persistence.Records;
 using Microsoft.EntityFrameworkCore;
 
 namespace Klyvesta.Infrastructure.Persistence;
@@ -128,7 +128,6 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
                 .HasDatabaseName("ix_outbox_pending");
         });
     }
-
 
     private static void ConfigureIdentity(ModelBuilder modelBuilder)
     {
