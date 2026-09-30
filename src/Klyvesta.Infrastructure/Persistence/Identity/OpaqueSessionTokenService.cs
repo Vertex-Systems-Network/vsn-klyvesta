@@ -22,7 +22,7 @@ public sealed class OpaqueSessionTokenService
         return Convert.ToHexString(hash).ToLowerInvariant();
     }
 
-    public bool Matches(string token, string expectedHash)
+    public static bool Matches(string token, string expectedHash)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         ArgumentException.ThrowIfNullOrWhiteSpace(expectedHash);
