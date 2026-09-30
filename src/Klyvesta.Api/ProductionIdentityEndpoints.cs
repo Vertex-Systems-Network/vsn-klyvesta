@@ -6,6 +6,8 @@ public static class ProductionIdentityEndpoints
 {
     private const string CookieName = "klyvesta_session";
 
+    public static readonly string[] AuthMethods = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+
     public static void MapProductionIdentity(this WebApplication app)
     {
         app.MapPost("/api/auth/register", async (
