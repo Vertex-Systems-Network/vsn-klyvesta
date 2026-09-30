@@ -1,4 +1,5 @@
 using Klyvesta.Infrastructure.Persistence.Records;
+using Klyvesta.Infrastructure.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Klyvesta.Infrastructure.Persistence;
@@ -11,6 +12,12 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
 
     internal DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
+    internal DbSet<IdentityUserRecord> IdentityUsers => Set<IdentityUserRecord>();
+    internal DbSet<IdentityRoleRecord> IdentityRoles => Set<IdentityRoleRecord>();
+    internal DbSet<IdentitySessionRecord> IdentitySessions => Set<IdentitySessionRecord>();
+    internal DbSet<IdentityRecoveryTokenRecord> IdentityRecoveryTokens => Set<IdentityRecoveryTokenRecord>();
+    internal DbSet<IdentityAuditEventRecord> IdentityAuditEvents => Set<IdentityAuditEventRecord>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
@@ -18,6 +25,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         ConfigureIdempotency(modelBuilder);
         ConfigureInbox(modelBuilder);
         ConfigureOutbox(modelBuilder);
+        ConfigureIdentity(modelBuilder);
     }
 
     private static void ConfigureIdempotency(ModelBuilder modelBuilder)
@@ -118,6 +126,63 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
             entity.HasIndex(item => new { item.NextAttemptAt, item.OccurredAt })
                 .HasFilter("published_at IS NULL")
                 .HasDatabaseName("ix_outbox_pending");
+        });
+    }
+
+    private static void ConfigureIdentity(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<IdentityUserRecord>(entity =>
+        {
+            entity.ToTable("identity_user", "security");
+            entity.HasKey(item => item.Id);
+            entity.HasIndex(item => item.NormalizedEmail).IsUnique();
+            entity.Property(item => item.Email).HasMaxLength(320).IsRequired();
+            entity.Property(item => item.NormalizedEmail).HasMaxLength(320).IsRequired();
+            entity.Property(item => item.PasswordHash).HasMaxLength(512).IsRequired();
+            entity.Property(item => item.Status).HasMaxLength(32).IsRequired();
+            entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.DisabledAt).HasColumnType("timestamp with time zone");
+        });
+
+        modelBuilder.Entity<IdentityRoleRecord>(entity =>
+        {
+            entity.ToTable("identity_role", "security");
+            entity.HasKey(item => new { item.UserId, item.Role });
+            entity.Property(item => item.Role).HasMaxLength(64).IsRequired();
+            entity.Property(item => item.GrantedAt).HasColumnType("timestamp with time zone").IsRequired();
+        });
+
+        modelBuilder.Entity<IdentitySessionRecord>(entity =>
+        {
+            entity.ToTable("identity_session", "security");
+            entity.HasKey(item => item.Id);
+            entity.HasIndex(item => item.TokenHash).IsUnique();
+            entity.Property(item => item.TokenHash).HasMaxLength(128).IsRequired();
+            entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.ExpiresAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.IpAddress).HasMaxLength(64);
+            entity.Property(item => item.UserAgent).HasMaxLength(512);
+        });
+
+        modelBuilder.Entity<IdentityRecoveryTokenRecord>(entity =>
+        {
+            entity.ToTable("identity_recovery_token", "security");
+            entity.HasKey(item => item.Id);
+            entity.HasIndex(item => item.TokenHash).IsUnique();
+            entity.Property(item => item.TokenHash).HasMaxLength(128).IsRequired();
+            entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.ExpiresAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.UsedAt).HasColumnType("timestamp with time zone");
+        });
+
+        modelBuilder.Entity<IdentityAuditEventRecord>(entity =>
+        {
+            entity.ToTable("identity_audit_event", "security");
+            entity.HasKey(item => item.Id);
+            entity.Property(item => item.EventType).HasMaxLength(128).IsRequired();
+            entity.Property(item => item.Outcome).HasMaxLength(32).IsRequired();
+            entity.Property(item => item.OccurredAt).HasColumnType("timestamp with time zone").IsRequired();
+            entity.Property(item => item.MetadataJson).HasColumnType("jsonb");
         });
     }
 }
