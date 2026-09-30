@@ -61,7 +61,7 @@ public sealed class IdentityCredentialStore(
             .SingleOrDefaultAsync(item => item.NormalizedEmail == normalizedEmail, cancellationToken);
         return user is not null
             && user.Status == "active"
-            && passwordHasher.Verify(password, user.PasswordHash)
+            && IdentityPasswordHasher.Verify(password, user.PasswordHash)
             ? user.Id
             : null;
     }
