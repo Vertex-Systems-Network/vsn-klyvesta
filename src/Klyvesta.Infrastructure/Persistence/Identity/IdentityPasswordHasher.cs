@@ -23,7 +23,7 @@ public sealed class IdentityPasswordHasher
         return $"pbkdf2-sha256.{Iterations}.{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
     }
 
-    public bool Verify(string password, string encodedHash)
+    public static bool Verify(string password, string encodedHash)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(password);
         ArgumentException.ThrowIfNullOrWhiteSpace(encodedHash);
