@@ -134,8 +134,8 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         modelBuilder.Entity<IdentityUserRecord>(entity =>
         {
             entity.ToTable("identity_user", "security");
-            entity.HasKey(item => item.Id);
-            entity.HasIndex(item => item.NormalizedEmail).IsUnique();
+            entity.HasKey(item => item.Id).HasName("pk_identity_user");
+            entity.HasIndex(item => item.NormalizedEmail).IsUnique().HasDatabaseName("ux_identity_user_normalized_email");
             entity.Property(item => item.Email).HasMaxLength(320).IsRequired();
             entity.Property(item => item.NormalizedEmail).HasMaxLength(320).IsRequired();
             entity.Property(item => item.PasswordHash).HasMaxLength(512).IsRequired();
@@ -147,7 +147,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         modelBuilder.Entity<IdentityRoleRecord>(entity =>
         {
             entity.ToTable("identity_role", "security");
-            entity.HasKey(item => new { item.UserId, item.Role });
+            entity.HasKey(item => new { item.UserId, item.Role }).HasName("pk_identity_role");
             entity.Property(item => item.Role).HasMaxLength(64).IsRequired();
             entity.Property(item => item.GrantedAt).HasColumnType("timestamp with time zone").IsRequired();
         });
@@ -155,8 +155,8 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         modelBuilder.Entity<IdentitySessionRecord>(entity =>
         {
             entity.ToTable("identity_session", "security");
-            entity.HasKey(item => item.Id);
-            entity.HasIndex(item => item.TokenHash).IsUnique();
+            entity.HasKey(item => item.Id).HasName("pk_identity_session");
+            entity.HasIndex(item => item.TokenHash).IsUnique().HasDatabaseName("ux_identity_session_token_hash");
             entity.Property(item => item.TokenHash).HasMaxLength(128).IsRequired();
             entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
             entity.Property(item => item.ExpiresAt).HasColumnType("timestamp with time zone").IsRequired();
@@ -167,8 +167,8 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         modelBuilder.Entity<IdentityRecoveryTokenRecord>(entity =>
         {
             entity.ToTable("identity_recovery_token", "security");
-            entity.HasKey(item => item.Id);
-            entity.HasIndex(item => item.TokenHash).IsUnique();
+            entity.HasKey(item => item.Id).HasName("pk_identity_recovery_token");
+            entity.HasIndex(item => item.TokenHash).IsUnique().HasDatabaseName("ux_identity_recovery_token_token_hash");
             entity.Property(item => item.TokenHash).HasMaxLength(128).IsRequired();
             entity.Property(item => item.CreatedAt).HasColumnType("timestamp with time zone").IsRequired();
             entity.Property(item => item.ExpiresAt).HasColumnType("timestamp with time zone").IsRequired();
@@ -178,7 +178,7 @@ public sealed class KlyvestaDbContext(DbContextOptions<KlyvestaDbContext> option
         modelBuilder.Entity<IdentityAuditEventRecord>(entity =>
         {
             entity.ToTable("identity_audit_event", "security");
-            entity.HasKey(item => item.Id);
+            entity.HasKey(item => item.Id).HasName("pk_identity_audit_event");
             entity.Property(item => item.EventType).HasMaxLength(128).IsRequired();
             entity.Property(item => item.Outcome).HasMaxLength(32).IsRequired();
             entity.Property(item => item.OccurredAt).HasColumnType("timestamp with time zone").IsRequired();
