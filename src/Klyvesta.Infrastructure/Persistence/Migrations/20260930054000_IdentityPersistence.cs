@@ -84,7 +84,7 @@ namespace Klyvesta.Infrastructure.Persistence.Migrations
 
             migrationBuilder.CreateIndex("ux_identity_user_normalized_email", "identity_user", "normalized_email", "security", unique: true);
             migrationBuilder.CreateIndex("ux_identity_session_token_hash", "identity_session", "token_hash", "security", unique: true);
-            migrationBuilder.CreateIndex("ux_identity_recovery_token_hash", "identity_recovery_token", "token_hash", "security", unique: true);
+            migrationBuilder.CreateIndex("ux_identity_recovery_token_token_hash", "identity_recovery_token", "token_hash", "security", unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
