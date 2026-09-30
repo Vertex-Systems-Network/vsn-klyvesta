@@ -1,4 +1,7 @@
+using Klyvesta.Infrastructure.Persistence;
+using Klyvesta.Infrastructure.Persistence.Identity;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 
 const string DemoCookieName = "klyvesta_demo_preview";
 const string DemoMutationHeader = "X-Demo-Request";
@@ -18,6 +21,17 @@ if (demoEnabled && !demoEnvironmentAllowed)
 
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
+
+var databaseConnectionString = builder.Configuration.GetConnectionString("Klyvesta")
+    ?? builder.Configuration["DATABASE_URL"];
+if (!string.IsNullOrWhiteSpace(databaseConnectionString))
+{
+    builder.Services.AddDbContext<KlyvestaDbContext>(options => options.UseNpgsql(databaseConnectionString));
+    builder.Services.AddScoped<IdentityPasswordHasher>();
+    builder.Services.AddScoped<IdentityCredentialStore>();
+    builder.Services.AddScoped<OpaqueSessionTokenService>();
+    builder.Services.AddScoped<IdentitySessionStore>();
+}
 if (demoEnabled)
 {
     builder.Services.AddSingleton<DemoUserDataStore>();
@@ -361,6 +375,16 @@ else
         status = "foundation",
         demoMode = false,
     }));
+}
+
+if (!string.IsNullOrWhiteSpace(databaseConnectionString))
+{
+    app.MapProductionIdentity();
+}
+else
+{
+    app.MapMethods("/api/auth/{**path}", new[] { "GET", "POST", "PUT", "PATCH", "DELETE" }, () =>
+        Results.Problem("Production identity is unavailable until PostgreSQL is configured.", statusCode: StatusCodes.Status503ServiceUnavailable));
 }
 
 app.MapHealthChecks("/health/live", new HealthCheckOptions
