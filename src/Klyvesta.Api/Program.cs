@@ -384,7 +384,7 @@ if (!string.IsNullOrWhiteSpace(databaseConnectionString))
 }
 else
 {
-    app.MapMethods("/api/auth/{**path}", new[] { "GET", "POST", "PUT", "PATCH", "DELETE" }, () =>
+    app.MapMethods("/api/auth/{**path}", ProductionIdentityEndpoints.AuthMethods, () =>
         Results.Problem("Production identity is unavailable until PostgreSQL is configured.", statusCode: StatusCodes.Status503ServiceUnavailable));
 }
 
