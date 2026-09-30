@@ -15,7 +15,7 @@ public sealed class OpaqueSessionTokenService
             .TrimEnd('=');
     }
 
-    public string HashToken(string token)
+    public static string HashToken(string token)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token);
         var hash = SHA256.HashData(Encoding.UTF8.GetBytes(token));
